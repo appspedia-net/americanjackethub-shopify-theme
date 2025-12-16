@@ -1,0 +1,1184 @@
+{{ 'video-section.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb}}px;
+  }
+  .section-{{ section.id }}-padding .section-content-wrapper .heading {
+      font-weight: {{section.settings.heading_weight}};
+      font-size: {{section.settings.heading_size_mb}}px;
+      margin-bottom: {{section.settings.heading_margin_mb}}px;
+      text-transform: {{section.settings.heading_transform}};
+  }
+  .section-{{ section.id }}-padding .section-content-wrapper .desc {
+      font-size: {{section.settings.text_size_mb}}px;
+      margin-bottom: {{section.settings.content_margin_mb}}px;
+  }
+  .section-{{ section.id }}-padding .section-content-wrapper .banner__buttons .button{
+    min-width:{{section.settings.button_width}}px;
+    height: {{section.settings.button_height}}px;
+  }
+  .section-{{ section.id }}-padding video, 
+  .section-{{ section.id }}-padding img{
+    height: {{section.settings.custom_height_video}}vh;
+  }
+   
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .section-{{ section.id }}-padding .section-content-wrapper .heading {
+      font-size: {{section.settings.heading_size}}px;
+      margin-bottom: {{section.settings.heading_margin}}px;
+    }
+    .section-{{ section.id }}-padding .section-content-wrapper .desc {
+      font-size: {{section.settings.content_size}}px;
+      margin-bottom: {{section.settings.content_margin}}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- capture sizes -%}
+  {% if section.settings.full_width -%}
+    100vw
+  {%- else -%}
+    (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px)
+    calc(100vw - 10rem), 100vw
+  {%- endif %}
+{%- endcapture -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="video-section video-section_MP4 isolate{% unless section.settings.full_width %} page-width{% endunless %} section-{{ section.id }}-padding">
+    <div class="section-wrapper">
+      {%- if section.settings.option_type == 'video' -%}
+        <div class="item item-video">
+          {%- if section.settings.mp4_url -%}
+            {% assign video_sources = section.settings.mp4_url.sources | sort: 'height' | last %}
+            {% assign video_url = video_sources.url %}
+            <video preload="metadata" autoplay muted loop playsinline>
+              <source src="{{video_url }}" type="video/mp4">
+            </video>
+          {%- else -%}
+            {{ 'hero-apparel-2' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
+          {%- endif -%}
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'heading' -%}
+                {%- if  block.settings.heading != blank -%}
+                  <h3 class="block-heading {{ block.settings.text_alignment }}"
+                    style="
+                    --color: {{ block.settings.heading_color }};
+                    --position-hoz: {{ block.settings.content_position_hoz }}%;
+                    --position-ver: {{ block.settings.content_position_ver }}%;
+                    --position-hoz-mb: {{ block.settings.content_position_hoz_mb }}%;
+                    --position-ver-mb: {{ block.settings.content_position_ver_mb }}%;
+                    --font-weight: {{block.settings.heading_weight}};
+                    --font_style: {{block.settings.font_style}};
+                    --font-size: {{ block.settings.heading_size }}px;
+                    --font-size-mb: {{ block.settings.heading_size_mb }}px;
+                  ">
+                    <span>{{ block.settings.heading}}</span>
+                  </h3>
+                {%- endif -%}
+                {%- when 'link' -%}
+                  {%- if block.settings.link_url!= blank %}
+                    <a href="{{ block.settings.link_url }}" class="block-link" target="_blank"
+                    style="
+                      --color: {{ block.settings.link_color }};
+                      --position-hoz: {{ block.settings.content_position_hoz }}%;
+                      --position-ver: {{ block.settings.content_position_ver }}%;
+                      --position-hoz-mb: {{ block.settings.content_position_hoz_mb }}%;
+                      --position-ver-mb: {{ block.settings.content_position_ver_mb }}%;
+                      --font-weight: {{block.settings.link_weight}};
+                      --font_style: {{block.settings.font_style}};
+                      --font-size: {{ block.settings.link_size }}px;
+                      --font-size-mb: {{ block.settings.link_size_mb }}px;
+                    ">
+                      
+                      <span class="text">{{ block.settings.link_text }}</span>
+                      {% render 'icon' with 'arrow-right' %}
+                    </a>
+                  {%- endif %}
+                {%- when 'link_list'-%}
+                  {%- if block.settings.menu != blank -%}
+                    <ul class="block-link_list list-unstyled"
+                    style="
+                      --color: {{ block.settings.link_list_color }};
+                      --position-hoz: {{ block.settings.content_position_hoz }}%;
+                      --position-ver: {{ block.settings.content_position_ver }}%;
+                      --position-hoz-mb: {{ block.settings.content_position_ver_mb }}%;
+                      --position-ver-mb: {{ block.settings.content_position_hoz_mb }}%;
+                      --font-weight: {{block.settings.link_list_weight}};
+                      --font_style: {{block.settings.font_style}};
+                      --font-size: {{ block.settings.link_list_size }}px;
+                      --font-size-mb: {{ block.settings.link_list_size_mb }}px;
+                    ">
+                      {%- for link in block.settings.menu.links -%}
+                        <li>
+                          <a
+                            href="{{ link.url }}"
+                            class="link link--text list-menu__item list-menu__item--link"
+                          >
+                            <span class="text">
+                              {{ link.title }}
+                              {% render 'icon' with 'arrow-right' %}
+                            </span>
+                            
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <div class="item item-image">
+          {%- if section.settings.image-%}
+            {{
+              section.settings.image
+              | image_url: width: 3840
+              | image_tag: sizes: sizes, 
+              widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840', 
+              alt: ""
+            }}
+          {%- else -%}
+            {{ 'hero-apparel-2' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
+          {%- endif -%}
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'heading' -%}
+                {%- if  block.settings.heading != blank -%}
+                  <h3 class="block-heading {{ block.settings.text_alignment }}"
+                    style="
+                    --color: {{ block.settings.heading_color }};
+                    --position-hoz: {{ block.settings.content_position_hoz }}%;
+                    --position-ver: {{ block.settings.content_position_ver }}%;
+                    --position-hoz-mb: {{ block.settings.content_position_hoz_mb }}%;
+                    --position-ver-mb: {{ block.settings.content_position_ver_mb }}%;
+                    --font-weight: {{block.settings.heading_weight}};
+                    --font_style: {{block.settings.font_style}};
+                    --font-size: {{ block.settings.heading_size }}px;
+                    --font-size-mb: {{ block.settings.heading_size_mb }}px;
+                  ">
+                    <span>{{ block.settings.heading}}</span>
+                  </h3>
+                {%- endif -%}
+                {%- when 'link' -%}
+                  {%- if block.settings.link_url!= blank %}
+                    <a href="{{ block.settings.link_url }}" class="block-link" target="_blank"
+                    style="
+                      --color: {{ block.settings.link_color }};
+                      --position-hoz: {{ block.settings.content_position_hoz }}%;
+                      --position-ver: {{ block.settings.content_position_ver }}%;
+                      --position-hoz-mb: {{ block.settings.content_position_hoz_mb }}%;
+                      --position-ver-mb: {{ block.settings.content_position_ver_mb }}%;
+                      --font-weight: {{block.settings.link_weight}};
+                      --font_style: {{block.settings.font_style}};
+                      --font-size: {{ block.settings.link_size }}px;
+                      --font-size-mb: {{ block.settings.link_size_mb }}px;
+                    ">
+                      
+                      <span class="text">{{ block.settings.link_text }}</span>
+                      {% render 'icon' with 'arrow-right' %}
+                    </a>
+                  {%- endif %}
+                {%- when 'link_list'-%}
+                  {%- if block.settings.menu != blank -%}
+                    <ul class="block-link_list list-unstyled"
+                    style="
+                      --color: {{ block.settings.link_list_color }};
+                      --position-hoz: {{ block.settings.content_position_hoz }}%;
+                      --position-ver: {{ block.settings.content_position_ver }}%;
+                      --position-hoz-mb: {{ block.settings.content_position_ver_mb }}%;
+                      --position-ver-mb: {{ block.settings.content_position_hoz_mb }}%;
+                      --font-weight: {{block.settings.link_list_weight}};
+                      --font_style: {{block.settings.font_style}};
+                      --font-size: {{ block.settings.link_list_size }}px;
+                      --font-size-mb: {{ block.settings.link_list_size_mb }}px;
+                    ">
+                      {%- for link in block.settings.menu.links -%}
+                        <li>
+                          <a
+                            href="{{ link.url }}"
+                            class="link link--text list-menu__item list-menu__item--link"
+                          >
+                            <span class="text">
+                              {{ link.title }}
+                              {% render 'icon' with 'arrow-right' %}
+                            </span>
+                            
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      <div class="section-content {{ section.settings.text_alignment }} {{ section.settings.text_alignment_mb }}-mb"
+      style="
+            --position-hoz: {{ section.settings.content_position_hoz }}%;
+            --position-ver: {{ section.settings.content_position_ver }}%;
+            --position-hoz-mb: {{ section.settings.content_position_hoz_mb }}%;
+            --position-ver-mb: {{ section.settings.content_position_ver_mb }}%;
+        "
+      >
+        <div class="section-content-wrapper{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          {% if settings.animations_reveal_on_scroll %}
+            data-cascade
+          {% endif %}
+          >
+          {%- if  section.settings.heading != blank -%}
+            <h2 class="heading inline-richtext">
+              {{ section.settings.heading }}
+            </h2>
+          {%- endif -%}
+          {%- if  section.settings.content != blank -%}
+            <div class="desc rte">
+              {{ section.settings.content }}
+            </div>
+          {%- endif -%}
+          {%- if  section.settings.button_label_1 != blank or section.settings.button_label_2 != blank or section.settings.button_label_3 != blank-%}
+            <div class="banner__buttons d-flex wrap j-c--center a-i--center gap-20">
+              
+              {%- if section.settings.button_label_1 != blank -%}
+                <a
+                  {% if section.settings.button_link_1 == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ section.settings.button_link_1 }}"
+                  {% endif %}
+                  class="button"
+                >
+                  {{- section.settings.button_label_1 -}}
+                </a>
+              {%- endif -%}
+              {%- if section.settings.button_label_2 != blank -%}
+                <a
+                  {% if section.settings.button_link_2 == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ section.settings.button_link_2 }}"
+                  {% endif %}
+                  class="button"
+                >
+                  {{- section.settings.button_label_2 -}}
+                </a>
+              {%- endif -%}
+              {%- if section.settings.button_label_3 != blank -%}
+                <a
+                  {% if section.settings.button_link_3 == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ section.settings.button_link_3 }}"
+                  {% endif %}
+                  class="button"
+                >
+                  {{- section.settings.button_label_3 -}}
+                </a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Video MP4",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.extension"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "t:sections.video.settings.full_width.label",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "custom_height_video",
+      "min": 50,
+      "max": 100,
+      "step": 1,
+      "unit": "vh",
+      "label": "Custom height video",
+      "default": 100,
+      "info": "The term 'vh' is defined as the height of the device's screen." 
+    },
+    {
+      "type": "select",
+      "id": "option_type",
+      "label": "Type options",
+      "default":"video",
+      "options": [
+        {
+          "label": "Video",
+          "value": "video"
+        },
+        {
+          "label": "Image",
+          "value": "image"
+        }
+      ]
+    }, 
+    {
+      "type": "video",
+      "id": "mp4_url",
+      "label": "URL video mp4",
+      "info": "Use for option type video"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Use for option type image"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+        "type": "header",
+        "content": "Content"
+    },
+    {
+        "type": "range",
+        "id": "content_position_ver",
+        "label": "Content position vertical",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 50,
+        "unit": "%"
+    },
+    {
+        "type": "range",
+        "id": "content_position_hoz",
+        "label": "Content position horizontal",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 50,
+        "unit": "%"
+    },
+    {
+        "type": "range",
+        "id": "content_position_ver_mb",
+        "label": "Content position vertical mobile",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 50,
+        "unit": "%"
+    },
+    {
+        "type": "range",
+        "id": "content_position_hoz_mb",
+        "label": "Content position horizontal mobile",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 50,
+        "unit": "%"
+    },
+    {
+        "type": "select",
+        "id": "text_alignment",
+        "options": [
+        {
+            "value": "left",
+            "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_1.label"
+        },
+        {
+            "value": "center",
+            "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_2.label"
+        },
+        {
+            "value": "right",
+            "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_3.label"
+        }
+        ],
+        "default": "center",
+        "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.label"
+    },
+    {
+        "type": "select",
+        "id": "text_alignment_mb",
+        "options": [
+        {
+            "value": "left",
+            "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_1.label"
+        },
+        {
+            "value": "center",
+            "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_2.label"
+        },
+        {
+            "value": "right",
+            "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_3.label"
+        }
+        ],
+        "default": "left",
+        "label": "Text align mobile"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "t:sections.slideshow.blocks.slide.settings.heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Font weight heading",
+      "options": [
+        {
+          "value": "300",
+          "label": "300"
+        },
+        {
+          "value": "400",
+          "label": "400"
+        },
+        {
+          "value": "500",
+          "label": "500"
+        },
+        {
+          "value": "600",
+          "label": "600"
+        },
+        {
+          "value": "700",
+          "label": "700"
+        },
+        {
+          "value": "800",
+          "label": "800"
+        },
+        {
+          "value": "900",
+          "label": "900"
+        }
+      ],
+      "default": "500"
+    },
+    {
+        "type": "select",
+        "id": "heading_transform",
+        "label": "Text Transform",
+        "options": [
+            {
+            "value": "capitalize",
+            "label": "Capitalize"
+            },
+            {
+            "value": "uppercase",
+            "label": "Uppercase"
+            },
+            {
+            "value": "lowercase",
+            "label": "Lowercase"
+            }
+        ],
+        "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Font size heading",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 55
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mb",
+      "label": "Font size heading mobile",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "heading_margin",
+      "label": "Heading margin bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_mb",
+      "label": "Heading margin mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "content",
+      "label": "Content"
+    },
+    {
+      "type": "range",
+      "id": "content_size",
+      "label": "Font size content",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "content_margin",
+      "label": "Content margin bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "text_size_mb",
+      "label": "Font size content mobile",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "content_margin_mb",
+      "label": "Content margin bottom mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Button 1"
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "label": "t:sections.slideshow.blocks.slide.settings.button_label.label",
+      "info": "t:sections.slideshow.blocks.slide.settings.button_label.info"
+    },
+    {
+      "type": "url",
+      "id": "button_link_1",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Button 2"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "label": "t:sections.slideshow.blocks.slide.settings.button_label.label",
+      "info": "t:sections.slideshow.blocks.slide.settings.button_label.info"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Button 3"
+    },
+    {
+      "type": "text",
+      "id": "button_label_3",
+      "label": "t:sections.slideshow.blocks.slide.settings.button_label.label",
+      "info": "t:sections.slideshow.blocks.slide.settings.button_label.info"
+    },
+    {
+      "type": "url",
+      "id": "button_link_3",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "range",
+      "id": "button_width",
+      "label": "Button min width",
+      "min": 50,
+      "max": 500,
+      "step": 5,
+      "default": 150,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "button_height",
+      "label": "Button height",
+      "min": 20,
+      "max": 100,
+      "step": 1,
+      "default": 44,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Style"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Content position"
+        },
+        {
+          "type": "range",
+          "id": "content_position_ver",
+          "label": "Content position vertical",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 2,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "content_position_hoz",
+          "label": "Content position horizontal",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "content_position_ver_mb",
+          "label": "Content position vertical mobile",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 2,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "content_position_hoz_mb",
+          "label": "Content position horizontal mobile",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50,
+          "unit": "%"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_1.label"
+            },
+            {
+              "value": "center",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_2.label"
+            },
+            {
+              "value": "right",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_3.label"
+            }
+          ],
+          "default": "center",
+          "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.label"
+        },
+        {
+          "type": "select",
+          "id": "font_style",
+          "label": "Font style",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal"
+            },
+            {
+              "value": "italic",
+              "label": "Italic"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "textarea",
+          "id": "heading",
+          "default": "<p>Heading</p>",
+          "label": "t:sections.multicolumn.blocks.column.settings.title.label"
+        },
+        {
+          "type": "select",
+          "id": "heading_weight",
+          "label": "Font weight heading",
+          "options": [
+            {
+              "value": "300",
+              "label": "300"
+            },
+            {
+              "value": "400",
+              "label": "400"
+            },
+            {
+              "value": "500",
+              "label": "500"
+            },
+            {
+              "value": "600",
+              "label": "600"
+            },
+            {
+              "value": "700",
+              "label": "700"
+            },
+            {
+              "value": "800",
+              "label": "800"
+            },
+            {
+              "value": "900",
+              "label": "900"
+            }
+          ],
+          "default": "500"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Font size heading",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "heading_size_mb",
+          "label": "Font size heading mobile",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 35
+        }
+      ]
+    },
+    {
+      "type": "link",
+      "name": "Link",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Style"
+        },
+        {
+          "type": "color",
+          "id": "link_color",
+          "label": "Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Content position"
+        },
+        {
+          "type": "range",
+          "id": "content_position_ver",
+          "label": "Content position vertical",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 90,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "content_position_hoz",
+          "label": "Content position horizontal",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 97,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "content_position_ver_mb",
+          "label": "Content position vertical mobile",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 95,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "content_position_hoz_mb",
+          "label": "Content position horizontal mobile",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 98,
+          "unit": "%"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_1.label"
+            },
+            {
+              "value": "center",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_2.label"
+            },
+            {
+              "value": "right",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_3.label"
+            }
+          ],
+          "default": "center",
+          "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.label"
+        },
+        {
+          "type": "select",
+          "id": "font_style",
+          "label": "Font style",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal"
+            },
+            {
+              "value": "italic",
+              "label": "Italic"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "link_text",
+          "default": "Link lable",
+          "label": "Linh lable"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link url"
+        },
+        {
+          "type": "select",
+          "id": "link_weight",
+          "label": "Font weight",
+          "options": [
+            {
+              "value": "300",
+              "label": "300"
+            },
+            {
+              "value": "400",
+              "label": "400"
+            },
+            {
+              "value": "500",
+              "label": "500"
+            },
+            {
+              "value": "600",
+              "label": "600"
+            },
+            {
+              "value": "700",
+              "label": "700"
+            },
+            {
+              "value": "800",
+              "label": "800"
+            },
+            {
+              "value": "900",
+              "label": "900"
+            }
+          ],
+          "default": "500"
+        },
+        {
+          "type": "range",
+          "id": "link_size",
+          "label": "Font size link",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "link_size_mb",
+          "label": "Font size link mobile",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 20
+        }
+      ]
+    },
+    {
+      "type": "link_list",
+      "name": "t:sections.footer.blocks.link_list.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Style"
+        },
+        {
+          "type": "color",
+          "id": "link_list_color",
+          "label": "Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Content position"
+        },
+        {
+          "type": "range",
+          "id": "content_position_ver",
+          "label": "Content position vertical",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 90,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "content_position_hoz",
+          "label": "Content position horizontal",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 5,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "content_position_ver_mb",
+          "label": "Content position vertical mobile",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 0,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "content_position_hoz_mb",
+          "label": "Content position horizontal mobile",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 80,
+          "unit": "%"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_1.label"
+            },
+            {
+              "value": "center",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_2.label"
+            },
+            {
+              "value": "right",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_3.label"
+            }
+          ],
+          "default": "center",
+          "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.label"
+        },
+        {
+          "type": "select",
+          "id": "font_style",
+          "label": "Font style",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal"
+            },
+            {
+              "value": "italic",
+              "label": "Italic"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "t:sections.footer.blocks.link_list.settings.menu.label",
+          "info": "t:sections.footer.blocks.link_list.settings.menu.info"
+        },
+        {
+          "type": "select",
+          "id": "link_list_weight",
+          "label": "Font weight link list",
+          "options": [
+            {
+              "value": "300",
+              "label": "300"
+            },
+            {
+              "value": "400",
+              "label": "400"
+            },
+            {
+              "value": "500",
+              "label": "500"
+            },
+            {
+              "value": "600",
+              "label": "600"
+            },
+            {
+              "value": "700",
+              "label": "700"
+            },
+            {
+              "value": "800",
+              "label": "800"
+            },
+            {
+              "value": "900",
+              "label": "900"
+            }
+          ],
+          "default": "500"
+        },
+        {
+          "type": "range",
+          "id": "link_list_size",
+          "label": "Font size link list",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 25
+        },
+        {
+          "type": "range",
+          "id": "link_list_size_mb",
+          "label": "Font size link list mobile",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 20
+        }
+
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video MP4"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,549 @@
+{{ 'section-review.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  .section-{{ section.id }}-padding .title-wrapper-with-link {
+    margin-bottom: {{ section.settings.margin_heading_section_mb }}px;
+  }
+  .section-{{ section.id }}-padding .title-wrapper-with-link h2 {
+    font-size: {{ section.settings.heading_size_mb }}px;
+    font-weight: {{ section.settings.heading_weight }};
+  }
+  .section-{{ section.id }}-padding .brand-card__info .heading {
+    font-size: {{ section.settings.block_heading_size_mb }}px; 
+    margin-top: {{ section.settings.margin_heading_mb }}px
+  }
+
+  .section-{{ section.id }}-padding .review-count svg {
+    color: {{ section.settings.color_star }};
+  }
+  .section-{{ section.id }}-padding .review-count .active {
+    color: {{ section.settings.color_star_active }};
+  }
+
+  .section-{{ section.id }}-padding .review-comment {
+    font-size: {{ section.settings.content_size }}px;
+  }
+
+  .section-{{ section.id }}-padding .product-link__text {
+    font-size: {{ section.settings.product_size }}px;
+  }
+  
+
+  .section-{{ section.id }}-padding .review-item__name {
+    font-size: {{ section.settings.name_size }}px;
+  }
+
+  .section-{{ section.id }}-padding .review-item__note {
+    font-size: {{ section.settings.note_size }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .section-{{ section.id }}-padding .title-wrapper-with-link {
+      margin-bottom: {{ section.settings.margin_heading_section }}px;
+    }
+    .section-{{ section.id }}-padding .title-wrapper-with-link h2 {
+      font-size: {{ section.settings.heading_size }}px;
+    }
+    .section-{{ section.id }}-padding .brand-card__info .heading {
+      font-size: {{ section.settings.block_heading_size }}px; 
+      margin-top: {{ section.settings.margin_heading }}px
+    }
+  }
+{%- endstyle -%}
+
+<div class="reviews section-review section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}">
+  <div
+    class="{% if section.settings.full_width %}page-layout__custom full-width{% else %} page-width{% endif %} layout-{{section.settings.layout}} isolate{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+    {% if settings.animations_reveal_on_scroll %}
+      data-cascade
+    {% endif %}
+  >
+    {%- unless section.settings.title == blank -%}
+      <div class="title-wrapper-with-link title-wrapper--no-top-margin {{ section.settings.text_align }}">
+        <h2 class="title heading inline-richtext">
+          {{ section.settings.title }}
+        </h2>
+      </div>
+    {%- endunless -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="review__wrapper">
+        {%- if section.settings.custom_layout == 'slider' -%}
+        <flickity-slider>
+        {%- endif -%}
+          <div class="review-list {% if section.settings.custom_layout == 'slider' %} slider {% else %}grid {% endif %} grid--1-col-tablet-down {% if section.settings.layout == 'style_1' %}grid--2-col-desktop {% else %}grid--1-col-desktop {% endif %}"
+              style="--grid-desktop-horizontal-spacing: {{ section.settings.column_gap }}px;--grid-desktop-vertical-spacing: {{ section.settings.column_gap }}px"
+          >
+            {%- for block in section.blocks -%}
+              <div class="review-item grid__item">
+                <div class="review-item__avatar">
+                  {%- if block.settings.avatar != blank -%}
+                    {{
+                      block.settings.avatar
+                      | image_url: width: 300
+                      | image_tag: widths: '300', sizes: '100vw', class: 'review-item__img'
+                    }}
+                  {%- endif -%}
+                </div>
+                <div class="review-item__content">
+                  <div class="content-top">
+                    <div class="review-item__header">
+                      <div class="review-item__info {{section.settings.layout}}">
+                        {%- if block.settings.content != blank and section.settings.layout == 'style_2'-%}
+                          <div class="review-comment rte">
+                            {{ block.settings.content }}
+                          </div>
+                        {%- endif -%}
+                        {%- if block.settings.name != blank and section.settings.layout == 'style_1' -%}
+                          <div class="review-item__name heading">
+                            {{ block.settings.name }}
+                          </div>
+                        {%- endif -%}
+                        {%- if block.settings.note != blank -%}
+                          <div class="review-item__note sub_heading">
+                            {{ block.settings.note }}
+                          </div>
+                        {%- endif -%}
+                      </div>
+                      <div class="review-count">
+                        {%- assign star = block.settings.star | plus: 0 -%}
+                        {%- for i in (1..5) -%}
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"
+                            {% if forloop.index <= star %}class="active"{% endif %}
+                          >
+                            <path d="M8 0L10.4712 5.27749L16 6.11518L12 10.199L12.9424 16L8 13.2565L3.05759 16L4 10.199L0 6.11518L5.52879 5.27749L8 0Z" fill="currentColor"/>
+                          </svg>
+                        {%- endfor -%}
+                      </div>
+                    </div>
+                    {%- if block.settings.name != blank and section.settings.layout == 'style_2' -%}
+                      <div class="review-item__name heading">
+                        {{ block.settings.name }}
+                      </div>
+                    {%- endif -%}
+                    {%- if block.settings.content != blank and section.settings.layout == 'style_1'-%}
+                      <div class="review-comment rte">
+                        {{ block.settings.content }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                  <div class="content-bottom">
+                    {%- if block.settings.product_image != blank -%}
+                      <div class="review-item__product-image">
+                        {%- if block.settings.product_image != blank -%}
+                          {{
+                            block.settings.product_image
+                            | image_url: width: 50
+                            | image_tag: widths: '50', sizes: '100vw', class: 'review-item__product-img'
+                          }}
+                        {%- endif -%}
+                        {%- if block.settings.product_name != blank -%}
+                          <a
+                          href="{{ block.settings.product_link }}"
+                          rel="noopener noreferrer"
+                          class="product-link__text"
+                          >
+                            <span>{{block.settings.product_name}}</span>
+                          </a>
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+          {%- if section.settings.custom_layout == 'slider' -%}
+          </flickity-slider>
+          {%- endif -%}
+        {%- if section.settings.button_text != blank -%}
+          <div class="section__footer d-flex j-c--center">
+            <a class="button{% if section.settings.outline %} button--secondary{% endif %}" href="{{ section.settings.button_link }}">
+              {{- section.settings.button_text | escape -}}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Review section",
+  "class": "section section-review",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.extension"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "default": true,
+      "label": "t:sections.newsletter.settings.full_width.label"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "style_1",
+          "label": "Style 1"
+        },
+        {
+          "value": "style_2",
+          "label": "Style 2"
+        }
+      ],
+      "default": "style_1",
+      "label": "Layout style"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "t:sections.multicolumn.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Font weight sub heading",
+      "options": [
+        {
+          "value": "300",
+          "label": "300"
+        },
+        {
+          "value": "400",
+          "label": "400"
+        },
+        {
+          "value": "500",
+          "label": "500"
+        },
+        {
+          "value": "600",
+          "label": "600"
+        },
+        {
+          "value": "700",
+          "label": "700"
+        },
+        {
+          "value": "800",
+          "label": "800"
+        },
+        {
+          "value": "900",
+          "label": "900"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Font size heading",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_heading_section",
+      "label": "Margin heading",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mb",
+      "label": "Font size heading mobile",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_heading_section_mb",
+      "label": "Margin heading mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text align",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "t:sections.multicolumn.blocks.column.settings.link_label.label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.multicolumn.blocks.column.settings.link.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "outline",
+      "label": "Button outline?",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "custom_layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "slider",
+          "label": "Slider"
+        }
+      ],
+      "default": "slider"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "min": 2,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Column gap",
+      "default": 28
+    },
+    {
+      "type": "header",
+      "content": "Settings block"
+    },
+    {
+      "type": "color",
+      "id": "color_star",
+      "label": "Star color",
+      "default": "#d9d9d9"
+    },
+    {
+      "type": "color",
+      "id": "color_star_active",
+      "label": "Star color active",
+      "default": "#FFD74B"
+    },
+    {
+      "type": "range",
+      "id": "name_size",
+      "label": "Font size name",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "note_size",
+      "label": "Font size note",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "content_size",
+      "label": "Font size content",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "product_size",
+      "label": "Font size product name",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 115
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 115
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "name": "review",
+      "type": "Review",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Avatar"
+        },
+        {
+          "type": "select",
+          "id": "star",
+          "label": "Star",
+          "options": [
+            {
+              "value": "1",
+              "label": "1 star"
+            },
+            {
+              "value": "2",
+              "label": "2 stars"
+            },
+            {
+              "value": "3",
+              "label": "3 stars"
+            },
+            {
+              "value": "4",
+              "label": "4 stars"
+            },
+            {
+              "value": "5",
+              "label": "5 stars"
+            }
+          ],
+          "default": "5"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Daniel San"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Note",
+          "default": "Product Manager, Japan"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Content",
+          "default": "Nitrile powder free medical grade gloves are ideal gloves to use for medical and food use to help maintain a safe barrier."
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "Prouct image"
+        },
+        {
+          "type": "text",
+          "id": "product_name",
+          "label": "Product name",
+          "default": "Flannel shirt"
+        },
+        {
+          "type": "url",
+          "id": "product_link",
+          "label": "Product link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Review section",
+      "blocks": [
+        {
+          "type": "Review"
+        },
+        {
+          "type": "Review"
+        },
+        {
+          "type": "Review"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

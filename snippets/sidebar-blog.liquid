@@ -1,0 +1,289 @@
+<div class="blog__sidebar">
+    <div class="blog__sidebar--inner">
+        {%- for block in section.blocks -%}
+        {%- if block.settings.enable -%}
+            <div
+            class="block__sidebar block--{{ block.type }}"
+            style="
+                padding-top: {{ block.settings.padding_top }}px;
+                padding-bottom: {{ block.settings.padding_bottom }}px
+            "
+            >
+            {%- if block.settings.heading != blank -%}
+                <h2 class="heading">
+                {{ block.settings.heading }}
+                </h2>
+            {%- endif -%}
+            {%- case block.type -%}
+                {%- when 'categories' -%}
+                {%- if block.settings.menu != blank -%}
+                    <ul class="sidebar__link list-unstyled">
+                    {%- for link in block.settings.menu.links -%}
+                        <li>
+                        <a
+                            href="{{ link.url }}"
+                            class="link link--text"
+                        >
+                            {{ link.title }}
+                        </a>
+                        </li>
+                    {%- endfor -%}
+                    </ul>
+                {%- endif -%}
+                {%- when 'tag' -%}
+                {%- if blog.all_tags.size > 0 -%}
+                    <ul class="article__tags">
+                        {%- for tag in blog.all_tags -%}
+                          <li class="article__tag--item">
+                            <a
+                              href="{{ blog.url }}/tagged/{{ tag | handle }}"
+                              class="link"
+                              style="
+                                font-size: {{ block.settings.font_size }}px;
+                                color: {{ block.settings.color }};
+                              "
+                            >
+                              <span>#{{ tag }}</span>
+                            </a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                {%- endif -%}
+                {%- when 'blog' -%}
+                {%- if block.settings.blog.articles_count > 0 -%}
+                    <div
+                    class="blog-articles blog-articles--1"
+                    style="--grid-desktop-horizontal-spacing: 15px;
+                            --grid-desktop-vertical-spacing: 0;
+                            --size-title-article: 16px"
+                    >
+                    {%- for article in block.settings.blog.articles limit: block.settings.blogs_to_show -%}
+                        <div
+                        class="blog-articles__article article{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                        {% if settings.animations_reveal_on_scroll %}
+                            data-cascade
+                            style="--animation-order: {{ forloop.index }};"
+                        {% endif %}
+                        >
+                        {%- render 'article-card',
+                            article: article,
+                            media_height: section.settings.image_height,
+                            media_aspect_ratio: article.image.aspect_ratio,
+                            show_image: false,
+                            show_date: true,
+                            show_author: false,
+                            show_excerpt: false,
+                            show_category: false,
+                            show_comment: false,
+                            horizontal_class: true
+                        -%}
+                        </div>
+                    {%- endfor -%}
+                    </div>
+                {%- endif -%}
+                {%- when 'column' -%}
+                    {{ 'section-multicolumn.css' | asset_url | stylesheet_tag }}
+                    <style>
+                      .section-{{ section.id }}-padding .multicolumn-card__info .grouped__button {
+                        display: flex;
+                        flex-wrap: wrap;
+                        align-items: center;
+                        gap: 10px;
+                      }
+                      .section-{{ section.id }}-padding .banner__content--top-center .multicolumn-card__info .grouped__button {
+                        justify-content: center;
+                      }
+                      .section-{{ section.id }}-padding .multicolumn-card__info .grouped__button .link {
+                        margin: 0 !important;
+                      }
+                      @media screen and (min-width: 750px) {
+                        .section-{{ section.id }}-padding .collection-tabs__content {
+                          display: flex;
+                          align-items: flex-start;
+                          {%  if block.settings.position == 'left' %}
+                            flex-direction: row-reverse;
+                          {% endif %}
+                        }
+                      }
+                      @media screen and (max-width: 749px) {
+                        .section-{{ section.id }}-padding .collection__banner {
+                          width:100%;
+                          max-width: 100%;
+                          margin-top: 30px;
+                        }
+                      }
+                    </style>
+                    {%- assign empty_column = '' -%}
+                    {%- if block.settings.image == blank
+                      and block.settings.title == blank
+                      and block.settings.text == blank
+                      and block.settings.link_label == blank
+                    -%}
+                      {%- assign empty_column = ' multicolumn-list__item--empty' -%}
+                    {%- endif -%}
+                    <style>
+                      @media screen and (min-width: 750px) {
+                        .multicolumn--{{ block.id }} .multicolumn-card__image-wrapper .media {
+                          padding-bottom: {{ block.settings.height_custom }}px !important;
+                        }
+                      }
+                      @media screen and (max-width: 749px) {
+                        .multicolumn--{{ block.id }} .multicolumn-card__image-wrapper .media {
+                          padding-bottom: {{ block.settings.height_image_mb }}% !important;
+                        }
+                      }
+                    </style>
+                    <div
+                      class="multicolumn--{{ block.id }} collection__banner multicolumn-list__item color-{{ block.settings.color_scheme }}{% if section.settings.swipe_on_mobile %} slider__slide{% endif %}{{ empty_column }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}{% unless section.settings.show_text_box %} content_absolute{% if section.settings.show_text_box_mb %} not_absolute--mb{% endif %}{% endunless %}"
+                      {{ block.shopify_attributes }}
+                      {% if settings.animations_reveal_on_scroll %}
+                        data-cascade
+                        style="--animation-order: {{ forloop.index }};"
+                      {% endif %}
+                    >
+                      <div class="multicolumn-card content-container">
+                        {%- if block.settings.text_label != blank -%}
+                          <div class="multicolumn__label multicolumn__label--{{ block.settings.position_label }} center" 
+                            style="
+                              --font-size: {{ block.settings.label_size }}px;
+                              --width: {{ block.settings.label_width }}px;
+                              --color: {{ block.settings.label_color }};
+                              --bg-color: {{ block.settings.label_bg_color }};
+                              --position-hoz: {{ block.settings.label_position_hoz }}%;
+                              --position-ver: {{ block.settings.label_position_ver }}%;
+                              --position-hoz-mb: {{ block.settings.label_position_hoz_mb }}%;
+                              --position-ver-mb: {{ block.settings.label_position_ver_mb }}%;
+                            ">
+                            <span>{{ block.settings.text_label }}</span>
+                          </div>
+                        {%- endif -%}
+                        <div class="multicolumn-card__image-wrapper">
+                          <div
+                            class="media media--transparent media--{{ section.settings.image_ratio }}{% if block.settings.enable_resize %} media--size{% endif %}"
+                            style="
+                              {% if block.settings.image != blank %}
+                                {% if section.settings.image_ratio == 'adapt' or section.settings.image_ratio == 'custom' %}
+                                  padding-bottom: {{ 1 | divided_by: highest_ratio | times: 100 }}%;
+                                {% endif %}
+                              {% else %}
+                                padding-bottom: 100%;
+                              {% endif %}
+                              {% if block.settings.enable_resize %}
+                                --width-block: {{ block.settings.resize }}px;
+                                --width-block-mb: {{ block.settings.resize_mb }}px;
+                                --position-ver: {{ block.settings.position_ver }}%;
+                                --position-hoz: {{ block.settings.position_hoz }}%;
+                                --position-ver-mb: {{ block.settings.position_ver_mb }}%;
+                                --position-hoz-mb: {{ block.settings.position_hoz_mb }}%
+                              {% endif %}
+                            "
+                          >
+                            {%- if block.settings.image != blank -%}
+                              {% if section.settings.image_ratio == 'adapt' or section.settings.image_ratio == 'circle' %}
+                                {% assign spaced_image = true %}
+                              {% endif %}
+                              {%- liquid
+                                assign number_of_columns = section.settings.columns_desktop
+                                assign number_of_columns_mobile = section.settings.columns_mobile
+                                assign grid_space_desktop = number_of_columns | minus: 1 | times: settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                                assign grid_space_tablet = number_of_columns_mobile | minus: 1 | times: settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                                assign grid_space_mobile = number_of_columns_mobile | minus: 1 | times: settings.spacing_grid_horizontal | divided_by: 2 | plus: 30 | append: 'px'
+                                if section.settings.image_width == 'half'
+                                  assign image_width = 0.5
+                                elsif section.settings.image_width == 'third'
+                                  assign image_width = 0.33
+                                else
+                                  assign image_width = 1
+                                endif
+                              -%}
+                              {% capture sizes %}
+                                (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }} /  {{ number_of_columns }}),
+                                (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }} / {{ number_of_columns }}),
+                                (min-width: 750px) calc((100vw - {{ grid_space_tablet }}) * {{ image_width }} / {{ number_of_columns_mobile }}),
+                                calc((100vw - {{ grid_space_mobile }}) * {{ image_width }} / {{ number_of_columns_mobile }})
+                              {% endcapture %}
+                              {{
+                                block.settings.image
+                                | image_url: width: 3200
+                                | image_tag:
+                                  widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                                  sizes: sizes,
+                                  class: 'multicolumn-card__image'
+                              }}
+                            {%- else -%}
+                              {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                            {%- endif -%}
+                          </div>
+                        </div>
+          
+                        <div class="multicolumn-card__info banner__content banner__position"
+                          style="
+                            --position-hoz: {{ block.settings.content_position_hoz }}%;
+                            --position-ver: {{ block.settings.content_position_ver }}%;
+                          "
+                        >
+                          <div class="multicolumn__box {{ block.settings.text_alignment }}">
+                            {%- if block.settings.sub_title != blank -%}
+                              <span
+                                class="inline-richtext sub_heading"
+                                style="font-size: {{ block.settings.subheading_size }}px; margin-bottom: {{ block.settings.sub_margin }}px"
+                              >
+                                {{ block.settings.sub_title }}
+                              </span>
+                            {%- endif -%}
+                            {%- if block.settings.title != blank -%}
+                              <h3
+                                class="inline-richtext heading"
+                                style="font-size: {{ block.settings.heading_size }}px; margin-bottom: {{ block.settings.heading_margin }}px"
+                              >
+                                {{ block.settings.title }}
+                              </h3>
+                            {%- endif -%}
+                            {%- if block.settings.text != blank -%}
+                              <div class="rte" style="font-size: {{ block.settings.text_size }}px; margin-bottom: {{ block.settings.content_margin }}px">
+                                {{ block.settings.text }}
+                              </div>
+                            {%- endif -%}
+                            <div class="grouped__button">
+                              {%- if block.settings.link_label != blank and block.settings.link != blank -%}
+                                <a
+                                  class="{{ block.settings.button_style }}{% if block.settings.button_style == 'link' %} link-decoration{% endif %}"
+                                  {% if block.settings.link == blank %}
+                                    role="link" aria-disabled="true"
+                                  {% else %}
+                                    href="{{ block.settings.link }}"
+                                  {% endif %}
+                                  {% if block.settings.button_style == 'button' %}
+                                    style="--buttons-size: {{ block.settings.button_height }}px; min-width: {{ block.settings.button_width }}px"
+                                  {% endif %}
+                                >
+                                  {{- block.settings.link_label | escape -}}
+                                </a>
+                              {%- endif -%}
+                              {%- if block.settings.link_label2 != blank and block.settings.link2 != blank -%}
+                                <a
+                                  class="{{ block.settings.button_style2 }}{% if block.settings.button_style2 == 'link' %} link-decoration{% endif %}"
+                                  {% if block.settings.link2 == blank %}
+                                    role="link" aria-disabled="true"
+                                  {% else %}
+                                    href="{{ block.settings.link2 }}"
+                                  {% endif %}
+                                  {% if block.settings.button_style2 == 'button' %}
+                                    style="--buttons-size: {{ block.settings.button_height }}px; min-width: {{ block.settings.button_width }}px"
+                                  {% endif %}
+                                >
+                                  {{- block.settings.link_label2 | escape -}}
+                                </a>
+                              {%- endif -%}
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+            {%- endcase -%}
+            </div>
+        {%- endif -%}
+        {%- endfor -%}
+    </div>
+</div>

@@ -1,0 +1,141 @@
+<div class="hidden-mb menu-vertical">
+  <div class="header-category-menu">
+    <div class="
+      header-category__title 
+      header-category__title--pc 
+      {% if type == 'link' %}heading--link
+      {% else %}color-{{ section.settings.menu_color_scheme }}
+      {% endif %}">
+      {%- if show_icon -%}
+        {%- render 'icon' with 'category' -%}
+      {%- endif -%}
+      {%- if menu_style == 'layout_1' -%}
+        <span class="header-category__name">{{ menu_vertical.settings.category }}</span>
+        {%- render 'icon' with 'caret-down' -%}
+      {%- endif -%}
+    </div>
+    <div class="header-category__content color-{{ section.settings.menu_color_scheme }}">
+      <nav class="header-category__menu">
+        <ul class="menu--vertical">
+          {%- if menu_vertical.settings.menu_vertical != blank -%}
+            {%- assign menu_vertical = menu_vertical.settings.menu_vertical -%}
+          {%- else -%}
+            {%- assign menu_vertical = menu_vertical -%}
+          {%- endif -%}
+          {%- for link in menu_vertical.links -%}
+            {%- liquid
+              for block in section.blocks
+                if block.settings.title == link.title and block.type == 'mega_categories1'
+                  assign has_mega = true
+                  assign menu_type = block.type
+                  assign width_layout = block.settings.width_layout
+                  assign custom_width = block.settings.custom_width
+                  assign color_scheme = block.settings.color_scheme
+                  assign enable_banner = block.settings.enable_banner
+                  assign background_image = block.settings.background_image
+                  assign bg_size = block.settings.bg_size
+                  assign bg_position = block.settings.bg_position
+
+                  assign text_alignment = block.settings.text_alignment
+                  assign heading = block.settings.heading
+                  assign heading_size = block.settings.heading_size
+                  assign heading_margin = block.settings.heading_margin
+                  assign text = block.settings.text
+                  assign text_size = block.settings.text_size
+                  assign content_margin = block.settings.content_margin
+                  assign link_label = block.settings.link_label
+                  assign link_button = block.settings.link
+                  assign button_style = block.settings.button_style
+                  assign button_width = block.settings.button_width
+                  assign button_height = block.settings.button_height
+                  break
+                endif
+              endfor
+            -%}
+            <li class="menu--vertical__item">
+              <a
+                href="{{ link.url }}"
+                class="mega-menu__link link"
+              >
+              {%- if show_icon -%}
+              {% assign img_url = link.handle | downcase | replace: ' ', '-' | append: '.svg' | file_url %}
+                <span class="icon_cate">
+                  <img src="{{img_url}}" alt=""  onError="style.display = 'none';" width="{{ img_url.width }}" height="{{ img_url.height }}"/>
+                </span>
+              {%- endif -%}
+                {{ link.title | escape }}
+                {%- if link.links != blank -%}
+                   {%- render 'icon' with 'dropdown-icon' -%} 
+                {%- endif -%}            
+              </a>
+              {%- if link.links != blank -%}
+                {% unless has_mega %}
+                  <ul
+                    class="vertical-menu__list"
+                    role="list"
+                  >
+                    {%- for childlink in link.links -%}
+                      <li>
+                        <a
+                          href="{{ childlink.url }}"
+                          class="mega-menu__link mega-menu__link--level-2 link{% if childlink.current %} mega-menu__link--active{% endif %}"
+                          {% if childlink.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{ childlink.title | escape }}
+                        </a>
+                        {%- if childlink.links != blank -%}
+                          <ul class="list-unstyled" role="list">
+                            {%- for grandchildlink in childlink.links -%}
+                              <li>
+                                <a
+                                  id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                                  href="{{ grandchildlink.url }}"
+                                  class="mega-menu__link link{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
+                                  {% if grandchildlink.current %}
+                                    aria-current="page"
+                                  {% endif %}
+                                >
+                                  {{ grandchildlink.title | escape }}
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {% else %}
+                  {%- render 'menu-vertical-style', 
+                    link: link,
+                    width_layout: width_layout,
+                    custom_width: custom_width,
+                    bg_size: bg_size
+                    menu_type: menu_type,
+                    color_scheme: color_scheme,
+                    enable_banner: enable_banner,
+                    background_image: background_image,
+                    bg_position: bg_position,
+                    text_alignment: text_alignment,
+                    heading: heading,
+                    heading_size: heading_size,
+                    heading_margin: heading_margin,
+                    text: text,
+                    text_size: text_size,
+                    content_margin: content_margin,
+                    link_label: link_label,
+                    link_button: link_button,
+                    button_style: button_style,
+                    button_width: button_width,
+                    button_height: button_height,
+                  -%}
+                {% endunless %}
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

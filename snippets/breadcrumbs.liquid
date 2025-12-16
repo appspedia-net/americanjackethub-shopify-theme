@@ -1,0 +1,97 @@
+{%- liquid
+    capture separate
+      echo '<li class="separate">/</li>'
+    endcapture
+  -%}
+{%- unless template == 'index' -%}
+  <nav
+    class="breadcrumb"
+    role="navigation"
+    aria-label="breadcrumbs"
+  >
+    <div class="page-width">
+      <ul class="list-unstyled">
+        <li>
+          <a class="link link--text" href="{{ routes.root_url }}">{{ 'general.breadcrumb.home' | t }}</a>
+        </li>
+        {{ separate }}
+        {%- case template -%}
+          {%- when 'article' -%}
+            <li>
+              {{ blog.title | split: '|' | first | link_to: blog.url, class: 'link link--text' }}
+            </li>
+            {{ separate }}
+            <li>
+              <span aria-current="page">{{ article.title | split: '|' | first }}</span>
+            </li>
+          {%- when 'blog' -%}
+            {%- if current_tags -%}
+              <li>
+                {{ blog.title | split: '|' | first | link_to: blog.url, class: 'link link--text' }}
+              </li>
+              {{ separate }}
+              <li>
+                {%- capture tag_url -%}{{- blog.url -}}/tagged/{{- current_tags | join: "+" }}{%- endcapture -%}
+                <a class="link link--text" href="{{ tag_url }}" aria-current="page">
+                  {{- current_tags | join: ' + ' -}}
+                </a>
+              </li>
+            {%- else -%}
+              <li>
+                <span aria-current="page">{{ blog.title }}</span>
+              </li>
+            {%- endif -%}
+          {%- when 'cart' -%}
+            <li>
+              <span aria-current="page">{{ 'general.breadcrumb.cart' | t }}</span>
+            </li>
+          {%- when 'collection' and collection.handle -%}
+            {%- if current_tags -%}
+              <li>
+                {{
+                  collection.title
+                  | split: '|'
+                  | first
+                  | link_to: collection.url, class: 'link link--text'
+                }}
+              </li>
+              {{ separate }}
+              <li>
+                {%- capture tag_url -%}{{- collection.url -}}/{{- current_tags | join: "+" }}{%- endcapture -%}
+                <a class="link link--text" href="{{ tag_url }}" aria-current="page">
+                  {{- current_tags | join: ' + ' -}}
+                </a>
+              </li>
+            {%- else -%}
+              <li>
+                <span aria-current="page">{{ collection.title }}</span>
+              </li>
+            {%- endif -%}
+          {%- when 'product' -%}
+            {%- if collection.url -%}
+              <li>
+                {{
+                  collection.title
+                  | split: '|'
+                  | first
+                  | link_to: collection.url, class: 'link link--text'
+                }}
+              </li>
+              {{ separate }}
+            {%- endif -%}
+            <li>
+              <span aria-current="page">{{ product.title | split: '|' | first }}</span>
+            </li>
+          {%- when 'search' -%}
+            <li>
+              <span aria-current="page">{{ 'general.breadcrumb.search' | t }}</span>
+            </li>
+          {%- else -%}
+            <li>
+              <span aria-current="page">{{ page_title }}</span>
+            </li>
+        {%- endcase -%}
+      </ul>
+    </div>
+  </nav>
+{%- endunless -%}

@@ -1,0 +1,83 @@
+{% schema %}
+{
+  "name": "Products by Category",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Choose how to display products"
+    },
+    {
+      "type": "select",
+      "id": "mode",
+      "label": "Display Mode",
+      "options": [
+        { "value": "collection", "label": "By Collection (Category)" },
+        { "value": "manual", "label": "Manually Select Products" }
+      ],
+      "default": "collection"
+    },
+
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Select Collection",
+    },
+
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Select Products (Manual Mode)"
+    },
+
+    {
+      "type": "range",
+      "id": "limit",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "label": "Number of Products to Show",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Products by Category / Selector"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+{% endstylesheet %}
+
+<div class="products-grid">
+
+  {%- if section.settings.mode == 'collection' -%}
+
+      {%- assign selected_collection = collections[section.settings.collection] -%}
+
+      {%- if selected_collection != nil -%}
+          {%- for product in selected_collection.products limit: section.settings.limit -%}
+             {% render 'card-product', product: product %}
+          {%- endfor -%}
+      {%- else -%}
+          <p>No collection selected.</p>
+      {%- endif -%}
+
+  {%- else -%}
+
+      {%- for product in section.settings.products limit: section.settings.limit -%}
+        {% assign product_object = all_products[product] %}
+        {% if product_object %}
+          {% render 'card-product', product: product_object %}
+        {% endif %}
+      {%- endfor -%}
+
+  {%- endif -%}
+
+</div>

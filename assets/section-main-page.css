@@ -1,0 +1,123 @@
+.page-title {
+  margin-top: 0;
+}
+
+.main-page-title {
+  margin-bottom: 2.4rem;
+}
+
+.page-placeholder-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.page-placeholder {
+  width: 52.5rem;
+  height: 52.5rem;
+}
+.help__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.help__info {
+	text-align: center;
+}
+.help__info .heading_info {
+	margin-top: 40px;
+	margin-bottom: 24px;
+	line-height: normal;
+}
+.help__info .heading_info p {
+	margin: 0;
+}
+.help__info .contact-phone {
+	margin-bottom: 24px;
+	font-weight: 700;
+	gap: 12px;
+}
+.help__info .contact-email {
+	margin-bottom: 20px;
+}
+.main-page-title:only-child {
+	margin: 0;
+}
+@media screen and (min-width: 750px) {
+  .main-page-title {
+    margin-bottom: 4rem;
+  }
+}
+@media screen and (max-width: 749px) {
+  .main-page-title {
+    text-align: left;
+  }
+  .help__link {
+    margin-top: 8px;
+  }
+  .page-help__lists {
+    --grid-mobile-vertical-spacing: 12px;
+    --grid-mobile-horizontal-spacing: 16px;
+  }
+  .help__info .heading_info,
+  .help__info .contact-phone {
+    margin-bottom: 12px;
+  }
+}
+/* -------Policy Page---------- */
+.policy-sidebar .heading_sidebar {
+	margin: 0;
+	font-weight: 600;
+	line-height: normal;
+}
+
+.policy-sidebar__list {
+	list-style: none;
+	padding: 0;
+	margin-top: 24px;
+	margin-bottom: 0;
+}
+
+.policy-content h3.heading {
+	margin: 0 0 24px;
+}
+.policy-content__item + .policy-content__item {
+	margin-top: 64px;
+}
+@media screen and (min-width: 990px) {
+  .main-page-policy .main-page-title {
+    padding-left: var(--width-sidebar);
+  }
+  .policy-wrapper {
+    display: flex;
+    align-items: baseline;
+  }
+  .policy-sidebar {
+    width: var(--width-sidebar);
+    padding-right: 20px;
+    position: sticky;
+    top: calc(var(--header-height) + 20px);
+  }
+  .policy-content {
+    width: calc(100% - var(--width-sidebar));
+  }
+  .policy-sidebar__item + .policy-sidebar__item {
+    margin-top: 12px;
+  }
+}
+@media screen and (max-width: 989px) {
+	.policy-sidebar {
+		margin-bottom: 24px;
+	}
+	.policy-sidebar__list {
+		display: flex;
+		gap: 24px;
+		margin-top: 12px;
+	}
+	.policy-content__item+.policy-content__item {
+		margin-top: 24px;
+	}
+	.policy-content h3.heading {
+		margin-bottom: 12px;
+	}
+}

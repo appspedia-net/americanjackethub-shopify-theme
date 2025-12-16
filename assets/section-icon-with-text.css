@@ -1,0 +1,108 @@
+
+.icon-with-text {
+  --icon-size: var(--icon-width);
+  --icon-spacing: calc(var(--icon-width) / 2);
+}
+.icon-with-text--horizontal {
+  display: flex;
+  justify-content: center;
+  column-gap: var(--grid-desktop-horizontal-spacing);
+  flex-direction: row;
+}
+
+.icon-with-text .icon {
+  fill: rgb(var(--color-button));
+  height: var(--icon-size);
+  width: var(--icon-size);
+}
+
+.icon-with-text--horizontal .icon,
+.icon-with-text--horizontal img {
+  margin-bottom: var(--icon-spacing);
+}
+
+.icon-with-text--vertical .icon-with-text__item {
+  align-items: center;
+}
+
+.icon-with-text--vertical .icon {
+  margin-right: var(--icon-spacing);
+}
+
+.icon-with-text img {
+  height: var(--icon-size);
+  width: var(--icon-size);
+  object-fit: contain;
+}
+
+.icon-with-text--vertical img {
+  margin-right: var(--icon-spacing);
+}
+
+.icon-with-text--horizontal .h4 {
+  padding-top: calc(var(--icon-size) + var(--icon-spacing));
+  text-align: center;
+}
+
+.icon-with-text--horizontal svg + .h4,
+.icon-with-text--horizontal img + .h4,
+.icon-with-text--horizontal.icon-with-text--text-only .h4 {
+  padding-top: 0;
+}
+
+.icon-with-text__item {
+  display: flex;
+}
+
+.icon-with-text--horizontal .icon-with-text__item {
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+.icon-with-text__item {
+  color: var(--product-icontext-color);
+  font-size: var(--product-icontext-fontsize);
+  margin: 0;
+}
+
+.icon-with-text__content span {
+  display: block;
+}
+.icon-with-text__content .heading {
+  font-weight: 600;
+}
+.icon-with-text .line{
+  width: 1px;
+  position: relative;
+  min-width: 1px;
+}
+.icon-with-text .line::after{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+  width: 1px;
+  height: 60px;
+  content: "";
+}
+.icon-with-text .line:last-child {
+  display: none;
+}
+@media screen and (max-width:989px){
+  .icon-with-text__item{
+    width: 43%!important;
+    max-width: 48%!important;
+  }
+  .icon-with-text .line{
+    display: none;
+  }
+}
+@media screen and (max-width: 560px) {
+  .icon-with-text--vertical img,
+  .icon-with-text--vertical svg {
+    margin-right: 10px;
+  } 
+  .icon-with-text__content .heading{
+    font-size: var(--font-size-mb)!important;
+  }
+}

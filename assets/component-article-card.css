@@ -1,0 +1,264 @@
+@media screen and (max-width: 749px) {
+  .articles-wrapper .article {
+    width: 100%;
+  }
+}
+
+.article {
+  display: flex;
+  align-items: center;
+}
+
+.article.grid__item {
+  padding: 0;
+}
+
+.grid--peek .article-card {
+  box-sizing: border-box;
+}
+
+.article-card__image-wrapper > a {
+  display: block;
+}
+
+.article-card__title {
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.article-card__title a:after {
+  bottom: 0;
+  content: '';
+  height: 100%;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.article-card__link.link {
+  padding: 0;
+}
+
+.article-card__link {
+  text-underline-offset: 0.3rem;
+}
+
+.article-card .card__heading {
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+.article-card .card__heading a{
+  color: var(--color-title-article);
+  font-size: var(--size-title-article);
+  font-weight: 600;
+}
+
+.grouped__blog-info {
+  color: var(--color-date);
+}
+
+.article-card .card__information {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 5px;
+  padding-bottom:12px;
+}
+.blog__posts .article-card .card__information{
+  padding-top: 15px;
+}
+.blog__sidebar .article-card .card__information{
+  border-bottom: 1px solid #D8DCE3;
+}
+.blog-articles__article:last-child .card__information{
+  border: none!important;
+}
+.blog__sidebar .article-card_author{
+  margin-bottom: 15px;
+}
+.article-card-wrapper {
+	--fontsize_product_title: var(--size-title-article);
+	--color_product_title: rgb(var(--color-heading));
+}
+.article-card__info {
+	font-size: var(--size-date);
+  display: flex;
+  align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+  line-height: 1;
+}
+.article-card-wrapper .button--show__detail{
+  font-weight: 500;
+  padding-top: 15px;
+}
+
+.article-item__category {
+	font-size: var(--size-title-blog);
+  color: var(--color-title-blog);
+	display: block;
+  line-height: 1;
+  text-transform: capitalize;
+}
+.article-card_author .article-item__by{
+  color: var(--color-date);
+  font-size: var(--size-date);
+}
+.article-item__author {
+  color: var(--color-author);
+  font-size: var(--size-date);
+  font-weight: 600;
+  border-bottom: 1px solid;
+}
+.article-item__date {
+  color: var(--color-date);
+  font-size: var(--size-date);
+}
+.article-item__category.button {
+  border-color: var(--border-color-title-blog);
+}
+.article-card__info .separation {
+  width: 4px;
+  height: 4px;
+  background: rgb(var(--color-date));
+  border-radius: 50%;
+  position: relative;
+  top: -2px;
+}
+.article-card__footer {
+  letter-spacing: 0.1rem;
+  font-size: 1.4rem;
+}
+.blog-card-2 .button--show__detail {
+  margin-top: 12px;
+}
+.button--show__detail:hover {
+  color: rgb(var(--color-subheading));
+}
+
+.article-card__footer:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.article-card__footer:last-child {
+  margin-top: auto;
+}
+
+.article-card__excerpt {
+  width: 100%;
+  margin-top: 1.2rem;
+  color: var(--color_excerpt);
+  font-size: var(--size_excerpt);
+}
+
+.article-card__link:not(:only-child) {
+  margin-right: 3rem;
+}
+
+@media screen and (min-width: 990px) {
+  .article-card__link:not(:only-child) {
+    margin-right: 4rem;
+  }
+}
+
+.article-card__image--small .ratio::before {
+  padding-bottom: 11rem;
+}
+
+.article-card__image--medium .ratio::before {
+  padding-bottom: 22rem;
+}
+
+.article-card__image--large .ratio::before {
+  padding-bottom: 33rem;
+}
+
+@media screen and (min-width: 750px) {
+  .article-card__image--small .ratio::before {
+    padding-bottom: 14.3rem;
+  }
+
+  .article-card__image--medium .ratio::before {
+    padding-bottom: 21.9rem;
+  }
+
+  .article-card__image--large .ratio::before {
+    padding-bottom: 27.5rem;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .article-card__image--small .ratio::before {
+    padding-bottom: 17.7rem;
+  }
+
+  .article-card__image--medium .ratio::before {
+    padding-bottom: 30.7rem;
+  }
+
+  .article-card__image--large .ratio::before {
+    padding-bottom: 40.7rem;
+  }
+}
+
+/* check for flexbox gap in older Safari versions */
+@supports not (inset: 10px) {
+  .articles-wrapper.grid {
+    margin: 0 0 5rem 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .articles-wrapper.grid {
+      margin-bottom: 7rem;
+    }
+  }
+}
+.article-card.card--horizontal{
+  background-color: var(--background_color);
+
+}
+.article-card.card--horizontal .card__information{
+  background: transparent;
+}
+
+.article-card.card--horizontal .card__inner {
+	width: 100%;
+}
+
+.article-card.card--horizontal > .card__content {
+  width: 100%;
+  padding: 20px;
+}
+
+.article-card.card--horizontal > .card__content .card__information {
+	padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media screen and (max-width: 749px) {
+  .slider--tablet .blog__post.article {
+    width: 80%;
+    max-width: 220px;
+  }
+  .card.card--horizontal{
+    flex-wrap: wrap;
+  }
+}
+@media screen and (min-width: 750px) {
+  .articles-wrapper.grid {
+    margin-bottom: 7rem;
+  }
+  .article-card.card--horizontal .card__inner {
+    width: 60%;
+    height: 100%;
+  }
+  
+  .article-card.card--horizontal > .card__content {
+    width: 40%;
+    padding: 30px;
+  }
+}

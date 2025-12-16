@@ -1,0 +1,38 @@
+<div class="slider-banner_items item-sum{{block_banner_extra.size}}"
+{% if image != blank %}
+style=" background-image: url({{ image | img_url: 'master'}}); min-height: {{height_custom}}px"
+{%- endif -%}
+>
+    <div class="banner-item">
+        {%- if image == blank -%}
+        <div class="banner-media">
+            {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+        {%- endif -%}
+        {% if image != blank %}
+          {%- if link != blank -%}
+              <a href="{{link}}" class="link" aria-label="{{title | strip_html}}" style="font-size: 0;">{{title | strip_html}}</a>
+          {%- endif -%}
+          {% if lable  != blank %}
+          <div class="box-lable" style="font-size: {{lable_size}}px; color:{{color_lable}}; background:{{back_lable}}; left:{{position_left}}%; top:{{position_top}}%">
+              <span class="lable" style="color:{{color_lable}}">{{lable}}</span>
+          </div>
+          {%- endif -%}
+          {%- if title != blank or description != blank-%}
+            <div class="banner-content t-a--{{text_align}}">
+                {%- if sub_heading != blank -%}
+                    <div class="sub_heading">
+                        <p style="font-size: {{sub_heading_size}}px; color:{{color_sub_heading}}; padding-bottom:{{padding_bottom_sub}}px; font-weight: {{sub_weight}};">{{sub_heading}}</p>
+                    </div>
+                {%- endif -%}
+                {%- if title != blank -%}
+                <h2 class="title" style="font-size: {{title_size}}px; color:{{color_title}};padding-bottom:{{padding_bottom_title}}px; font-weight: {{title_weight}};">{{title}}</h2>
+                {%- endif -%}
+                {%- if description != blank -%}
+                <p class="desc" style="font-size: {{desc_size}}px; color:{{color_desc}}; padding-bottom:{{padding_bottom_desc}}px">{{description}}</p>
+                {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+    </div>
+</div>

@@ -1,0 +1,36 @@
+{% comment %}
+  Renders social icons.
+  Accepts:
+  - class: {String} a class to be added to the <ul> element (optional).
+
+  Usage:
+  {% render 'social-icons',
+    class: 'my-class'
+  %}
+{% endcomment %}
+
+<ul class="list-unstyled list-social{% if class %} {{ class}}{% endif %}" role="list">
+  {%- for info in (1..7) -%}
+    {%- assign social_icon = forloop.index | prepend: 'icon_social_' -%}
+    {%- assign social_link = forloop.index | prepend: 'link_social_' -%}
+    {%- assign icon = settings[social_icon] -%}
+    {%- assign link = settings[social_link] -%}
+    {%- if icon != blank -%}
+      <li class="list-social__item">
+        <a href="{{ link }}" class="link list-social__link">
+          <span style="font-size: 0;">social media</span>
+          {%- if icon != blank -%}
+            <img
+              loading="lazy"
+              src="{{ icon | img_url: 'x18' }}"
+              srcset="{{ icon | img_url: 'x18' }}"
+              alt="{{ icon.alt }}"
+              width="100%"
+              height="100%"
+            />
+          {%- endif -%}
+        </a>
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+</ul>

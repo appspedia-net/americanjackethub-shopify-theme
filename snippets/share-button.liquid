@@ -1,0 +1,105 @@
+{% comment %}
+  Renders share button.
+  Accepts:
+  - block: {Object} passes in the block information.
+  - share_link: {String} url to be added to the input the user will get/copy.
+
+  Usage:
+  {% render 'share-button',
+    block: block,
+    share_link: share_url
+  %}
+{% endcomment %}
+<div class="share__wrapper d-flex">
+  <span class="share__label">{{ 'general.share.label' | t }}</span>
+  <ul class="share__lists list-unstyled">
+    {% unless is_prduct %}
+      <li>
+        <a class="email" href="mailto:{{ shop.email }}?subject={{ article.title }}&amp;body={{ share_link }}" title="Email" data-no-instant="" rel="noopener noreferrer nofollow" target="_blank">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M15.4302 8.35756L12.8588 10.929H10.2874L8.03739 13.179V10.929H5.14453V1.28613H15.4302V8.35756Z" fill="white"/>
+            <path d="M4.49944 0L1.28516 3.21429V14.7857H5.1423V18L8.35658 14.7857H10.928L16.7137 9V0H4.49944ZM15.428 8.35714L12.8566 10.9286H10.2852L8.03516 13.1786V10.9286H5.1423V1.28571H15.428V8.35714Z" fill="#9146FF"/>
+            <path d="M13.5006 3.53613H12.2148V7.39328H13.5006V3.53613Z" fill="#9146FF"/>
+            <path d="M9.9654 3.53613H8.67969V7.39328H9.9654V3.53613Z" fill="#9146FF"/>
+          </svg>
+        </a>
+      </li>
+    {% endunless %}
+    {% unless is_prduct %}
+      <li>
+        <a class="google" href="https://www.google.com/search?q=site:{{ share_link }}" title="Google" data-no-instant="" rel="noopener noreferrer nofollow" target="_blank">
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
+            <path d="M9.66797 7.36328V10.8487H14.5116C14.2989 11.9696 13.6606 12.9188 12.7034 13.5569L15.6243 15.8233C17.3261 14.2525 18.3079 11.9452 18.3079 9.20428C18.3079 8.56611 18.2507 7.95242 18.1443 7.36338L9.66797 7.36328Z" fill="#4285F4"/>
+            <path d="M4.62344 10.7129L3.96467 11.2172L1.63281 13.0335C3.11372 15.9708 6.14895 17.9999 9.6671 17.9999C12.097 17.9999 14.1343 17.1981 15.6234 15.8235L12.7025 13.5572C11.9007 14.0972 10.878 14.4245 9.6671 14.4245C7.32711 14.4245 5.33899 12.8454 4.62712 10.7181L4.62344 10.7129Z" fill="#34A853"/>
+            <path d="M1.63335 4.9668C1.01975 6.17766 0.667969 7.54404 0.667969 9.00038C0.667969 10.4567 1.01975 11.8231 1.63335 13.034C1.63335 13.0421 4.62795 10.7103 4.62795 10.7103C4.44795 10.1703 4.34156 9.59764 4.34156 9.00029C4.34156 8.40293 4.44795 7.83024 4.62795 7.29025L1.63335 4.9668Z" fill="#FBBC05"/>
+            <path d="M9.66729 3.58363C10.9928 3.58363 12.1709 4.0418 13.1118 4.92545L15.6891 2.34821C14.1263 0.891874 12.0973 0 9.66729 0C6.14913 0 3.11372 2.02091 1.63281 4.96637L4.62732 7.29001C5.33909 5.16271 7.3273 3.58363 9.66729 3.58363Z" fill="#EA4335"/>
+          </svg>
+        </a>
+      </li>
+    {% endunless %}
+    <li>
+      <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_link }}" title="Linkedin" data-no-instant="" rel="noopener noreferrer nofollow" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
+          <g clip-path="url(#clip0_744_27918-{{ block.id }})">
+          <path d="M17.0033 0H1.66078C1.30838 0 0.970402 0.139993 0.721213 0.389182C0.472024 0.638371 0.332031 0.976344 0.332031 1.32875V16.6712C0.332031 17.0237 0.472024 17.3616 0.721213 17.6108C0.970402 17.86 1.30838 18 1.66078 18H17.0033C17.3557 18 17.6937 17.86 17.9429 17.6108C18.192 17.3616 18.332 17.0237 18.332 16.6712V1.32875C18.332 0.976344 18.192 0.638371 17.9429 0.389182C17.6937 0.139993 17.3557 0 17.0033 0ZM5.69703 15.3337H2.99078V6.7375H5.69703V15.3337ZM4.34203 5.54625C4.03505 5.54452 3.73547 5.4519 3.48108 5.28007C3.2267 5.10823 3.02891 4.8649 2.91269 4.58077C2.79647 4.29664 2.76702 3.98444 2.82805 3.68359C2.88909 3.38274 3.03788 3.10671 3.25565 2.89034C3.47341 2.67396 3.75039 2.52695 4.05163 2.46785C4.35287 2.40874 4.66487 2.4402 4.94825 2.55824C5.23162 2.67628 5.47369 2.87563 5.64388 3.13111C5.81407 3.38659 5.90477 3.68677 5.90453 3.99375C5.90743 4.19928 5.86892 4.40328 5.79129 4.5936C5.71367 4.78393 5.59852 4.95668 5.45271 5.10155C5.3069 5.24643 5.13342 5.36046 4.9426 5.43686C4.75178 5.51326 4.54753 5.55047 4.34203 5.54625ZM15.672 15.3412H12.967V10.645C12.967 9.26 12.3783 8.8325 11.6183 8.8325C10.8158 8.8325 10.0283 9.4375 10.0283 10.68V15.3412H7.32203V6.74375H9.92453V7.935H9.95953C10.2208 7.40625 11.1358 6.5025 12.532 6.5025C14.042 6.5025 15.6733 7.39875 15.6733 10.0238L15.672 15.3412Z" fill="#0A66C2"/>
+          </g>
+          <defs>
+          <clipPath id="clip0_744_27918-{{ block.id }}">
+          <rect width="18" height="18" fill="white" transform="translate(0.332031)"/>
+          </clipPath>
+          </defs>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <a class="twitter" href="https://twitter.com/intent/tweet?url={{ share_link }}" title="Twitter" data-no-instant="" rel="noopener noreferrer nofollow" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M13.7447 1.42773H16.2748L10.7473 7.74535L17.25 16.3422H12.1584L8.17053 11.1283L3.60746 16.3422H1.07582L6.98808 9.58481L0.75 1.42773H5.97083L9.57555 6.19348L13.7447 1.42773ZM12.8567 14.8278H14.2587L5.20905 2.86258H3.7046L12.8567 14.8278Z" fill="#343434"/>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u={{ share_link }}" title="Facebook" data-no-instant="" rel="noopener noreferrer nofollow" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
+          <g clip-path="url(#clip0_744_27920-{{ block.id }})">
+          <path d="M18.668 9C18.668 4.02948 14.6385 0 9.66797 0C4.69745 0 0.667969 4.02948 0.667969 9C0.667969 13.2206 3.57389 16.7623 7.49393 17.735V11.7504H5.63813V9H7.49393V7.81488C7.49393 4.75164 8.88029 3.3318 11.8877 3.3318C12.458 3.3318 13.4418 3.44376 13.8443 3.55536V6.04836C13.6319 6.02604 13.2629 6.01488 12.8046 6.01488C11.329 6.01488 10.7588 6.57396 10.7588 8.02728V9H13.6985L13.1934 11.7504H10.7588V17.9341C15.2152 17.3959 18.6683 13.6015 18.6683 9H18.668Z" fill="#0866FF"/>
+          <path d="M13.192 11.7506L13.6971 9.00023H10.7574V8.02751C10.7574 6.57419 11.3276 6.01511 12.8032 6.01511C13.2615 6.01511 13.6305 6.02627 13.8429 6.04859V3.55559C13.4404 3.44363 12.4566 3.33203 11.8863 3.33203C8.87888 3.33203 7.49252 4.75187 7.49252 7.81511V9.00023H5.63672V11.7506H7.49252V17.7353C8.18876 17.9081 8.91704 18.0002 9.66656 18.0002C10.0356 18.0002 10.3995 17.9776 10.757 17.9344V11.7506H13.1917H13.192Z" fill="white"/>
+          </g>
+          <defs>
+          <clipPath id="clip0_744_27920-{{ block.id }}">
+          <rect width="18" height="18" fill="white" transform="translate(0.667969)"/>
+          </clipPath>
+          </defs>
+        </svg>
+      </a>
+    </li>
+    {% unless is_prduct %}
+      <li>
+        <a class="tumblr" href="https://www.tumblr.com/widgets/share/tool?canonicalUrl={{ share_link }}" title="Tumblr" data-no-instant="" rel="noopener noreferrer nofollow" target="_blank">
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
+            <path d="M11.282 18C8.58203 18 6.55703 16.6125 6.55703 13.275V7.95H4.08203V5.0625C6.78203 4.35 7.90703 2.025 8.05703 0H10.8695V4.575H14.132V7.95H10.8695V12.6C10.8695 13.9875 11.582 14.475 12.707 14.475H14.282V18H11.282Z" fill="#001935"/>
+          </svg>
+        </a>
+      </li>
+    {% endunless %}
+    <li>
+      <a class="telegram" href="https://t.me/share/url?url={{ share_link }}" title="Telegram" data-no-instant="" rel="noopener noreferrer nofollow" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <g clip-path="url(#clip0_744_27922-{{ block.id}})">
+          <path d="M9 18C13.9706 18 18 13.9706 18 9C18 4.02944 13.9706 0 9 0C4.02944 0 0 4.02944 0 9C0 13.9706 4.02944 18 9 18Z" fill="url(#paint0_linear_744_27922)"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M4.07426 8.90496C6.69794 7.76187 8.44747 7.00827 9.32285 6.64417C11.8223 5.60458 12.3416 5.424 12.6801 5.41803C12.7546 5.41672 12.921 5.43517 13.0289 5.52267C13.1199 5.59655 13.145 5.69635 13.1569 5.7664C13.1689 5.83645 13.1839 5.99602 13.172 6.1207C13.0366 7.54381 12.4505 10.9973 12.1523 12.5912C12.0262 13.2657 11.7778 13.4918 11.5373 13.5139C11.0146 13.562 10.6178 13.1685 10.1115 12.8367C9.31943 12.3175 8.87193 11.9942 8.10305 11.4876C7.21446 10.902 7.79049 10.5802 8.29689 10.0542C8.42942 9.91655 10.7322 7.82198 10.7768 7.63197C10.7824 7.60821 10.7875 7.51963 10.7349 7.47285C10.6823 7.42608 10.6046 7.44207 10.5486 7.4548C10.4691 7.47283 9.2037 8.30922 6.75232 9.96397C6.39313 10.2106 6.06779 10.3308 5.7763 10.3245C5.45496 10.3175 4.83681 10.1428 4.37729 9.99342C3.81366 9.81021 3.3657 9.71335 3.40471 9.4022C3.42503 9.24013 3.64821 9.07438 4.07426 8.90496Z" fill="white"/>
+          </g>
+          <defs>
+          <linearGradient id="paint0_linear_744_27922" x1="9" y1="0" x2="9" y2="17.8665" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#2AABEE"/>
+          <stop offset="1" stop-color="#229ED9"/>
+          </linearGradient>
+          <clipPath id="clip0_744_27922-{{ block.id }}">
+          <rect width="18" height="18" fill="white"/>
+          </clipPath>
+          </defs>
+        </svg>
+      </a>
+    </li>
+  </ul>
+</div>

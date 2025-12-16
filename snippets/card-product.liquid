@@ -1,0 +1,108 @@
+{% comment %}
+  Renders a product card
+
+  Accepts:
+  - card_product: {Object} Product Liquid object (optional)
+  - media_aspect_ratio: {String} Size of the product image card. Values are "square" and "portrait". Default is "square" (optional)
+  - image_shape: {String} Image mask to apply to the product image card. Values are "arch", "blob", "chevronleft", "chevronright", "diamond", "parallelogram", and "round". (optional)
+  - show_secondary_image: {Boolean} Show the secondary image on hover. Default: false (optional)
+  - show_vendor: {Boolean} Show the product vendor. Default: false
+  - show_rating: {Boolean} Show the product rating. Default: false
+  - extend_height: {Boolean} Card height extends to available container space. Default: true (optional)
+  - lazy_load: {Boolean} Image should be lazy loaded. Default: true (optional)
+  - show_quick_add: {Boolean} Show the quick add button.
+  - section_id: {String} The ID of the section that contains this card.
+  - horizontal_class: {Boolean} Add a card--horizontal class if set to true. Default: false (optional)
+  - horizontal_quick_add: {Boolean} Changes the quick add button styles when set to true. Default: false (optional)
+  - placeholder_image: {String} The placeholder image to use when no product exists. Default: 'product-apparel-2' (optional)
+
+  Usage:
+  {% render 'card-product', show_vendor: settings.show_vendor %}
+{% endcomment %}
+
+{{ 'component-rating.css' | asset_url | stylesheet_tag }}
+{{ 'component-volume-pricing.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign option_swatch = settings.swatch | split: ',' | strip | downcase | handle
+  assign color_swatch_white = settings.list_color_white | newline_to_br | split: '<br />'
+  assign show_slider_image = false
+  if horizontal_class
+    assign show_quick_add = false
+    assign show_slider_image = false
+  endif
+-%}
+{%- if card_product and card_product != empty -%}
+  {%- liquid
+    assign ratio = 1
+    if card_product.featured_media and media_aspect_ratio == 'portrait'
+      assign ratio = 0.8
+    elsif card_product.featured_media and media_aspect_ratio == 'adapt'
+      assign ratio = card_product.featured_media.aspect_ratio
+    endif
+    if ratio == 0 or ratio == null
+      assign ratio = 1
+    endif
+  -%}
+  
+    {%- render 'card-product-style', 
+      card_product: card_product,
+      ratio: ratio,
+      image_shape: image_shape,
+      media_aspect_ratio: media_aspect_ratio,
+      option_swatch: option_swatch,
+      color_swatch_white: color_swatch_white,
+      show_slider_image: show_slider_image,
+      horizontal_class: horizontal_class,
+      show_quick_add: show_quick_add,
+      show_secondary_image: show_secondary_image,
+      show_vendor: show_vendor,
+      show_rating: show_rating,
+      section_id: section.id,
+      enable_short_desc: enable_short_desc,
+      short_content: short_content,
+      short_option_content:short_option_content,
+      element_view_list: element_view_list
+    -%}
+{%- else -%}
+  <div class="card-wrapper product-card-wrapper underline-links-hover">
+    <div
+      class="
+        card card--{{ settings.card_style }}
+        {% if extend_height %} card--extend-height{% endif %}
+        {% if settings.card_style == 'card' %} color-{{ settings.card_color_scheme }} gradient{% endif %}
+      "
+      style="--ratio-percent: 100%;"
+    >
+      <div
+        class="card__inner{% if settings.card_style == 'standard' %} color-{{ settings.card_color_scheme }} gradient{% endif %} ratio"
+        style="--ratio-percent: 100%;"
+      >
+        <div class="card__media">
+          <div class="media media--transparent">
+            {%- if placeholder_image -%}
+              {{ placeholder_image | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- else -%}
+              {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="card__content">
+        <div class="card__information">
+          <h3 class="card__heading{% if settings.line_text != 'full' %} card__heading--line{% endif %} card__heading--placeholder{% if settings.card_style == 'standard' %} h5{% endif %}">
+            <a role="link" aria-disabled="true" class="full-unstyled-link">
+              {{ 'onboarding.product_title' | t }}
+            </a>
+          </h3>
+          <div class="card-information">
+            {%- if show_vendor -%}
+              <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+              <div class="caption-with-letter-spacing light">{{ 'products.product.vendor' | t }}</div>
+            {%- endif -%}
+            {% render 'price', show_compare_at_price: true %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

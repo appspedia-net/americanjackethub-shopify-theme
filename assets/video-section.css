@@ -1,0 +1,178 @@
+.video-section__media {
+  --ratio-percent: 56.25%;
+  position: relative;
+  padding-bottom: calc(var(--ratio-percent) - var(--media-border-width));
+}
+
+/* Needed for gradient continuity with or without animation so that transparent PNG images come up as we would expect */
+.scroll-trigger:where(.gradient.video-section__media) {
+  background: transparent;
+}
+
+.video-section__media.global-media-settings--full-width {
+  padding-bottom: var(--ratio-percent);
+}
+
+.video-section__media.deferred-media {
+  box-shadow: var(--media-shadow-horizontal-offset) var(--media-shadow-vertical-offset) var(--media-shadow-blur-radius)
+    rgba(var(--color-shadow), var(--media-shadow-opacity));
+}
+
+.video-section__media.deferred-media:after {
+  content: none;
+}
+
+.video-section__poster.deferred-media__poster:focus {
+  outline-offset: 0.3rem;
+}
+
+.video-section__media iframe {
+  background-color: rgba(var(--color-foreground), 0.03);
+  border: 0;
+}
+
+.video-section_MP4 .section-wrapper{
+  position: relative;
+}
+.video-section__poster,
+.video-section__media iframe,
+.video-section__media video {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.video-section__media video {
+  background: #000000;
+}
+
+.video-section__media.media-fit-cover video {
+  object-fit: cover;
+}
+
+.video-section_MP4 video,
+.video-section_MP4 img{
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  position: relative;
+}
+
+.video-section_MP4 .item::before{
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 6px);
+  background-color: rgba(0, 0, 0, .2);
+}
+.video-section_MP4 .section-wrapper .section-content{
+  width: 100%;
+  max-width: 830px;
+  position: absolute;
+  z-index: 3;
+  padding: 10px;
+  top: var(--position-ver-mb) !important;
+  left: var(--position-hoz-mb) !important;
+  transform: translate(calc(var(--position-hoz-mb) * -1),calc(var(--position-ver-mb) * -1));
+}
+.video-section_MP4 .section-wrapper .section-content .button::after {
+  background-image: none;
+}
+.video-section_MP4 .item {
+  position: relative;
+  background: #ffffff;
+}
+.video-section_MP4 .item .block-link{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  line-height: 1em;
+}
+.video-section_MP4 .item .block-link .icon{
+  position: relative;
+  transition: all .3s ease;
+}
+.video-section_MP4 .item .block-link .text{
+  border-bottom: 1px solid;
+}
+.video-section_MP4 .item .block-link:hover .icon{
+  left: 5px;
+}
+.video-section_MP4 .item .block-heading,
+.video-section_MP4 .item .block-link,
+.video-section_MP4 .item .block-link_list{
+  position: absolute;
+  top: var(--position-ver-mb) !important;
+  left: var(--position-hoz-mb) !important;
+  transform: translate(calc(var(--position-hoz-mb)* -1), calc(var(--position-ver-mb)* -1));
+  width: max-content;
+  max-width: 100%;
+  color: var(--color);
+  font-weight: var(--font-weight);
+  font-size: var(--font-size-mb);
+  font-style: var(--font_style);
+  z-index: 9;
+}
+
+.video-section_MP4 .item .block-link_list a{
+  color: var(--color);
+  font-weight: var(--font-weight);
+  font-size: var(--font-size-mb);
+  font-style: var(--font_style);
+  line-height: 1.2em;
+  
+}
+.video-section_MP4 .item .block-link_list a .text{
+  position: relative;
+}
+.video-section_MP4 .item .block-link_list a .text .icon{
+  position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 24px;
+    z-index: -1;
+    visibility: hidden;
+    opacity: 0;
+    transition: all .3s ease;
+}
+.video-section_MP4 .item .block-link_list a:hover .text .icon{
+  right: -40px;
+  visibility: visible;
+  opacity: 1;
+  z-index: 1;
+}
+.video-section_MP4 .item .block-link_list a .text .icon svg{
+  position: absolute;
+  width: 25px;
+  height: 25px;
+}
+@media screen and (max-width: 500px){
+  .video-section_MP4 .section-content-wrapper .banner__buttons .button {
+    width: 100%;
+    max-width: 230px;
+  }
+}
+@media screen and (min-width:750px){
+  .video-section_MP4 .item .block-heading,
+  .video-section_MP4 .item .block-link,
+  .video-section_MP4 .item .block-link_list{
+    top: var(--position-ver) !important;
+    left: var(--position-hoz) !important;
+    transform: translate(calc(var(--position-hoz)* -1), calc(var(--position-ver)* -1));
+    font-size: var(--font-size);
+  }
+  .video-section_MP4 .item .block-link_list a{
+    font-size: var(--font-size);
+  }
+  .video-section_MP4 .section-wrapper .section-content{
+    top: var(--position-ver) !important;
+    left: var(--position-hoz) !important;
+    transform: translate(calc(var(--position-hoz) * -1),calc(var(--position-ver) * -1));
+  }
+}

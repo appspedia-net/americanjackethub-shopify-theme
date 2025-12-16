@@ -1,0 +1,54 @@
+.custom-drawer{
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-end;
+    background-color: rgba(var(--color-foreground), .5);
+    transition: visibility var(--duration-default) ease;
+    max-height: 100vh;
+}
+.custom-drawer__inner-container.drawer__inner{
+    height: 100vh;
+    width: 50rem;
+    max-width: calc(100vw - 3rem);
+    background: #ffffff;
+    padding: 0 30px 30px;
+    overflow: hidden;
+}
+.login-drawer .drawer__heading{
+    padding-top: 20px;
+}
+.drawer__heading{
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 120%;
+}
+.login-drawer .customer-item.customer-account{
+    width: 100%;
+}
+.login-drawer__wrapper{
+    height: 100%;
+    overflow-y: scroll;
+    padding-right: 10px;
+}
+.login__drawer--inner{
+    padding-top: 18px;
+}
+.login-drawer .multicolumn-card__info .multicolumn__box{
+    padding: 20px;
+}
+.customer-account__details{
+    width: 100%;
+    margin: 10px 0px;
+}
+.customer-account__item{
+    padding: 5px 0;
+}
+.customer-account__item:hover a span{
+    border-bottom: 1px solid;
+}

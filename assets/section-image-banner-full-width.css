@@ -1,0 +1,44 @@
+.banner__box .line{
+    width: 100%;
+    height: 1px;
+    background:var(--line-color);
+    display: block;
+}
+.list-custom{
+    padding: 0!important;
+    list-style-type: none;
+    margin: 0;
+}
+.list-custom li{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+}
+.list-custom span{
+    display: block;
+}
+.list-custom span:first-child{
+    width: 70px;
+}
+span.email{
+    border-bottom: 1px solid;
+}
+.list-social__box{
+    margin-top: 0!important;
+    gap: 8px;
+}
+.list-social__box .list-social__link img{
+    height: 1.6rem;
+    width: 1.6rem;
+}
+@media screen and (min-width:750px){
+    .image-banner--section__fullwidth .banner__box{
+        padding: 3.2rem 3.2rem!important;
+    }
+}
+@media screen and (min-width: 1400px) {
+    .image-banner--section__fullwidth .banner__box {
+        max-width: 83rem;
+    }
+}

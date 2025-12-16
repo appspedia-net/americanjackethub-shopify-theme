@@ -1,0 +1,240 @@
+
+<link rel="stylesheet" href="{{ 'component-header-mobile.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'component-header-mobile.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- style -%}
+  .header {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  .section-header {
+    position: sticky; /* This is for fixing a Safari z-index issue. PR #2147 */
+    margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-header {
+      margin-bottom: {{ section.settings.margin_bottom }}px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .header {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+{%- if section.blocks.size > 0 -%}
+    <{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="hidden-pc header-wrapper color-{{ section.settings.color_scheme }} gradient">
+        <header class="header-mobile page-width{% if section.settings.menu != blank %} header--has-menu{% endif %}">
+            {%- liquid
+                if section.settings.menu != blank
+                  render 'header-drawer'
+                endif
+            -%}
+          {%- for block in section.blocks -%}
+            
+          {%- endfor -%}
+        </header>
+    </{% if section.settings.sticky_header_type != 'none' %}sticky-header{% else %}div{% endif %}>
+{%- endif -%}
+{% schema %}
+{
+  "name": "Header mobile",
+  "class": "section-header-mobile",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "================="
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "t:sections.header.settings.menu.label"
+    },
+    {
+      "type": "select",
+      "id": "sticky_header_type",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.header.settings.sticky_header_type.options__1.label"
+        },
+        {
+          "value": "always",
+          "label": "t:sections.header.settings.sticky_header_type.options__3.label"
+        }
+      ],
+      "default": "always",
+      "label": "t:sections.header.settings.sticky_header_type.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_line_separator",
+      "default": true,
+      "label": "t:sections.header.settings.show_line_separator.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "limit": 1,
+      "settings": [
+        {
+            "type": "range",
+            "id": "width",
+            "label": "Width",
+            "min": 5,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 20
+        },
+        {
+            "type": "select",
+            "id": "logo_type",
+            "label": "Logo type",
+            "options": [
+                {
+                "value": "image",
+                "label": "Image"
+                },
+                {
+                "value": "text",
+                "label": "Text"
+                }
+            ],
+            "default": "text"
+        },
+        {
+            "type": "range",
+            "id": "logo_width",
+            "label": "Logo width",
+            "min": 50,
+            "max": 400,
+            "step": 10,
+            "default": 120
+        },
+        {
+            "type": "image_picker",
+            "id": "logo_image",
+            "label": "Logo image"
+        },
+        {
+            "type": "textarea",
+            "id": "logo_text",
+            "label": "Logo text"
+        }
+      ]
+    },
+    {
+        "type": "menu_icon",
+        "name": "Menu icon",
+        "limit": 1,
+        "settings": [
+          {
+              "type": "range",
+              "id": "width",
+              "label": "Width",
+              "min": 5,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_icon",
+            "label": "example",
+            "default": true
+          }
+        ]
+    },
+    {
+        "type": "social",
+        "name": "Social",
+        "limit": 1,
+        "settings": [
+          {
+              "type": "range",
+              "id": "width",
+              "label": "Width",
+              "min": 5,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "default": 20
+          }
+        ]
+    },
+    {
+        "type": "header_icon",
+        "name": "Header icon",
+        "limit": 1,
+        "settings": [
+          {
+              "type": "range",
+              "id": "width",
+              "label": "Width",
+              "min": 5,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "default": 20
+          }
+        ]
+    }
+  ]
+}
+{% endschema %}

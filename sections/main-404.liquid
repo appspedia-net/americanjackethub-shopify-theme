@@ -1,0 +1,161 @@
+<style type="text/css">
+  .template-404 {
+    text-align: center;
+  }
+  .template-404 .breadcrumb{
+    display:none;
+  }
+  .template-404 .title + * {
+    margin-top: 1rem;
+  }
+  .template-404__content h1 {
+    margin-top: 40px;
+    margin-bottom: 8px;
+  }
+  .template-404__content .rte {
+    margin-bottom: 24px;
+  }
+  .image__404 img {
+    max-width: 100%;
+  }
+
+  @media screen and (min-width: 750px) {
+    .template-404 .title + * {
+      margin-top: 2rem;
+    }
+  }
+  
+  @media screen and (max-width: 989px) {
+    .template-404__content {
+      text-align: center;
+      padding-top: 24px;
+    }
+    .template-404__content h1{
+      font-size: 30px!important;
+    }
+  }
+</style>
+{%- style -%}
+    .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top_mb }}px;
+        padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+    }
+
+    @media screen and (min-width: 750px) {
+        .section-{{ section.id }}-padding {
+            padding-top: {{ section.settings.padding_top }}px;
+            padding-bottom: {{ section.settings.padding_bottom }}px;
+        }
+    }
+{%- endstyle -%}
+<div class="template-404 color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div class="template-404__wrapper">
+      {%- if section.settings.image != blank -%}
+        <div class="image__404">
+          <img src="{{ section.settings.image | img_url: 'master' }}" alt="{{ section.settings.image.alt }}" />
+        </div>
+      {%- endif -%}
+      <div class="template-404__content">
+        <h1 class="heading" style="font-size: {{ section.settings.fontsize_heading }}px">
+          {{ 'templates.404.title' | t }}
+        </h1>
+        <p class="rte" style="font-size: {{ section.settings.fontsize_sub_heading }}px">
+          {{ 'templates.404.subtext' | t }}
+        </p>
+        <a href="{{ routes.root_url }}" class="button">
+          {{ 'general.back_home' | t }}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Main 404",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "fontsize_heading",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size heading",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "fontsize_sub_heading",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size sub heading",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,417 @@
+{% if settings.font_header_family == 'shopify' %}
+    {{ settings.type_header_font | font_face: font_display: 'swap' }}
+{% else %}
+    {%- assign font_header = settings.type_header_font_name -%}
+
+    {%- capture font_header_name -%}
+        {{ font_header | strip | replace: ' ', '+'}}:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i
+    {%- endcapture -%}
+
+    {% if settings.type_header_font_name != settings.type_body_font_name %}
+        @import url('https://fonts.googleapis.com/css?family={{ font_header_name }}&display=swap');
+    {% endif %}
+
+    {% assign font_header_name = font_header %}
+{% endif %}
+
+{% if settings.font_body_family == 'shopify' %}
+    {{ settings.type_body_font | font_face: font_display: 'swap' }}
+    {{ body_font_bold | font_face: font_display: 'swap' }}
+    {{ body_font_italic | font_face: font_display: 'swap' }}
+    {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+{% else %}
+    {%- assign font_body = settings.type_body_font_name -%}
+
+    {%- capture font_body_name -%}
+        {{ font_body | strip | replace: ' ', '+'}}:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i
+    {%- endcapture -%}
+
+    @import url('https://fonts.googleapis.com/css?family={{ font_body_name }}&display=swap');
+
+    {% assign font_body_name = font_body %}
+{% endif %}
+
+{% for scheme in settings.color_schemes -%}
+    {% assign scheme_classes = scheme_classes | append: ', .color-' | append: scheme.id %}
+    {% if forloop.index == 1 -%}
+        :root,
+    {%- endif %}
+    .color-{{ scheme.id }} {
+        --color-background: {{ scheme.settings.background.red }},{{ scheme.settings.background.green }},{{ scheme.settings.background.blue }};
+    {% if scheme.settings.background_gradient != empty %}
+        --gradient-background: {{ scheme.settings.background_gradient }};
+    {% else %}
+        --gradient-background: {{ scheme.settings.background }};
+    {% endif %}
+
+    {% liquid
+        assign background_color = scheme.settings.background
+        assign background_color_brightness = background_color | color_brightness
+        if background_color_brightness <= 26
+        assign background_color_contrast = background_color | color_lighten: 50
+        elsif background_color_brightness <= 65
+        assign background_color_contrast = background_color | color_lighten: 5
+        else
+        assign background_color_contrast = background_color | color_darken: 25
+        endif
+    %}
+
+    --color-foreground: {{ scheme.settings.text.red }},{{ scheme.settings.text.green }},{{ scheme.settings.text.blue }};
+    --color-background-contrast: {{ background_color_contrast.red }},{{ background_color_contrast.green }},{{ background_color_contrast.blue }};
+    --color-shadow: {{ scheme.settings.shadow.red }},{{ scheme.settings.shadow.green }},{{ scheme.settings.shadow.blue }};
+    --color-button: {{ scheme.settings.button.red }},{{ scheme.settings.button.green }},{{ scheme.settings.button.blue }};
+    --color-button-text: {{ scheme.settings.button_label.red }},{{ scheme.settings.button_label.green }},{{ scheme.settings.button_label.blue }};
+    --color-secondary-button: {{ scheme.settings.background.red }},{{ scheme.settings.background.green }},{{ scheme.settings.background.blue }};
+    --color-secondary-button-text: {{ scheme.settings.secondary_button_label.red }},{{ scheme.settings.secondary_button_label.green }},{{ scheme.settings.secondary_button_label.blue }};
+    --color-link: {{ scheme.settings.secondary_button_label.red }},{{ scheme.settings.secondary_button_label.green }},{{ scheme.settings.secondary_button_label.blue }};
+    --color-badge-foreground: {{ scheme.settings.text.red }},{{ scheme.settings.text.green }},{{ scheme.settings.text.blue }};
+    --color-badge-background: {{ scheme.settings.background.red }},{{ scheme.settings.background.green }},{{ scheme.settings.background.blue }};
+    --color-badge-border: {{ scheme.settings.text.red }},{{ scheme.settings.text.green }},{{ scheme.settings.text.blue }};
+    --payment-terms-background-color: rgb({{ scheme.settings.background.rgb }});
+    --color-heading: {{ scheme.settings.heading.red }},{{ scheme.settings.heading.green }},{{ scheme.settings.heading.blue }};
+    --color-subheading: {{ scheme.settings.sub_heading.red }},{{ scheme.settings.sub_heading.green }},{{ scheme.settings.sub_heading.blue }};
+    --color-info: {{ scheme.settings.info.red }},{{ scheme.settings.info.green }},{{ scheme.settings.info.blue }};
+    --color-link: {{ scheme.settings.link.red }},{{ scheme.settings.link.green }},{{ scheme.settings.link.blue }};
+    --color-input: {{ scheme.settings.input.red }},{{ scheme.settings.input.green }},{{ scheme.settings.input.blue }};
+    --color-input-bg: {{ scheme.settings.bg_input.red }},{{ scheme.settings.bg_input.green }},{{ scheme.settings.bg_input.blue }};
+    --color-input-border: {{ scheme.settings.border_input.red }},{{ scheme.settings.border_input.green }},{{ scheme.settings.border_input.blue }};
+    --color-field-label: {{ scheme.settings.label_field.red }},{{ scheme.settings.label_field.green }},{{ scheme.settings.label_field.blue }};
+    }
+{% endfor %}
+
+{{ scheme_classes | prepend: 'body' }} {
+    color: rgba(var(--color-foreground));
+    background-color: rgb(var(--color-background));
+}
+
+:root {
+    
+    {% if settings.font_body_family == 'shopify' %}
+        --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+        --font-body-style: {{ settings.type_body_font.style }};
+        --font-body-weight-bold: {{ settings.type_body_font.weight | plus: 300 | at_most: 1000 }};
+    {% else %}
+        --font-body-family: {{ font_body_name }}, {{ settings.type_body_font.fallback_families }};
+        --font-body-style: normal;
+        --font-body-weight-bold: normal;
+    {% endif %}
+
+    {% if settings.font_header_family == 'shopify' %}
+        --font-body-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+        --font-heading-style: {{ settings.type_header_font.style }};
+    {% else %}
+        --font-heading-family: {{ font_header_name }}, {{ settings.type_header_font.fallback_families }};
+        --font-heading-style: normal;
+    {% endif %}
+
+    {% if settings.line_text != 'full' %}
+        --product-title-line: {{ settings.line_text }};
+    {% endif %}
+
+    --fontsize_menulevel1: {{ settings.font_level1 }}px;
+    --background_color_level1: {{settings.background_color_level1}};
+    --menu_lv_1_transform: {{settings.menu_lv_1_transform}};
+    --menu_lv_1_weight: {{settings.menu_lv_1_weight}};
+    --menu_lv_1_content_pos: {{settings.menu_lv_1_content_pos}};
+    --padding_top_menu_lv_1: {{settings.padding_top_menu_lv_1}}px;
+    --padding_bottom_menu_lv_1: {{settings.padding_bottom_menu_lv_1}}px;
+    --fontsize_menulevel2: {{ settings.font_level2 }}px;
+    --fontsize_menulevel3: {{ settings.font_level3 }}px;
+    --font-bubble: {{ settings.font_bubble }}px;
+
+    --color_menulevel1: {{ settings.color_level1 }};
+    --color_menulevel2: {{ settings.color_level2 }};
+    --color_menulevel3: {{ settings.color_level3 }};
+    --color-bubble: {{ settings.bubble_color }};
+    --bg-color-bubble: {{ settings.bubble_bg_color }};
+
+    --fontsize_footer_heading: {{ settings.font_footer_heading }}px;
+    --fontsize_footer_link: {{ settings.font_footer_link }}px;
+    --color_footer_heading: {{ settings.color_footer_heading }};
+    --color_footer_link: {{ settings.color_footer_link }};
+
+    --fontsize_product_title: {{ settings.font_product_title_mb }}px;
+    --fontsize_product_vendor: {{ settings.font_product_vendor_mb }}px;
+    --fontsize_product_price: {{ settings.font_product_price_mb }}px;
+    --fontsize_compare_price: {{ settings.font_compare_price_mb }}px;
+    --fontsize_sale_price: {{ settings.font_sale_price_mb }}px;
+    --color_product_title: {{ settings.color_product_title }};
+    --color_product_vendor: {{ settings.color_product_vendor }};
+    --color_product_price: {{ settings.color_product_price }};
+    --color_compare_price: {{ settings.color_compare_price }};
+    --color_sale_price: {{ settings.color_sale_price }};
+
+    --font-body-scale: 1;
+    --font-heading-scale: 1;
+    --font-size-body: {{ settings.body_scale_mb }}px;
+    --font-size-heading: {{ settings.heading_scale_mb }}px;
+    --font-size-button: {{ settings.font_size_button }}px;
+    --body-color: {{ settings.color_scheme_body }};
+    --letter_spacing_header: {{ settings.type_header_letter_spacing }};
+    --letter_spacing_body: {{ settings.type_body_letter_spacing }};
+    --line_height_header: {{ settings.type_header_line_height }};
+    --line_height_body: {{ settings.type_body_line_height }};
+    --font-heading-weight: {{ settings.type_header_font_weight }};
+    --font-body-weight: {{ settings.type_body_font_weight }};
+
+    --fontsize_breadcrumb: {{ settings.font_size_breadcrumb }}px;
+    --color_breadcrumb: {{ settings.color_scheme_breadcrumb }};
+    --color_breadcrumb_active: {{ settings.color_scheme_breadcrumb_active }};
+    --bg_color_breadcrumb: {{ settings.bg_color_scheme_breadcrumb }};
+
+    --back_color_filter:{{ settings.back_color_filter }};
+    --padding_filter: {{settings.padding_filter}}px;
+    --fontsize_filter_title: {{ settings.fontsize_filter_title }}px;
+    --fontsize_filter_value: {{ settings.fontsize_filter_value }}px;
+    --fontsize_filter_showmore: {{ settings.fontsize_filter_showmore }}px;
+    --color_filter_title: {{ settings.color_filter_title }};
+    --color_filter_value: {{ settings.color_filter_value }};
+    --color_filter_showmore: {{ settings.color_filter_showmore }};
+
+    --font_size_pagination: {{ settings.font_size_pagination }}px;
+    --size_pagination: {{ settings.size_pagination }}px;
+    --radius_pagination: {{ settings.radius_pagination }}px;
+    --color_pagination: {{ settings.color_pagination }};
+    --bg_color_pagination: {{ settings.bg_color_pagination }};
+    --color_pagination_active: {{ settings.color_pagination_active }};
+    --bg_color_pagination_active: {{ settings.bg_color_pagination_active }};
+
+    --media-padding: {{ settings.media_padding }}px;
+    --media-border-opacity: {{ settings.media_border_opacity | divided_by: 100.0 }};
+    --media-border-width: {{ settings.media_border_thickness }}px;
+    --media-radius: {{ settings.media_radius }}px;
+    --media-shadow-opacity: {{ settings.media_shadow_opacity | divided_by: 100.0 }};
+    --media-shadow-horizontal-offset: {{ settings.media_shadow_horizontal_offset }}px;
+    --media-shadow-vertical-offset: {{ settings.media_shadow_vertical_offset }}px;
+    --media-shadow-blur-radius: {{ settings.media_shadow_blur }}px;
+    --media-shadow-visible: {% if settings.media_shadow_opacity > 0 %}1{% else %}0{% endif %};
+
+    --page-width: {{ settings.page_width | divided_by: 10 }}rem;
+    --page-width-margin: {% if settings.page_width == '1600' %}2{% else %}0{% endif %}rem;
+
+    --product-card-border-color: {{ settings.border_card_color.red }},{{ settings.border_card_color.green }},{{ settings.border_card_color.blue }};
+    --product-card-border-color-active: {{ settings.border_card_color_active.red }},{{ settings.border_card_color_active.green }},{{ settings.border_card_color_active.blue }};
+    --product-card-image-padding: {{ settings.card_image_padding | divided_by: 10.0 }}rem;
+    --product-card-corner-radius: {{ settings.card_corner_radius | divided_by: 10.0 }}rem;
+    --product-card-text-alignment: {{ settings.card_text_alignment }};
+    --product-card-border-width: {{ settings.card_border_thickness | divided_by: 10.0 }}rem;
+    --product-card-border-opacity: {{ settings.card_border_opacity | divided_by: 100.0 }};
+    --product-card-shadow-opacity: {{ settings.card_shadow_opacity | divided_by: 100.0 }};
+    --product-card-shadow-visible: {% if settings.card_shadow_opacity > 0 %}1{% else %}0{% endif %};
+    --product-card-shadow-horizontal-offset: {{ settings.card_shadow_horizontal_offset | divided_by: 10.0 }}rem;
+    --product-card-shadow-vertical-offset: {{ settings.card_shadow_vertical_offset | divided_by: 10.0 }}rem;
+    --product-card-shadow-blur-radius: {{ settings.card_shadow_blur | divided_by: 10.0 }}rem;
+    --product-title-fontsize: {{ settings.fontsize_product_title }}px;
+    --product-price-fontsize: {{ settings.fontsize_product_price }}px;
+    --product-compare-price-fontsize: {{ settings.fontsize_product_compare_price }}px;
+    --product-label-fontsize: {{ settings.fontsize_product_label }}px;
+    --product-sku-fontsize: {{ settings.fontsize_product_sku }}px;
+    --product-inventory-fontsize: {{ settings.fontsize_product_inventory }}px;
+    --product-quantity-size: {{ settings.quantity_size }}px;
+    --product-quantity-fontsize: {{ settings.fontsize_product_quanitity }}px;
+    --product-icontext-fontsize: {{ settings.fontsize_product_icontext }}px;
+    --product-title-color: {{ settings.color_product_title_template }};
+    --product-label-color: {{ settings.color_product_label }};
+    --product-sku-color: {{ settings.color_product_sku }};
+    --product-inventory-color: {{ settings.color_product_inventory }};
+    --product-quantity-color: {{ settings.color_product_quantity }};
+    --product-icontext-color: {{ settings.color_product_icontext.red }},{{ settings.color_product_icontext.green }},{{ settings.color_product_icontext.blue }};
+    --color-feature-icon: {{ settings.color_feature_icon }};
+    --background-feature-icon: {{ settings.bg_color_feature_icon }};
+    --border-feature-icon: {{ settings.border_color_feature_icon }};
+    --color-feature-icon-hover: {{ settings.color_feature_icon_hover }};
+    --background-feature-icon-hover: {{ settings.bg_color_feature_icon_hover }};
+    --border-feature-icon-hover: {{ settings.border_color_feature_icon_hover }};
+    --color-rating: {{ settings.color_rating.red }},{{ settings.color_rating.green }},{{ settings.color_rating.blue }};
+    --color_countdown: {{ settings.color_countdown }};
+    --font_countdown: {{ settings.font_countdown }}px;
+    --bgcolor-countdown: {{ settings.bg_color_countdown.red }},{{ settings.bg_color_countdown.green }},{{ settings.bg_color_countdown.blue }};
+    --font_badge: {{ settings.font_size_badge }}px;
+    --color-sale-badge: {{ settings.sale_badge_color.red }},{{ settings.sale_badge_color.green }},{{ settings.sale_badge_color.blue }};
+    --bgcolor-sale-badge: {{ settings.sale_badge_bg_color.red }},{{ settings.sale_badge_bg_color.green }},{{ settings.sale_badge_bg_color.blue }};
+    --color-sold-badge: {{ settings.sold_badge_color.red }},{{ settings.sold_badge_color.green }},{{ settings.sold_badge_color.blue }};
+    --bgcolor-sold-badge: {{ settings.sold_badge_bg_color.red }},{{ settings.sold_badge_bg_color.green }},{{ settings.sold_badge_bg_color.blue }};
+
+    --collection-card-image-padding: {{ settings.collection_card_image_padding | divided_by: 10.0 }}rem;
+    --collection-card-corner-radius: {{ settings.collection_card_corner_radius | divided_by: 10.0 }}rem;
+    --collection-card-text-alignment: {{ settings.collection_card_text_alignment }};
+    --collection-card-border-width: {{ settings.collection_card_border_thickness | divided_by: 10.0 }}rem;
+    --collection-card-border-opacity: {{ settings.collection_card_border_opacity | divided_by: 100.0 }};
+    --collection-card-shadow-opacity: {{ settings.collection_card_shadow_opacity | divided_by: 100.0 }};
+    --collection-card-shadow-visible: {% if settings.collection_card_shadow_opacity > 0 %}1{% else %}0{% endif %};
+    --collection-card-shadow-horizontal-offset: {{ settings.collection_card_shadow_horizontal_offset | divided_by: 10.0 }}rem;
+    --collection-card-shadow-vertical-offset: {{ settings.collection_card_shadow_vertical_offset | divided_by: 10.0 }}rem;
+    --collection-card-shadow-blur-radius: {{ settings.collection_card_shadow_blur | divided_by: 10.0 }}rem;
+
+    --blog-card-image-padding: {{ settings.blog_card_image_padding | divided_by: 10.0 }}rem;
+    --blog-card-corner-radius: {{ settings.blog_card_corner_radius | divided_by: 10.0 }}rem;
+    --blog-card-text-alignment: {{ settings.blog_card_text_alignment }};
+    --blog-card-border-width: {{ settings.blog_card_border_thickness | divided_by: 10.0 }}rem;
+    --blog-card-border-opacity: {{ settings.blog_card_border_opacity | divided_by: 100.0 }};
+    --blog-card-shadow-opacity: {{ settings.blog_card_shadow_opacity | divided_by: 100.0 }};
+    --blog-card-shadow-visible: {% if settings.blog_card_shadow_opacity > 0 %}1{% else %}0{% endif %};
+    --blog-card-shadow-horizontal-offset: {{ settings.blog_card_shadow_horizontal_offset | divided_by: 10.0 }}rem;
+    --blog-card-shadow-vertical-offset: {{ settings.blog_card_shadow_vertical_offset | divided_by: 10.0 }}rem;
+    --blog-card-shadow-blur-radius: {{ settings.blog_card_shadow_blur | divided_by: 10.0 }}rem;
+    --size-title-article: {{ settings.size_title_article_mb }}px;
+    --size-title-blog: {{ settings.size_title_blog_mb }}px;
+    --size-date: {{ settings.size_date_mb }}px;
+    --color-title-article: {{ settings.color_title_article }};
+    --color-title-blog: {{ settings.color_categories_blog }};
+    --border-color-title-blog: {{ settings.border_color_categories_blog }};
+    --color-date: {{ settings.color_date }};
+    --color-author: {{ settings.color_author }};
+    --color_excerpt: {{ settings.color_excerpt }};
+    --size_excerpt: {{ settings.size_excerpt_mb }}px;
+    --color_button_view: {{ settings.color_button_view }};
+    --size_button_view: {{ settings.size_button_view_mb }}px;
+
+    --badge-corner-radius: {{ settings.badge_corner_radius | divided_by: 10.0 }}rem;
+
+    --popup-border-width: {{ settings.popup_border_thickness }}px;
+    --popup-border-opacity: {{ settings.popup_border_opacity | divided_by: 100.0 }};
+    --popup-corner-radius: {{ settings.popup_corner_radius }}px;
+    --popup-shadow-opacity: {{ settings.popup_shadow_opacity | divided_by: 100.0 }};
+    --popup-shadow-horizontal-offset: {{ settings.popup_shadow_horizontal_offset }}px;
+    --popup-shadow-vertical-offset: {{ settings.popup_shadow_vertical_offset }}px;
+    --popup-shadow-blur-radius: {{ settings.popup_shadow_blur }}px;
+
+    --drawer-border-width: {{ settings.drawer_border_thickness }}px;
+    --drawer-border-opacity: {{ settings.drawer_border_opacity | divided_by: 100.0 }};
+    --drawer-shadow-opacity: {{ settings.drawer_shadow_opacity | divided_by: 100.0 }};
+    --drawer-shadow-horizontal-offset: {{ settings.drawer_shadow_horizontal_offset }}px;
+    --drawer-shadow-vertical-offset: {{ settings.drawer_shadow_vertical_offset }}px;
+    --drawer-shadow-blur-radius: {{ settings.drawer_shadow_blur }}px;
+
+    --spacing-main: {{ settings.spacing_main }}px;
+    --spacing-sections-desktop: {{ settings.spacing_sections }}px;
+    --spacing-sections-mobile: {% if settings.spacing_sections < 24 %}{{ settings.spacing_sections }}{% else %}{{ settings.spacing_sections | times: 0.7 | round | at_least: 20 }}{% endif %}px;
+
+    --grid-desktop-vertical-spacing: {{ settings.spacing_grid_vertical }}px;
+    --grid-desktop-horizontal-spacing: {{ settings.spacing_grid_horizontal }}px;
+    --grid-mobile-vertical-spacing: 15px;
+    --grid-mobile-horizontal-spacing: 15px;
+
+    --text-boxes-border-opacity: {{ settings.text_boxes_border_opacity | divided_by: 100.0 }};
+    --text-boxes-border-width: {{ settings.text_boxes_border_thickness }}px;
+    --text-boxes-radius: {{ settings.text_boxes_radius }}px;
+    --text-boxes-shadow-opacity: {{ settings.text_boxes_shadow_opacity | divided_by: 100.0 }};
+    --text-boxes-shadow-visible: {% if settings.text_boxes_shadow_opacity > 0 %}1{% else %}0{% endif %};
+    --text-boxes-shadow-horizontal-offset: {{ settings.text_boxes_shadow_horizontal_offset }}px;
+    --text-boxes-shadow-vertical-offset: {{ settings.text_boxes_shadow_vertical_offset }}px;
+    --text-boxes-shadow-blur-radius: {{ settings.text_boxes_shadow_blur }}px;
+
+    --buttons-size: {{ settings.buttons_size }}px;
+    --buttons-radius: {{ settings.buttons_radius }}px;
+    --buttons-radius-outset: {% if settings.buttons_radius > 0 %}{{ settings.buttons_radius | plus: settings.buttons_border_thickness }}{% else %}0{% endif %}px;
+    --buttons-border-width: {% if settings.buttons_border_opacity > 0 %}{{ settings.buttons_border_thickness }}{% else %}0{% endif %}px;
+    --buttons-border-opacity: {{ settings.buttons_border_opacity | divided_by: 100.0 }};
+    --buttons-shadow-opacity: {{ settings.buttons_shadow_opacity | divided_by: 100.0 }};
+    --buttons-shadow-visible: {% if settings.buttons_shadow_opacity > 0 %}1{% else %}0{% endif %};
+    --buttons-shadow-horizontal-offset: {{ settings.buttons_shadow_horizontal_offset }}px;
+    --buttons-shadow-vertical-offset: {{ settings.buttons_shadow_vertical_offset }}px;
+    --buttons-shadow-blur-radius: {{ settings.buttons_shadow_blur }}px;
+    --buttons-border-offset: {% if settings.buttons_radius > 0 or settings.buttons_shadow_opacity > 0 %}0.3{% else %}0{% endif %}px;
+
+    --inputs-radius: {{ settings.inputs_radius }}px;
+    --inputs-border-width: {{ settings.inputs_border_thickness }}px;
+    --inputs-border-opacity: {{ settings.inputs_border_opacity | divided_by: 100.0 }};
+    --inputs-shadow-opacity: {{ settings.inputs_shadow_opacity | divided_by: 100.0 }};
+    --inputs-shadow-horizontal-offset: {{ settings.inputs_shadow_horizontal_offset }}px;
+    --inputs-margin-offset: {% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_opacity > 0 %}{{ settings.inputs_shadow_vertical_offset | abs }}{% else %}0{% endif %}px;
+    --inputs-shadow-vertical-offset: {{ settings.inputs_shadow_vertical_offset }}px;
+    --inputs-shadow-blur-radius: {{ settings.inputs_shadow_blur }}px;
+    --inputs-radius-outset: {% if settings.inputs_radius > 0 %}{{ settings.inputs_radius | plus: settings.inputs_border_thickness }}{% else %}0{% endif %}px;
+
+    --variant-pills-radius: {{ settings.variant_pills_radius }}px;
+    --variant-pills-border-width: {{ settings.variant_pills_border_thickness }}px;
+    --variant-pills-border-opacity: {{ settings.variant_pills_border_opacity | divided_by: 100.0 }};
+    --variant-pills-shadow-opacity: {{ settings.variant_pills_shadow_opacity | divided_by: 100.0 }};
+    --variant-pills-shadow-horizontal-offset: {{ settings.variant_pills_shadow_horizontal_offset }}px;
+    --variant-pills-shadow-vertical-offset: {{ settings.variant_pills_shadow_vertical_offset }}px;
+    --variant-pills-shadow-blur-radius: {{ settings.variant_pills_shadow_blur }}px;
+    --variant-pills-size: {{ settings.variant_pills_size }}px;
+    --variant-pills-fontsize: {{ settings.variant_pills_fontsize }}px;
+    --variant-pill-color: {{ settings.pill_color }};
+    --variant-pill-bg-color: {{ settings.background_pill_color }};
+    --variant-pill-border-color: {{ settings.border_pill_color.red }},{{ settings.border_pill_color.green }},{{ settings.border_pill_color.blue }};
+    --variant-pill-color-active: {{ settings.pill_color_active }};
+    --variant-pill-bg-color-active: {{ settings.background_pill_color_active }};
+    --variant-pill-border-color-active: {{ settings.border_pill_color_active }};
+    --variant-border-effect: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%23{{ settings.border_effect_color | remove: "#" }}' stroke-width='1' stroke-dasharray='20%25%2c 20%25' stroke-dashoffset='70' stroke-linecap='butt'/%3e%3c/svg%3e");
+
+    --width-filter-vertical: 260px;
+
+    --color-swatch-card-size: {{ settings.product_color_size }}px;
+    --container-padding: {{ settings.padding_container }}px;
+
+    --search_title_size: {{ settings.search_title_size }}px;
+    --search_price_size: {{ settings.search_price_size }}px;
+    --search_detail_size: {{ settings.search_detail_size }}px;
+
+    --btt_background_color: {{settings.btt_background_color}};
+    --btt_text_color: {{settings.btt_text_color}};
+}
+{% if settings.custom_search %}
+    .header__icons {
+        --buttons-size: {{ settings.custom_height }}px;
+    }
+{% endif %}
+
+
+@media screen and (min-width: 750px) {
+    :root {
+        --fontsize_product_title: {{ settings.font_product_title }}px;
+        --fontsize_product_vendor: {{ settings.font_product_vendor }}px;
+        --fontsize_product_price: {{ settings.font_product_price }}px;
+        --fontsize_compare_price: {{ settings.font_compare_price }}px;
+        --fontsize_sale_price: {{ settings.font_sale_price }}px;
+        --size-title-article: {{ settings.size_title_article }}px;
+        --size-title-blog: {{ settings.size_title_blog }}px;
+        --size-date: {{ settings.size_date }}px;
+        --font-size-body: {{ settings.body_scale }}px;
+        --font-size-heading: {{ settings.heading_scale }}px;
+        --size_excerpt: {{ settings.size_excerpt }}px;
+        --size_button_view: {{ settings.size_button_view }}px;
+    }
+}
+@media screen and (max-width: 749px) {
+    :root {
+        {% comment %} --buttons-size: 44px;
+        --line_height_header: 1.2; {% endcomment %}
+        {% comment %} --line_height_body: 1.2; {% endcomment %}
+    }
+}
+
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: calc(var(--font-body-scale) * 62.5%);
+    height: 100%;
+}
+
+body {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-columns: 100%;
+    min-height: 100%;
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: 0.06rem;
+    line-height: calc(1 + 0.8 / var(--font-body-scale));
+    font-family: var(--font-body-family);
+    font-style: var(--font-body-style);
+    font-weight: var(--font-body-weight);
+}
+
+@media screen and (min-width: 750px) {
+    body {
+        font-size: 1.6rem;
+    }
+}

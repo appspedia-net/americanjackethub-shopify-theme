@@ -1,0 +1,393 @@
+{{ 'section-image-banner.css' | asset_url | stylesheet_tag }}
+{{ 'component-newsletter.css' | asset_url | stylesheet_tag }}
+{{ 'newsletter-section.css' | asset_url | stylesheet_tag }}
+{{ 'section-email-signup-banner.css' | asset_url | stylesheet_tag }}
+
+<div
+  id="Banner-{{ section.id }}"
+  class="email-signup-banner jerry banner banner--content-align-{{ section.settings.desktop_content_alignment }} banner--content-align-mobile-{{ section.settings.mobile_content_alignment }} banner--{{ section.settings.image_height }}{% if section.settings.image_height == 'adapt-image' and section.settings.image != blank %} banner--adapt{% endif %}{% if section.settings.show_text_below %} banner--mobile-bottom{%- endif -%}{% if section.settings.show_text_box == false %} banner--desktop-transparent{% endif %}"
+>
+  <div class="banner__content banner__content--{{ section.settings.desktop_content_position }} page-width">
+    <div class="email-signup-banner__box banner__box newsletter newsletter__wrapper isolate content-container color-{{ section.settings.color_scheme }} gradient content-container--full-width-mobile">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'heading' -%}
+            <h2 class="email-signup-banner__heading {{ block.settings.heading_size }}" {{ block.shopify_attributes }}>
+              {{ block.settings.heading | escape }}
+            </h2>
+          {%- when 'paragraph' -%}
+            <div class="newsletter__subheading rte {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+              {{ block.settings.text }}
+            </div>
+          {%- when 'email_form' -%}
+            <div {{ block.shopify_attributes }}>
+              {% form 'customer', class: 'newsletter-form' %}
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                <div
+                  class="newsletter-form__field-wrapper{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                  {% if settings.animations_reveal_on_scroll %}
+                    data-cascade
+                    style="--animation-order: {{ forloop.index }};"
+                  {% endif %}
+                >
+                  <div class="field">
+                    <input
+                      id="NewsletterForm--{{ section.id }}"
+                      type="email"
+                      name="contact[email]"
+                      class="field__input"
+                      value="{{ form.email }}"
+                      aria-required="true"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      autocomplete="email"
+                      {% if form.errors %}
+                        autofocus
+                        aria-invalid="true"
+                        aria-describedby="Newsletter-error--{{ section.id }}"
+                      {% elsif form.posted_successfully? %}
+                        aria-describedby="Newsletter-success--{{ section.id }}"
+                      {% endif %}
+                      placeholder="{{ 'newsletter.label' | t }}"
+                      required
+                    >
+                    <label class="field__label" for="NewsletterForm--{{ section.id }}" hidden>
+                      {{ 'newsletter.label' | t }}
+                    </label>
+                    <button
+                      type="submit"
+                      class="button"
+                      name="commit"
+                      id="Subscribe"
+                      aria-label="{{ 'newsletter.button_label' | t }}"
+                    >
+                      {{ 'newsletter.button_label' | t }}
+                    </button>
+                  </div>
+                  {%- if form.errors -%}
+                    <small class="newsletter-form__message form__message" id="Newsletter-error--{{ section.id }}">
+                      {%- render 'icon-error' -%}
+                      {{- form.errors.translated_fields.email | capitalize }}
+                      {{ form.errors.messages.email -}}
+                    </small>
+                  {%- endif -%}
+                </div>
+                {%- if form.posted_successfully? -%}
+                  <h3
+                    class="newsletter-form__message newsletter-form__message--success form__message"
+                    id="Newsletter-success--{{ section.id }}"
+                    tabindex="-1"
+                    autofocus
+                  >
+                    {% render 'icon-success' -%}
+                    {{- 'newsletter.success' | t }}
+                  </h3>
+                {%- endif -%}
+              {% endform %}
+            </div>
+          {%- when 'image' -%}
+            {% if block.settings.image!= blank %}
+            <div class="email-signup-banner__image">
+              <img src="{{ block.settings.image | img_url: 'master' }}" alt="{{ block.settings.image.alt }}" />
+            </div>
+          {% endif %}
+          {%-  when 'countdown'-%}
+            {%- if block.settings.date != blank -%}
+              <div class="heading__countdown">
+                <h2 class="heading" style="font-size: 18px;">{{block.settings.heading}}</h2>
+                <countdown-time-pass class="countdown__time" timer="{{ block.settings.date }}" hasHTML="true">
+                  <span class="show_countdown"></span>
+                </countdown-time-pass>
+              </div>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+<script>
+  class CountdownPassWord extends HTMLElement {
+    connectedCallback() {
+      this.timer = this.getAttribute("timer");
+      const hasHTML = this.hasAttribute("hasHTML");
+      let countDownDate = new Date(this.timer).getTime();
+      let container = this.querySelector(".show_countdown");
+
+      // Update the count down every 1 second
+      let x = setInterval(function () {
+        // Get today's date and time
+        let now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        let distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        let hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        let hundreds =  Math.floor(days/100) > 0 ?  '<span class="hundreds">'+ Math.floor(days/100) +'</span>' : '';
+
+        if (hasHTML) {
+          container.innerHTML = `
+          <div class="count-down__item"><div class="countdown__num">${hundreds}<span class="tens"> ${Math.floor(days/10)  % 10  }</span><span class="ones">${days % 10}</span></div><p>Days</p></div>
+          <div class="count-down__item"><div class="countdown__num"><span class="tens">${Math.floor(hours/10)}</span><span class="ones">${hours % 10 }</span></div><p>Hours</p></div>
+          <div class="count-down__item"><div class="countdown__num"><span class="tens">${Math.floor(minutes/10)}</span><span class="ones">${minutes % 10 }</span></div><p>Minutes</p></div>
+          <div class="count-down__item"><div class="countdown__num"><span class="tens">${Math.floor(minutes/10)}</span><span class="ones">${seconds % 10 }</span></div><p>Minutes</p></div>
+          `;
+        } else {
+          container.innerHTML = days + "d : " + hours + "h : " + minutes + "m : " + seconds + "s ";
+        }
+
+        // If the count down is over, write some text
+        if (distance < 0) {
+          clearInterval(x);
+          container.innerHTML = "EXPIRED";
+        }
+      }, 1000);
+    }
+  }
+  customElements.define("countdown-time-pass", CountdownPassWord);
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.email-signup-banner.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:sections.email-signup-banner.settings.paragraph.content"
+    },
+    {
+      "type": "select",
+      "id": "desktop_content_position",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_position.options__1.label"
+        },
+        {
+          "value": "top-center",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_position.options__2.label"
+        },
+        {
+          "value": "top-right",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_position.options__3.label"
+        },
+        {
+          "value": "middle-left",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_position.options__4.label"
+        },
+        {
+          "value": "middle-center",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_position.options__5.label"
+        },
+        {
+          "value": "middle-right",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_position.options__6.label"
+        },
+        {
+          "value": "bottom-left",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_position.options__7.label"
+        },
+        {
+          "value": "bottom-center",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_position.options__8.label"
+        },
+        {
+          "value": "bottom-right",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_position.options__9.label"
+        }
+      ],
+      "default": "middle-center",
+      "label": "t:sections.email-signup-banner.settings.desktop_content_position.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_text_box",
+      "default": true,
+      "label": "t:sections.email-signup-banner.settings.show_text_box.label"
+    },
+    {
+      "type": "select",
+      "id": "desktop_content_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_alignment.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.email-signup-banner.settings.desktop_content_alignment.options__3.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.email-signup-banner.settings.desktop_content_alignment.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "info": "t:sections.email-signup-banner.settings.color_scheme.info",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.email-signup-banner.settings.header.content"
+    },
+    {
+      "type": "select",
+      "id": "mobile_content_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.email-signup-banner.settings.mobile_content_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.email-signup-banner.settings.mobile_content_alignment.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.email-signup-banner.settings.mobile_content_alignment.options__3.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.email-signup-banner.settings.mobile_content_alignment.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_text_below",
+      "default": true,
+      "label": "t:sections.email-signup-banner.settings.show_text_below.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "t:sections.email-signup-banner.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Opening soon",
+          "label": "t:sections.email-signup-banner.blocks.heading.settings.heading.label"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h2",
+              "label": "t:sections.all.heading_size.options__1.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.heading_size.options__2.label"
+            },
+            {
+              "value": "h0",
+              "label": "t:sections.all.heading_size.options__3.label"
+            }
+          ],
+          "default": "h1",
+          "label": "t:sections.all.heading_size.label"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "name": "t:sections.email-signup-banner.blocks.paragraph.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Be the first to know when we launch.</p>",
+          "label": "t:sections.email-signup-banner.blocks.paragraph.settings.paragraph.label"
+        },
+        {
+          "type": "select",
+          "id": "text_style",
+          "options": [
+            {
+              "value": "body",
+              "label": "t:sections.email-signup-banner.blocks.paragraph.settings.text_style.options__1.label"
+            },
+            {
+              "value": "subtitle",
+              "label": "t:sections.email-signup-banner.blocks.paragraph.settings.text_style.options__2.label"
+            }
+          ],
+          "default": "body",
+          "label": "t:sections.email-signup-banner.blocks.paragraph.settings.text_style.label"
+        }
+      ]
+    },
+    {
+      "type": "email_form",
+      "name": "t:sections.email-signup-banner.blocks.email_form.name",
+      "limit": 1
+    },
+    {
+      "type": "countdown",
+      "name": "Countdown",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id":"heading",
+          "label":"Heading",
+          "default": "NEW STORE WE BE LAUNCHED IN:"
+        },
+       {
+          "type": "textarea",
+          "id": "date",
+          "label": "Date",
+          "placeholder": "YYYY-MM-DD",
+          "info": "Ex: 2025-12-30"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "limit": 1,
+      "settings": [
+        {
+          "type":"image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+    
+  ],
+  "presets": [
+    {
+      "name": "t:sections.email-signup-banner.presets.name",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "email_form"
+        }
+      ]
+    }
+  ],
+  "templates": ["password"]
+}
+{% endschema %}

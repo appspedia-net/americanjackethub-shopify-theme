@@ -1,0 +1,166 @@
+.blog-articles {
+  display: grid;
+  grid-gap: 1rem;
+  column-gap: var(--grid-mobile-horizontal-spacing);
+  row-gap: var(--grid-mobile-vertical-spacing);
+}
+.blog-articles.articles-horizontal{
+  grid-template-columns: 1fr;
+}
+
+.blog-articles .card-wrapper {
+  width: 100%;
+}
+
+.pagination-left .pagination__list {
+	justify-content: start;
+}
+.pagination-right .pagination__list {
+	justify-content: end;
+}
+.pagination-top {
+  margin-top: 0;
+  margin-bottom: 50px;
+}
+.blog-articles {
+  row-gap: 30px;
+}
+.article-card:not(.card--horizontal) .card__content{
+  padding-top: 10px;
+}
+@media screen and (min-width: 750px) {
+  .main-blog .main-page-title{
+    margin-bottom: 50px;
+  }
+  .blog-articles {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--grid-desktop-horizontal-spacing);
+    row-gap: var(--grid-desktop-horizontal-spacing);
+  }
+  .blog-articles--1:not(.blog-articles--collage) {
+    grid-template-columns: 1fr;
+  }
+  .blog-articles.blog-articles--3:not(.blog-articles--collage) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .blog-articles.blog-articles--4:not(.blog-articles--collage) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  .blog-articles--collage > *:nth-child(3n + 1),
+  .blog-articles--collage > *:nth-child(3n + 2):last-child {
+    grid-column: span 2;
+    text-align: center;
+  }
+
+  .blog-articles--collage > *:nth-child(3n + 1) .card,
+  .blog-articles--collage > *:nth-child(3n + 2):last-child .card {
+    text-align: center;
+  }
+
+  .blog-articles--collage > *:nth-child(3n + 1) .article-card__image--small .ratio::before,
+  .blog-articles--collage > *:nth-child(3n + 2):last-child .article-card__image--small .ratio::before {
+    padding-bottom: 22rem;
+  }
+
+  .blog-articles--collage > *:nth-child(3n + 1) .article-card__image--medium .ratio::before,
+  .blog-articles--collage > *:nth-child(3n + 2):last-child .article-card__image--medium .ratio::before {
+    padding-bottom: 44rem;
+  }
+
+  .blog-articles--collage > *:nth-child(3n + 1) .article-card__image--large .ratio::before,
+  .blog-articles--collage > *:nth-child(3n + 2):last-child .article-card__image--large .ratio::before {
+    padding-bottom: 66rem;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .blog-articles--collage > *:nth-child(3n + 1) .article-card__image--small .ratio .ratio::before,
+  .blog-articles--collage > *:nth-child(3n + 2):last-child .article-card__image--small .ratio .ratio::before {
+    padding-bottom: 27.5rem;
+  }
+
+  .blog-articles--collage > *:nth-child(3n + 1) .article-card__image--medium .ratio::before,
+  .blog-articles--collage > *:nth-child(3n + 2):last-child .article-card__image--medium .ratio::before {
+    padding-bottom: 55rem;
+  }
+
+  .blog-articles--collage > *:nth-child(3n + 1) .article-card__image--large .ratio::before,
+  .blog-articles--collage > *:nth-child(3n + 2):last-child .article-card__image--large .ratio::before {
+    padding-bottom: 82.5rem;
+  }
+}
+
+/* ----------------Siderbar------------- */
+
+.block--categories h2 {
+	display: flex;
+	align-items: center;
+	font-size: 600;
+	line-height: 18px;
+	gap: 8px;
+}
+
+.sidebar__link li + li {
+	margin-top: 16px;
+  line-height: normal;
+}
+.sidebar__link a:hover {
+  font-weight: 600;
+}
+.sidebar__tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+.sidebar__tags a {
+	display: block;
+}
+.button--show__detail {
+  margin-top: 5px;
+  font-size: var(--size_button_view);
+  color: var(--color_button_view);
+}
+.blog__sidebar .article-card.card--horizontal .card__inner{
+  width:34%;
+}
+.blog__sidebar .article-card.card--horizontal > .card__content{
+  padding: 0;
+  width: 100%;
+}
+.blog__sidebar .card__heading--line a{
+  overflow: hidden;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+}
+.article__tags {
+	display: flex;
+	padding: 0;
+	list-style: none;
+	gap: 10px;
+	flex-wrap: wrap;
+  row-gap: 20px;
+}
+.article__tag--item a{
+  font-weight: 400;
+}
+.article__tag--item:hover a{
+  color: rgb(var(--color-heading))!important;
+}
+.article__tag--item:hover span{
+  border-bottom: 1px solid;
+}
+.article__tag--item .button-link {
+	background: transparent;
+	border: 1px solid;
+	padding: 7px 10px;
+}
+.template-blog .multicolumn-card__info .multicolumn__box {
+  padding: 20px;
+}
+.template-blog .article-card .card__information{
+  padding-bottom: 0;
+}

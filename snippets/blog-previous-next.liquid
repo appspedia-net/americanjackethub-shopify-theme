@@ -1,0 +1,58 @@
+<div
+  class="{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+  {{ block.shopify_attributes }}
+>
+  {%- style -%}
+    .box__next--prev a {
+      color: {{ block.settings.title_color }};
+    }
+    .box__next--prev a,
+    .article__next-prev--button {
+      font-size: {{ block.settings.title_size }}px;
+    }
+    .article__next-prev--button {
+      color: {{ block.settings.button_color }};
+      background-color: {{ block.settings.button_bgcolor }};
+    }
+    .wrapper__next-prev:hover .box__next--prev a {
+      color: {{ block.settings.title_color_hover }};
+    }
+    .wrapper__next-prev:hover .article__next-prev--button {
+      color: {{ block.settings.button_color_hover }};
+      background-color: {{ block.settings.button_bgcolor_hover }};
+    }
+    
+  {%- endstyle -%}
+  <div class="article-template__next-prev">
+    <div class="wrapper__next-prev">
+      {%- if blog.previous_article -%}
+        <a href="{{ blog.previous_article.url }}" class="article__item--prev article__next-prev--button">
+          <span class="article__arrow article__prev-arrow">
+            {%- render 'icon' with 'chevron-left' -%}
+            <span class="article__item-label">{{ 'blogs.article.prev' | t }}</span>
+          </span>
+        </a>
+        <div class="box__next--prev box__prev">
+          <a href="{{ blog.previous_article.url }}" class="link">
+            {{ blog.previous_article.title }}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+    <div class="wrapper__next-prev t-a--right">
+      {%- if blog.next_article -%}
+        <a href="{{ blog.next_article.url }}" class="article__item--next article__next-prev--button">
+          <span class="article__arrow article__next-arrow">
+            <span class="article__item-label">{{ 'blogs.article.next' | t }}</span>
+            {%- render 'icon' with 'chevron-right' -%}
+          </span>
+        </a>
+        <div class="box__next--prev box__next">
+          <a href="{{ blog.next_article.url }}" class="link">
+            {{ blog.next_article.title }}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,931 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  .product-tabs .tabs-nav {
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+    display: block;
+  }
+
+  .product-tabs .tabs-nav__item {
+    color: {{ section.settings.color_tab }};
+  }
+
+  .product-tabs .tabs-nav__item-list {
+    position: relative;
+    gap:30px;
+  }
+
+  .product-tabs .tabs-nav__item-list::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: {{ section.settings.border_color_tab }};
+    z-index:1;
+  }
+
+
+  .product-tabs .tabs-nav__item[aria-expanded="true"] {
+    color: {{ section.settings.color_tab_active }};
+    font-weight:700;
+  }
+  .product-tabs .tabs-nav__item:after {
+    background-color: {{ section.settings.border_color_tab_active }};
+  }
+  {%- if section.settings.enable_custom_padding -%}
+    .product-content__tabs{
+      padding: {{section.settings.padding_top_custom}}px {{section.settings.padding_right_custom}}px {{section.settings.padding_bottom_custom}}px {{section.settings.padding_left_custom}}px;
+    }
+  {%- endif -%}
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .product-tabs .tabs-nav__item-list {
+      position: relative;
+      gap:60px;
+    }
+  }
+  {%- if section.settings.enable_sidebar -%}
+    .product-content .product__sidebar {
+      display: none;
+    }
+    .product-content .product__sidebar h2 {
+      margin-bottom: 10px;
+    }
+    @media screen and (min-width: 1200px) {
+      .product-content {
+        display: flex;
+        gap: 30px;
+        {%- if section.settings.align_sidebar == 'left' -%}
+          flex-direction: row-reverse;
+        {%- endif -%}
+      }
+      .product-content__tabs {
+        width: calc(100% - {{ section.settings.width_sidebar }}px);
+      }
+      .product-content .product__sidebar {
+        display: block;
+        width: {{ section.settings.width_sidebar }}px;
+      }
+      
+    }
+  {%- endif -%}
+{%- endstyle -%}
+{%- capture product_content -%}
+  {%- capture product_tabs -%}
+    {%- capture product_tabs_nav_items -%}
+      {%- assign processed_blocks = 0 -%}
+
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'description' -%}
+              <button type="button" class="tabs-nav__item button" aria-expanded="{% if processed_blocks == 0 %}true{% else %}false{% endif %}" aria-controls="block-{{ section.id }}-{{ block.id }}" {{ block.shopify_attributes }}>
+                {{- block.settings.title | escape -}}
+              </button>
+              {%- assign processed_blocks = processed_blocks | plus: 1 -%}
+
+          {%- when '@app' -%}
+            <button type="button" id="product-{{ product.id }}-reviews-desktop" class="tabs-nav__item button anchor" aria-expanded="{% if processed_blocks == 0 %}true{% else %}false{% endif %}" aria-controls="block-{{ section.id }}-{{ block.id }}" {{ block.shopify_attributes }}>
+              {{ 'products.review.title' | t }}
+            </button>
+
+            {%- assign processed_blocks = processed_blocks | plus: 1 -%}
+
+          {%- when 'content' -%}
+            {%- if block.settings.page != blank -%}
+              {%- assign title = block.settings.title | default: block.settings.page.title -%}
+              {%- assign content = block.settings.page.content -%}
+            {%- else -%}
+              {%- assign title = block.settings.title -%}
+              {%- assign content = block.settings.content -%}
+            {%- endif -%}
+
+            {%- if title != blank and content != blank -%}
+              <button type="button" class="tabs-nav__item button" aria-expanded="{% if processed_blocks == 0 %}true{% else %}false{% endif %}" aria-controls="block-{{ section.id }}-{{ block.id }}" {{ block.shopify_attributes }}>
+                {{- title -}}
+              </button>
+
+              {%- assign processed_blocks = processed_blocks | plus: 1 -%}
+            {%- endif -%}
+
+          {%- when 'liquid' -%}
+            {%- if block.settings.title != blank and block.settings.liquid != blank -%}
+              <button type="button" class="tabs-nav__item button" aria-expanded="{% if processed_blocks == 0 %}true{% else %}false{% endif %}" aria-controls="block-{{ section.id }}-{{ block.id }}" {{ block.shopify_attributes }}>
+                {{- block.settings.title | escape -}}
+              </button>
+
+              {%- assign processed_blocks = processed_blocks | plus: 1 -%}
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+
+    {%- if processed_blocks > 0 -%}
+      <tabs-nav class="tabs-nav">
+        <div class="tabs-nav__scroller-inner">
+          <div class="tabs-nav__item-list">
+            {{- product_tabs_nav_items -}}
+          </div>
+        </div>
+      </tabs-nav>
+    {%- endif -%}
+
+    {%- if product_tabs_nav_items != blank -%}
+      <div class="product-tabs__content">
+        {%- assign processed_blocks = 0 -%}
+
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'description' -%}
+              <div {% unless processed_blocks == 0 %}hidden{% endunless %} id="block-{{ section.id }}-{{ block.id }}" class="product-tabs__tab-item-wrapper">
+                <collapsible-content {% if processed_blocks == 0 %}open{% endif %} id="block-{{ section.id }}-{{ block.id }}-content" class="collapsible">
+                  <div class="product-tabs__tab-item-content rte">
+                    {{- product.description -}}
+                  </div>
+                </collapsible-content>
+              </div>
+
+              {%- assign processed_blocks = processed_blocks | plus: 1 -%}
+
+            {%- when '@app' -%}
+              <div {% unless processed_blocks == 0 %}hidden{% endunless %} id="block-{{ section.id }}-{{ block.id }}" class="product-tabs__tab-item-wrapper" {{ block.shopify_attributes }}>
+                <collapsible-content {% if processed_blocks == 0 %}open{% endif %} id="block-{{ section.id }}-{{ block.id }}-content" class="collapsible">
+                  <div class="product-tabs__tab-item-content">
+                    {% render block %}
+                  </div>
+                </collapsible-content>
+              </div>
+
+              {%- assign processed_blocks = processed_blocks | plus: 1 -%}
+
+          {%- when 'content' -%}
+            {%- if block.settings.page != blank -%}
+              {%- assign title = block.settings.title | default: block.settings.page.title -%}
+              {%- assign content = block.settings.page.content -%}
+            {%- else -%}
+              {%- assign title = block.settings.title -%}
+              {%- assign content = block.settings.content -%}
+            {%- endif -%}
+
+            {%- if title != blank and content != blank -%}
+              <div {% unless processed_blocks == 0 %}hidden{% endunless %} id="block-{{ section.id }}-{{ block.id }}" class="product-tabs__tab-item-wrapper" {{ block.shopify_attributes }}>
+                <collapsible-content {% if processed_blocks == 0 %}open{% endif %} id="block-{{ section.id }}-{{ block.id }}-content" class="collapsible">
+                  <div class="product-tabs__tab-item-content rte">
+                    {{- content -}}
+                  </div>
+                </collapsible-content>
+              </div>
+
+              {%- assign processed_blocks = processed_blocks | plus: 1 -%}
+            {%- endif -%}
+
+          {%- when 'liquid' -%}
+            {%- if block.settings.title != blank and block.settings.liquid != blank -%}
+              <div {% unless processed_blocks == 0 %}hidden{% endunless %} id="block-{{ section.id }}-{{ block.id }}" class="product-tabs__tab-item-wrapper" {{ block.shopify_attributes }}>
+
+                <collapsible-content {% if processed_blocks == 0 %}open{% endif %} id="block-{{ section.id }}-{{ block.id }}-content" class="collapsible">
+                  <div class="product-tabs__tab-item-content rte">
+                    {{- block.settings.liquid -}}
+                  </div>
+                </collapsible-content>
+              </div>
+
+              {%- assign processed_blocks = processed_blocks | plus: 1 -%}
+            {%- endif -%}
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- if product_tabs != blank -%}
+    <div class="product-content__tabs anchor color-{{ section.settings.color_scheme_content }}" id="product-{{ product.id }}-tabs">
+      <div class="product-tabs">
+        {{- product_tabs -}}
+      </div>
+    </div>
+  {%- endif -%}
+  {%- if section.settings.enable_sidebar -%}
+    <div class="product__sidebar color-{{ section.settings.color_scheme_content }}">
+      {%- render 'sidebar-product', horizontal_class: false -%}
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if product_content != blank -%}
+  <section class="section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}" 
+    style="--title-fontsize: {{ section.settings.font_size }}px"
+  >
+    <div id="product-{{ product.id }}-content" class="product-content page-width">
+      {{- product_content -}}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product tab",
+  "class": "shopify-section--product-tab",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme_content",
+      "label": "Color scheme content",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Custom padding"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_padding",
+      "label": "Enable custom padding",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top_custom",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_custom",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left_custom",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding left",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right_custom",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding right",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Tab heading"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin bottom",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "color_tab",
+      "label": "Color tab",
+      "default": "#9C9C9C"
+    },
+    {
+      "type": "color",
+      "id": "border_color_tab",
+      "label": "Border color tab",
+      "default": "#ECECEC"
+    },
+    {
+      "type": "color",
+      "id": "color_tab_active",
+      "label": "Color tab active",
+      "default": "#3251BF"
+    },
+    {
+      "type": "color",
+      "id": "border_color_tab_active",
+      "label": "Border color tab active",
+      "default": "#436CFF"
+    },
+    {
+      "type": "header",
+      "content": "Product sidebar"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sidebar",
+      "label": "Enable sidebar",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "align_sidebar",
+      "label": "Align sidebar",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "right"
+        }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "range",
+      "id": "width_sidebar",
+      "min": 100,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "label": "Sidebar width",
+      "default": 260
+    },
+    {
+      "type": "header",
+      "content": "Padding settings"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "name": "Description",
+      "type": "description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Description"
+        }
+      ]
+    },
+    {
+      "name": "Content",
+      "type": "content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "Content from page",
+          "info": "If specified, takes precedence over inline content."
+        }
+      ]
+    },
+    {
+      "name": "Custom HTML",
+      "type": "liquid",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "liquid",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "sidebar_column",
+      "name": "Column sidebar",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "enable",
+          "label": "Enable block",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "height_custom",
+          "label": "Height block",
+          "min": 100,
+          "max": 500,
+          "step": 10,
+          "default": 300,
+          "unit": "px"
+        },
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "t:sections.all.colors.label",
+          "default": "background-1"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.multicolumn.blocks.column.settings.image.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_resize",
+          "label": "Enable resize image",
+          "default": false
+        },
+        {
+          "type": "paragraph",
+          "content": "Only use when enable resize setting"
+        },
+        {
+          "type": "range",
+          "id": "resize",
+          "label": "Width image resize",
+          "min": 100,
+          "max": 1000,
+          "step": 10,
+          "default": 200,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "position_ver",
+          "label": "Position vertical",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "position_hoz",
+          "label": "Position horizontal",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 90,
+          "unit": "%"
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "range",
+          "id": "content_position_ver",
+          "label": "Content position vertical",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "content_position_hoz",
+          "label": "Content position horizontal",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 90,
+          "unit": "%"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_1.label"
+            },
+            {
+              "value": "center",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_2.label"
+            },
+            {
+              "value": "right",
+              "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_3.label"
+            }
+          ],
+          "default": "left",
+          "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.label"
+        },
+        {
+          "type": "richtext",
+          "id": "sub_title",
+          "default": "<p>Sub heading</p>",
+          "label": "Sub heading"
+        },
+        {
+          "type": "range",
+          "id": "subheading_size",
+          "label": "Font size sub heading",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "sub_margin",
+          "label": "Sub heading margin bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 10
+        },
+        {
+          "type": "richtext",
+          "id": "title",
+          "default": "<p>Heading</p>",
+          "label": "t:sections.multicolumn.blocks.column.settings.title.label"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Font size heading",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 28
+        },
+        {
+          "type": "range",
+          "id": "heading_margin",
+          "label": "Heading margin bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 10
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+          "label": "t:sections.multicolumn.blocks.column.settings.text.label"
+        },
+        {
+          "type": "range",
+          "id": "text_size",
+          "label": "Font size text",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "content_margin",
+          "label": "Text margin bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 10
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link text"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.multicolumn.blocks.column.settings.link.label"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            {
+              "value": "link",
+              "label": "Link"
+            },
+            {
+              "value": "button",
+              "label": "Button"
+            }
+          ],
+          "default": "link"
+        },
+        {
+          "type": "text",
+          "id": "link_label2",
+          "label": "Link text 2"
+        },
+        {
+          "type": "url",
+          "id": "link2",
+          "label": "Link 2"
+        },
+        {
+          "type": "select",
+          "id": "button_style2",
+          "label": "Button style2",
+          "options": [
+            {
+              "value": "link",
+              "label": "Link"
+            },
+            {
+              "value": "button",
+              "label": "Button"
+            }
+          ],
+          "default": "link"
+        },
+        {
+          "type": "range",
+          "id": "button_width",
+          "label": "Button width",
+          "min": 50,
+          "max": 500,
+          "step": 5,
+          "default": 150,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "button_height",
+          "label": "Button height",
+          "min": 20,
+          "max": 100,
+          "step": 1,
+          "default": 44,
+          "unit": "px"
+        },
+        {
+          "type": "header",
+          "content": "Settings for label"
+        },
+        {
+          "type": "range",
+          "id": "label_position_ver",
+          "label": "Label position vertical",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50,
+          "unit": "%"
+        },
+        {
+          "type": "range",
+          "id": "label_position_hoz",
+          "label": "Label position horizontal",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 90,
+          "unit": "%"
+        },
+        {
+          "type": "richtext",
+          "id": "text_label",
+          "label": "Label"
+        },
+        {
+          "type": "range",
+          "id": "label_size",
+          "label": "Font size label",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 14,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "label_width",
+          "label": "Width label",
+          "min": 10,
+          "max": 200,
+          "step": 2,
+          "default": 64,
+          "unit": "px"
+        },
+        {
+          "type": "color",
+          "id": "label_color",
+          "label": "Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "label_bg_color",
+          "label": "Background color label",
+          "default": "#000000"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.all.padding.section_padding_heading"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "t:sections.all.padding.padding_top",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "t:sections.all.padding.padding_bottom",
+          "default": 10
+        }
+      ]
+    },
+    {
+      "name": "Feature product sidebar",
+      "limit": 1,
+      "type": "sidebar_product",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Hot Product"
+        },
+        {
+          "type": "color",
+          "id": "color_heading",
+          "label": "Heading color ",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background Color",
+          "default": "#f4f4f4"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border Color",
+          "default": "#e1e1e1"
+        },
+        {
+          "type": "range",
+          "id": "fontsize_heading",
+          "label": "Font size heading sidebar",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 16
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "range",
+          "id": "products_to_show",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "default":3,
+          "label": "Number product to show"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.all.padding.section_padding_heading"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "t:sections.all.padding.padding_top",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "t:sections.all.padding.padding_bottom",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "padding_top_mb",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding top on Mobile",
+          "default": 36
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mb",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom on Mobile",
+          "default": 36
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

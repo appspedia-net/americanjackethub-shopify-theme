@@ -1,0 +1,113 @@
+
+.contact img {
+  max-width: 100%;
+}
+
+.contact .form__message {
+  align-items: flex-start;
+}
+
+.contact .icon-success {
+  margin-top: 0.2rem;
+}
+
+.contact .field {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column-reverse;
+  text-align: left;
+}
+#ContactForm {
+	margin: 0 auto;
+  padding-top: 20px;
+}
+#ContactForm .field__label {
+ margin-bottom: 8px;
+  font-size: var(--font-size-button);
+  line-height: 1.5;
+}
+#ContactForm .field__label span{
+  color: #E61C3E;
+}
+
+.contact .field input,
+.contact .field textarea {
+  color: rgba(var(--color-foreground));
+}
+
+.contact-form .field .field__input {
+  width: 100%;
+  height: calc(var(--buttons-size) - 1px);
+}
+.contact__checkbox {
+	margin-bottom: 0 !important;
+}
+.contact__checkbox .d-flex {
+	gap: 40px;
+}
+.contact__checkbox .d-flex input {
+	display: none;
+}
+.contact__checkbox .d-flex label {
+	padding-left: 28px;
+	position: relative;
+	cursor: pointer;
+}
+.contact__checkbox .d-flex label:before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 2px;
+	background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='15' height='15' rx='1.5' stroke='%23D9D9D9'/%3E%3C/svg%3E%0A");
+	height: 16px;
+	width: 16px;
+	background-size: 16px;
+}
+.contact__checkbox .d-flex input:checked + label:before {
+	background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' rx='2' fill='%23436CFF'/%3E%3Cg clip-path='url(%23clip0_744_28780)'%3E%3Cpath d='M11.8141 5.30692C11.5666 5.05907 11.1647 5.05923 10.9168 5.30692L6.8783 9.34559L5.08335 7.55066C4.8355 7.30281 4.43374 7.30281 4.18589 7.55066C3.93804 7.79851 3.93804 8.20027 4.18589 8.44812L6.42947 10.6917C6.55332 10.8156 6.71571 10.8776 6.87812 10.8776C7.04053 10.8776 7.20309 10.8157 7.32693 10.6917L11.8141 6.20437C12.062 5.95669 12.062 5.55476 11.8141 5.30692Z' fill='white'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_744_28780'%3E%3Crect width='8' height='8' fill='white' transform='translate(4 4)'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+}
+
+@media screen and (min-width: 750px) {
+  .contact .field {
+    margin-bottom: 18px;
+  }
+}
+
+.contact__button {
+  margin-top: 3.2rem;
+}
+.contact__button .button {
+	height: calc(var(--buttons-size) + 8px);
+	width: 100%;
+	max-width: 100%;
+}
+.wrapper__map {
+  margin-bottom: 58px;
+  margin-top: 0;
+}
+.wrapper__map iframe {
+  width: 100%;
+}
+.contact__heading{
+  margin-bottom: 20px;
+}
+.contact__heading .heading {
+  font-weight: 500;
+}
+@media screen and (min-width: 750px) {
+  .contact__fields .group_fields {
+    display: flex;
+    gap: 24px;
+  }
+  .contact__fields .group_fields .field{
+	width: 50%;
+  }
+  .contact__button .button {
+    max-width: 232px;
+  }
+}
+@media screen and (max-width: 989px) {
+	.contact {
+		display: block;
+	}
+}

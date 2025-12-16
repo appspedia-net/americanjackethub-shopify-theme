@@ -1,0 +1,311 @@
+{{ 'section-main-page.css' | asset_url | stylesheet_tag }}
+{{ 'component-faqs.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  
+  .section-{{ section.id }}-padding .faq-item.open{
+    background:{{section.settings.background_active | color_modify: 'alpha', 0.1}};
+    border-radius: var(--buttons-radius);
+  }
+{%- endstyle -%}
+
+<div class="page page-faq page-width page-width--narrow section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-wrapper__content">
+    <h1 class="main-page-title page-title h0{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}" {% if section.settings.hidden_title %}hidden{% endif %}>
+      {{ page.title | escape }}
+    </h1>
+    {%- if page.content != blank-%}
+      <div class="rte page-content">
+        {{ page.content }}
+      </div>
+    {%- endif -%}
+    <div class="rte faq_wrapper{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+        {%- when 'paragraph' -%}
+          {%- liquid
+              assign title = block.settings.title
+          -%}
+          {%- if title != blank -%}
+            <h3 class="faq-title">
+                {{ title | escape }}
+            </h3>
+          {%- endif -%}
+          <div
+            class="accordion{% if section.settings.layout == 'row' %} content-container color-{{ section.settings.container_color_scheme }} gradient{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+          {%- for i in (1..10) -%}
+            {% capture cap_question %}question_{{ i }}{% endcapture %}
+            {% capture cap_answer %}answer_{{ i }}{% endcapture %}
+            {%- liquid
+                assign question = block.settings[cap_question]
+                assign answer = block.settings[cap_answer]
+            -%}
+            {%- if question != blank -%}
+              <details
+                  id="Details-{{ block.id }}-{{ section.id }}"
+                  class="faq-item {% if section.settings.open_first_collapsible_row and forloop.first %}open{% endif %}"
+                  {% if section.settings.open_first_collapsible_row and forloop.first %}
+                    open
+                  {% endif %}
+                > {%- if question != blank -%}
+                    <summary id="Summary-{{ block.id }}-{{ section.id }}">
+                      <h3 class="accordion__title inline-richtext h4">
+                        {{ question }}
+                      </h3>
+                      <span class="icon-plus" role="none"></span>
+                    </summary>
+                  {%- endif -%}
+                  {%- if answer != blank -%}
+                    <div
+                      class="accordion__content rte"
+                      id="CollapsibleAccordion-{{ block.id }}-{{ section.id }}"
+                      role="region"
+                      aria-labelledby="Summary-{{ block.id }}-{{ section.id }}"
+                    >
+                      {{answer}}
+                    </div>
+                  {%- endif -%}
+                </details>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },  
+    {
+      "type": "checkbox",
+      "id": "hidden_title",
+      "label": "Hidden title",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first_collapsible_row",
+      "default": false,
+      "label": "t:sections.collapsible_content.settings.open_first_collapsible_row.label"
+    },
+    {
+      "type": "color",
+      "id":"background_active",
+      "label":"Background Active",
+      "default":"#01ABBA"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+   "blocks": [
+    {
+        "type" : "paragraph",
+        "name" : "Paragraph",
+        "settings":
+        [
+            {
+                "type": "header",
+                "content": "Information"
+            },
+            {
+                "type" : "text",
+                "id" : "title",
+                "label" : "Title / Heading",
+                "default": "Heading"
+            },
+            {
+                "type": "header",
+                "content": "Question & Answer 1"
+            },
+            {
+                "type" : "text",
+                "id" : "question_1",
+                "label" : "Question",
+                "default": "Question"
+            },
+            {
+                "type" : "richtext",
+                "id" : "answer_1",
+                "label" : "Answer",
+                "default": "<p>Cras vitae ac nunc orci. Purus amet tortor non at phasellus ultricies hendrerit. Eget a, sit morbi nunc sit id massa. Metus, scelerisque volutpat nec sit vel donec. Sagittis, id volutpat erat vel.</p>"
+            },
+            {
+                "type": "header",
+                "content": "Question & Answer 2"
+            },
+            {
+                "type" : "text",
+                "id" : "question_2",
+                "label" : "Question",
+                "default": "Question"
+            },
+            {
+                "type" : "richtext",
+                "id" : "answer_2",
+                "label" : "Answer",
+                "default": "<p>Cras vitae ac nunc orci. Purus amet tortor non at phasellus ultricies hendrerit. Eget a, sit morbi nunc sit id massa. Metus, scelerisque volutpat nec sit vel donec. Sagittis, id volutpat erat vel.</p>"
+            },
+            {
+                "type": "header",
+                "content": "Question & Answer 3"
+            },
+            {
+                "type" : "text",
+                "id" : "question_3",
+                "label" : "Question"
+            },
+            {
+                "type" : "richtext",
+                "id" : "answer_3",
+                "label" : "Answer"
+            },
+            {
+                "type": "header",
+                "content": "Question & Answer 4"
+            },
+            {
+                "type" : "text",
+                "id" : "question_4",
+                "label" : "Question"
+            },
+            {
+                "type" : "richtext",
+                "id" : "answer_4",
+                "label" : "Answer"
+            },
+            {
+                "type": "header",
+                "content": "Question & Answer 5"
+            },
+            {
+                "type" : "text",
+                "id" : "question_5",
+                "label" : "Question"
+            },
+            {
+                "type" : "richtext",
+                "id" : "answer_5",
+                "label" : "Answer"
+            },
+            {
+                "type": "header",
+                "content": "Question & Answer 6"
+            },
+            {
+                "type" : "text",
+                "id" : "question_6",
+                "label" : "Question"
+            },
+            {
+                "type" : "richtext",
+                "id" : "answer_6",
+                "label" : "Answer"
+            },
+            {
+                "type": "header",
+                "content": "Question & Answer 7"
+            },
+            {
+                "type" : "text",
+                "id" : "question_7",
+                "label" : "Question"
+            },
+            {
+                "type" : "richtext",
+                "id" : "answer_7",
+                "label" : "Answer"
+            },
+            {
+                "type": "header",
+                "content": "Question & Answer 8"
+            },
+            {
+                "type" : "text",
+                "id" : "question_8",
+                "label" : "Question"
+            },
+            {
+                "type" : "richtext",
+                "id" : "answer_8",
+                "label" : "Answer"
+            },
+            {
+                "type": "header",
+                "content": "Question & Answer 9"
+            },
+            {
+                "type" : "text",
+                "id" : "question_9",
+                "label" : "Question"
+            },
+            {
+                "type" : "richtext",
+                "id" : "answer_9",
+                "label" : "Answer"
+            },
+            {
+                "type": "header",
+                "content": "Question & Answer 10"
+            },
+            {
+                "type" : "text",
+                "id" : "question_10",
+                "label" : "Question"
+            },
+            {
+                "type" : "richtext",
+                "id" : "answer_10",
+                "label" : "Answer"
+            }
+        ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,16 @@
+.spotlight-list {
+	margin: 0;
+}
+@media screen and (min-width: 750px) {
+	.spotlight-list .spotlight-list__item {
+		width: calc(var(--block-width) - var(--grid-desktop-horizontal-spacing) / 2);
+		max-width: calc(var(--block-width) - var(--grid-desktop-horizontal-spacing) / 2);
+	}
+    .spotlight-list__item.content_absolute {
+        position: relative;
+    }
+    .spotlight-list__item.content_absolute .spotlight-card__info {
+        position: absolute;
+        top: 0;
+    }
+}

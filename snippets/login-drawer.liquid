@@ -1,0 +1,431 @@
+{{ 'component-login-drawer.css' | asset_url | stylesheet_tag }}
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+{{ 'section-multicolumn.css' | asset_url | stylesheet_tag }}
+
+<login-drawer id="login-drawer" class="custom-drawer drawer  login-drawer">
+    <div id="CartDrawer-Overlay" class="cart-drawer__overlay"></div>
+    <div class="custom-drawer__inner-container drawer__inner gradient color-background-{{settings.drewer_login_color_scheme}}">
+        <div class="header-wrapper">
+            {%- if settings.drawer_login_title != blank -%}
+            <h2 class="drawer__heading"> {%if customer %}{{ 'customer.login_page.wellcome' | t }} {% else %}{{settings.drawer_login_title}}{% endif %}</h2>
+            {%- endif -%}
+            <button
+                class="drawer__close"
+                type="button"
+                aria-label="{{ 'accessibility.close' | t }}"
+                data-action="close"
+            >
+                {% render 'icon-close' %}
+            </button>
+        </div>
+        <div class="login-drawer__wrapper">
+            <div class="customer__wrapper">
+                {%- if customer -%}
+                <div class="customer-account__details">
+                    <div class="customer-account__item">
+                        <a class="header__link--account" href="{{ routes.account_url }}">
+                            <span>{{ 'customer.login_page.my_account' | t }}</span>
+                        </a>
+                    </div>
+                    <div class="customer-account__item">
+                        <a class="header__link--account" id="customer_logout_link" href="{{ routes.account_logout_url }}">
+                            <span>{{ 'customer.login_page.log_out' | t }}</span>
+                        </a>
+                    </div>
+                </div>
+
+                {%- else -%}
+                    <div class="customer-item customer-account">
+                        <div class="customer login customer-form">
+                            {%- form 'customer_login', novalidate: 'novalidate' -%}
+                                {%- if form.errors -%}
+                                    <h2 class="form__message" tabindex="-1" autofocus>
+                                    <span class="visually-hidden">{{ 'accessibility.error' | t }} </span>
+                                    <svg aria-hidden="true" focusable="false" viewBox="0 0 13 13">
+                                        <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+                                        <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+                                        <path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/>
+                                        <path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke="#EB001B" stroke-width="0.7">
+                                    </svg>
+                                    {{ 'templates.contact.form.error_heading' | t }}
+                                    </h2>
+                                    {{ form.errors | default_errors }}
+                                {%- endif -%}
+                            
+                                <div class="field">
+                                    <input
+                                    type="email"
+                                    name="customer[email]"
+                                    id="CustomerEmail"
+                                    autocomplete="email"
+                                    autocorrect="off"
+                                    autocapitalize="off"
+                                    {% if form.errors contains 'form' %}
+                                        aria-invalid="true"
+                                    {% endif %}
+                                    placeholder="{{ 'customer.login_page.email' | t }}"
+                                    >
+                                    <label for="CustomerEmail">
+                                    {{ 'customer.login_page.email' | t }}
+                                    </label>
+                                </div>
+                            
+                                {%- if form.password_needed -%}
+                                    <div class="field">
+                                    <input
+                                        type="password"
+                                        value=""
+                                        name="customer[password]"
+                                        id="CustomerPassword"
+                                        autocomplete="current-password"
+                                        {% if form.errors contains 'form' %}
+                                        aria-invalid="true"
+                                        {% endif %}
+                                        placeholder="{{ 'customer.login_page.password' | t }}"
+                                    >
+                                    <label for="CustomerPassword">
+                                        {{ 'customer.login_page.password' | t }}
+                                    </label>
+                                    <input type="checkbox" id="showPasswordCheckbox" class="showPasswordCheckbox">
+                                    <label for="showPasswordCheckbox">
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 20 20">
+                                        <path d="M19.872 10.166c-0.047-0.053-1.182-1.305-2.956-2.572-1.047-0.748-2.1-1.344-3.13-1.773-1.305-0.544-2.579-0.82-3.786-0.82s-2.481 0.276-3.786 0.82c-1.030 0.429-2.083 1.026-3.13 1.773-1.774 1.267-2.909 2.52-2.956 2.572-0.171 0.19-0.171 0.479 0 0.669 0.047 0.053 1.182 1.305 2.956 2.572 1.047 0.748 2.1 1.344 3.13 1.773 1.305 0.544 2.579 0.82 3.786 0.82s2.481-0.276 3.786-0.82c1.030-0.429 2.083-1.026 3.13-1.773 1.774-1.267 2.909-2.52 2.956-2.572 0.171-0.19 0.171-0.479 0-0.669zM12.574 6.438c0.907 0.763 1.426 1.873 1.426 3.062 0 2.206-1.794 4-4 4s-4-1.794-4-4c0-1.188 0.519-2.299 1.426-3.062 0.822-0.268 1.691-0.438 2.574-0.438s1.752 0.17 2.574 0.438zM16.317 12.606c-1.533 1.092-3.873 2.394-6.317 2.394s-4.784-1.302-6.317-2.394c-1.157-0.824-2.042-1.658-2.489-2.106 0.447-0.448 1.332-1.281 2.489-2.106 0.53-0.378 1.156-0.78 1.85-1.145-0.347 0.688-0.533 1.455-0.533 2.251 0 2.757 2.243 5 5 5s5-2.243 5-5c0-0.796-0.186-1.563-0.533-2.251 0.694 0.365 1.32 0.768 1.85 1.145 1.157 0.824 2.042 1.658 2.489 2.106-0.447 0.448-1.332 1.281-2.489 2.106z" fill="#666666"/>
+                                        </svg>                
+                                    </label>
+                                    </div>
+                                {%- endif -%}
+                            
+                                <button class="button button--full-width">
+                                    {{ 'customer.login_page.sign_in' | t }}
+                                </button>
+                            
+                                <div class="has_account">
+                                    {{ 'customer.login_page.create_account_html' | t: link: routes.account_register_url }}
+                                </div>
+                            {%- endform -%}
+                            {%- form 'create_customer', novalidate: 'novalidate' -%}
+                                {%- if form.errors -%}
+                                <h2 class="form__message" tabindex="-1" autofocus>
+                                    <svg aria-hidden="true" focusable="false">
+                                    <use href="#icon-error" />
+                                    </svg>
+                                    {{ 'templates.contact.form.error_heading' | t }}
+                                </h2>
+                                <ul>
+                                    {%- for field in form.errors -%}
+                                    <li>
+                                        {%- if field == 'form' -%}
+                                        {{ form.errors.messages[field] }}
+                                        {%- else -%}
+                                        <a href="#RegisterForm-{{ field }}">
+                                            {{ form.errors.translated_fields[field] | capitalize }}
+                                            {{ form.errors.messages[field] }}
+                                        </a>
+                                        {%- endif -%}
+                                    </li>
+                                    {%- endfor -%}
+                                </ul>
+                                {%- endif -%}
+                                <div class="field">
+                                <input
+                                    type="text"
+                                    name="customer[first_name]"
+                                    id="RegisterForm-FirstName"
+                                    {% if form.first_name %}
+                                    value="{{ form.first_name }}"
+                                    {% endif %}
+                                    autocomplete="given-name"
+                                    placeholder="{{ 'customer.register.first_name' | t }}"
+                                >
+                                <label for="RegisterForm-FirstName">
+                                    {{ 'customer.register.first_name' | t }}
+                                </label>
+                                </div>
+                                <div class="field">
+                                <input
+                                    type="text"
+                                    name="customer[last_name]"
+                                    id="RegisterForm-LastName"
+                                    {% if form.last_name %}
+                                    value="{{ form.last_name }}"
+                                    {% endif %}
+                                    autocomplete="family-name"
+                                    placeholder="{{ 'customer.register.last_name' | t }}"
+                                >
+                                <label for="RegisterForm-LastName">
+                                    {{ 'customer.register.last_name' | t }}
+                                </label>
+                                </div>
+                                <div class="field">
+                                <input
+                                    type="email"
+                                    name="customer[email]"
+                                    id="RegisterForm-email"
+                                    {% if form.email %}
+                                    value="{{ form.email }}"
+                                    {% endif %}
+                                    spellcheck="false"
+                                    autocapitalize="off"
+                                    autocomplete="email"
+                                    aria-required="true"
+                                    {% if form.errors contains 'email' %}
+                                    aria-invalid="true"
+                                    aria-describedby="RegisterForm-email-error"
+                                    {% endif %}
+                                    placeholder="{{ 'customer.register.email' | t }}"
+                                >
+                                <label for="RegisterForm-email">
+                                    {{ 'customer.register.email' | t }}
+                                </label>
+                                </div>
+                                {%- if form.errors contains 'email' -%}
+                                <span id="RegisterForm-email-error" class="form__message">
+                                    <svg aria-hidden="true" focusable="false">
+                                    <use href="#icon-error" />
+                                    </svg>
+                                    {{ form.errors.translated_fields.email | capitalize }}
+                                    {{ form.errors.messages.email }}.
+                                </span>
+                                {%- endif -%}
+                                <div class="field">
+                                <input
+                                    type="password"
+                                    name="customer[password]"
+                                    id="RegisterForm-password"
+                                    aria-required="true"
+                                    {% if form.errors contains 'password' %}
+                                    aria-invalid="true"
+                                    aria-describedby="RegisterForm-password-error"
+                                    {% endif %}
+                                    placeholder="{{ 'customer.register.password' | t }}"
+                                >
+                                <label for="RegisterForm-password">
+                                    {{ 'customer.register.password' | t }}
+                                </label>
+                                <input type="checkbox" id="showPasswordCheckboxRegister" class="showPasswordCheckbox">
+                                <label for="showPasswordCheckboxRegister">
+                                    <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.484 10.5869C11.109 10.9621 10.8983 11.4708 10.8984 12.0013C10.8985 12.5317 11.1093 13.0404 11.4845 13.4154C11.8596 13.7904 12.3684 14.0011 12.8988 14.001C13.4293 14.0009 13.938 13.7901 14.313 13.4149M17.5794 16.673C16.1767 17.5507 14.5531 18.0109 12.8984 18C9.29844 18 6.29844 16 3.89844 12C5.17044 9.88003 6.61044 8.32203 8.21844 7.32603M11.0784 6.18003C11.6775 6.05876 12.2873 5.99845 12.8984 6.00003C16.4984 6.00003 19.4984 8.00003 21.8984 12C21.2324 13.11 20.5194 14.067 19.7604 14.87M3.89844 3L21.8984 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>                               
+                                </label>
+                                </div>
+                                {%- if form.errors contains 'password' -%}
+                                <span id="RegisterForm-password-error" class="form__message">
+                                    <svg aria-hidden="true" focusable="false">
+                                    <use href="#icon-error" />
+                                    </svg>
+                                    {{ form.errors.translated_fields.password | capitalize }}
+                                    {{ form.errors.messages.password }}.
+                                </span>
+                                {%- endif -%}
+                                <button class="button button--full-width">
+                                {{ 'customer.register.submit' | t }}
+                                </button>
+                                <div class="has_account">
+                                {{ 'customer.register.login_account_html' | t: link: routes.account_login_url }}
+                                </div>
+                            {%- endform -%}
+                        </div>
+                    </div>
+                {%- endif -%}
+            </div>
+            {%- if settings.image != blank -%}
+                <div class="login__drawer--inner">
+                    <style>
+                        .section-{{ section.id }}-padding .multicolumn-card__info .grouped__button {
+                        display: flex;
+                        flex-wrap: wrap;
+                        align-items: center;
+                        gap: 10px;
+                        }
+                        .section-{{ section.id }}-padding .banner__content--top-center .multicolumn-card__info .grouped__button {
+                        justify-content: center;
+                        }
+                        .section-{{ section.id }}-padding .multicolumn-card__info .grouped__button .link {
+                        margin: 0 !important;
+                        }
+                        @media screen and (min-width: 750px) {
+                        .section-{{ section.id }}-padding .collection-tabs__content {
+                            display: flex;
+                            align-items: flex-start;
+                            {%  if settings.position == 'left' %}
+                            flex-direction: row-reverse;
+                            {% endif %}
+                        }
+                        }
+                        @media screen and (max-width: 749px) {
+                        .section-{{ section.id }}-padding .collection__banner {
+                            width:100%;
+                            max-width: 100%;
+                            margin-top: 30px;
+                        }
+                        }
+                    </style>
+                    {%- assign empty_column = '' -%}
+                    {%- if settings.image == blank
+                        and settings.title == blank
+                        and settings.text_custom == blank
+                        and settings.link_label == blank
+                    -%}
+                        {%- assign empty_column = ' multicolumn-list__item--empty' -%}
+                    {%- endif -%}
+                    <style>
+                        .multicolumn--{{ id }} .multicolumn-card__image-wrapper .media {
+                            padding-bottom: {{ settings.height_custom }}px !important;
+                        }
+                    </style>
+                    <div
+                        class="multicolumn--{{ id }} collection__banner multicolumn-list__item color-{{ settings.color_scheme }}{% if section.settings.swipe_on_mobile %} slider__slide{% endif %}{{ empty_column }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}{% unless section.settings.show_text_box %} content_absolute{% if section.settings.show_text_box_mb %} not_absolute--mb{% endif %}{% endunless %}"
+                        {{ shopify_attributes }}
+                        {% if settings.animations_reveal_on_scroll %}
+                        data-cascade
+                        style="--animation-order: {{ forloop.index }};"
+                        {% endif %}
+                    >
+                        <div class="multicolumn-card content-container">
+                        {%- if settings.text_label != blank -%}
+                            <div class="multicolumn__label multicolumn__label--{{ settings.position_label }} center" 
+                            style="
+                                --font-size: {{ settings.label_size }}px;
+                                --width: {{ settings.label_width }}px;
+                                --color: {{ settings.label_color }};
+                                --bg-color: {{ settings.label_bg_color }};
+                                --position-hoz: {{ settings.label_position_hoz }}%;
+                                --position-ver: {{ settings.label_position_ver }}%;
+                                --position-hoz-mb: {{ settings.label_position_hoz_mb }}%;
+                                --position-ver-mb: {{ settings.label_position_ver_mb }}%;
+                            ">
+                            <span>{{ settings.text_label }}</span>
+                            </div>
+                        {%- endif -%}
+                        <div class="multicolumn-card__image-wrapper">
+                            <div
+                            class="media media--transparent media--{{ section.settings.image_ratio }}{% if settings.enable_resize %} media--size{% endif %}"
+                            style="
+                                {% if settings.image != blank %}
+                                {% if section.settings.image_ratio == 'adapt' or section.settings.image_ratio == 'custom' %}
+                                    padding-bottom: {{ 1 | divided_by: highest_ratio | times: 100 }}%;
+                                {% endif %}
+                                {% else %}
+                                padding-bottom: 100%;
+                                {% endif %}
+                                {% if settings.enable_resize %}
+                                --width- {{ settings.resize }}px;
+                                --width-mb: {{ settings.resize_mb }}px;
+                                --position-ver: {{ settings.position_ver }}%;
+                                --position-hoz: {{ settings.position_hoz }}%;
+                                --position-ver-mb: {{ settings.position_ver_mb }}%;
+                                --position-hoz-mb: {{ settings.position_hoz_mb }}%
+                                {% endif %}
+                            "
+                            >
+                            {%- if settings.image != blank -%}
+                                {% if section.settings.image_ratio == 'adapt' or section.settings.image_ratio == 'circle' %}
+                                {% assign spaced_image = true %}
+                                {% endif %}
+                                {%- liquid
+                                assign number_of_columns = section.settings.columns_desktop
+                                assign number_of_columns_mobile = section.settings.columns_mobile
+                                assign grid_space_desktop = number_of_columns | minus: 1 | times: settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                                assign grid_space_tablet = number_of_columns_mobile | minus: 1 | times: settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                                assign grid_space_mobile = number_of_columns_mobile | minus: 1 | times: settings.spacing_grid_horizontal | divided_by: 2 | plus: 30 | append: 'px'
+                                if section.settings.image_width == 'half'
+                                    assign image_width = 0.5
+                                elsif section.settings.image_width == 'third'
+                                    assign image_width = 0.33
+                                else
+                                    assign image_width = 1
+                                endif
+                                -%}
+                                {% capture sizes %}
+                                (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }} /  {{ number_of_columns }}),
+                                (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }} / {{ number_of_columns }}),
+                                (min-width: 750px) calc((100vw - {{ grid_space_tablet }}) * {{ image_width }} / {{ number_of_columns_mobile }}),
+                                calc((100vw - {{ grid_space_mobile }}) * {{ image_width }} / {{ number_of_columns_mobile }})
+                                {% endcapture %}
+                                {{
+                                settings.image
+                                | image_url: width: 3200
+                                | image_tag:
+                                    widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                                    sizes: sizes,
+                                    class: 'multicolumn-card__image'
+                                }}
+                            {%- else -%}
+                                {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                            {%- endif -%}
+                            </div>
+                        </div>
+
+                        <div class="multicolumn-card__info banner__content banner__position"
+                            style="
+                            --position-hoz: {{ settings.content_position_hoz }}%;
+                            --position-ver: {{ settings.content_position_ver }}%;
+                            --position-ver-mb: {{ settings.content_position_ver }}%;
+                            --position-hoz-mb: {{ settings.content_position_hoz }}%;
+                            "
+                        >
+                            <div class="multicolumn__box {{ settings.text_alignment }}">
+                            {%- if settings.sub_title != blank -%}
+                                <span
+                                class="inline-richtext sub_heading"
+                                style="font-size: {{ settings.subheading_size }}px; margin-bottom: {{ settings.sub_margin }}px"
+                                >
+                                {{ settings.sub_title }}
+                                </span>
+                            {%- endif -%}
+                            {%- if settings.title != blank -%}
+                                <h3
+                                class="inline-richtext heading"
+                                style="font-size: {{ settings.heading_size }}px; margin-bottom: {{ settings.heading_margin }}px"
+                                >
+                                {{ settings.title }}
+                                </h3>
+                            {%- endif -%}
+                            {%- if settings.text_custom != blank -%}
+                                <div class="rte" style="font-size: {{ settings.text_size }}px; margin-bottom: {{ settings.content_margin }}px">
+                                {{ settings.text_custom }}
+                                </div>
+                            {%- endif -%}
+                            <div class="grouped__button">
+                                {%- if settings.link_label != blank and settings.link_custom != blank -%}
+                                <a
+                                    class="{{ settings.button_style }}{% if settings.button_style == 'link' %} link-decoration{% endif %}"
+                                    {% if settings.link_custom == blank %}
+                                    role="link" aria-disabled="true"
+                                    {% else %}
+                                    href="{{ settings.link_custom }}"
+                                    {% endif %}
+                                    {% if settings.button_style == 'button' %}
+                                    style="--buttons-size: {{ settings.button_height }}px; min-width: {{ settings.button_width }}px"
+                                    {% endif %}
+                                >
+                                    {{- settings.link_label | escape -}}
+                                </a>
+                                {%- endif -%}
+                                {%- if settings.link_label2 != blank and settings.link2 != blank -%}
+                                <a
+                                    class="{{ settings.button_style2 }}{% if settings.button_style2 == 'link' %} link-decoration{% endif %}"
+                                    {% if settings.link2 == blank %}
+                                    role="link" aria-disabled="true"
+                                    {% else %}
+                                    href="{{ settings.link2 }}"
+                                    {% endif %}
+                                    {% if settings.button_style2 == 'button' %}
+                                    style="--buttons-size: {{ settings.button_height }}px; min-width: {{ settings.button_width }}px"
+                                    {% endif %}
+                                >
+                                    {{- settings.link_label2 | escape -}}
+                                </a>
+                                {%- endif -%}
+                            </div>
+                            
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            {%- endif -%}
+        </div>
+    </div>
+</login-drawer>

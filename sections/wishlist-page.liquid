@@ -1,0 +1,155 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+<div class="no-js-hidden page-width section-{{ section.id }}-padding">
+  <h1
+    class="title title--primary inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  >
+    {{ page.title | escape }}
+  </h1>
+  <product-wishlist-template
+    section-id="{{ section.id }}"
+    class="wishlist-products isolate{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+  >
+    {%- if search.results_count == 0 -%}
+      <p class="no-count">{{ 'templates.wishlist.empty_wishlist' | t }}</p>
+    {%- endif -%}
+    {%- if request.page_type == 'search' and search.performed and search.results_count > 0 -%}
+      <ul
+        class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
+        role="list"
+        style="--grid-desktop-horizontal-spacing: {{ section.settings.column_gap }}px"
+      >
+        {%- assign parsed_terms = search.terms | split: ' OR ' -%}
+
+        {%- for parsed_term in parsed_terms -%}
+          {%- assign id = parsed_term | split: 'id:' | last | times: 1 -%}
+
+          {%- for product in search.results -%}
+            {%- if product.id == id -%}
+              <li
+                class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                {% if settings.animations_reveal_on_scroll %}
+                  data-cascade
+                  style="--animation-order: {{ forloop.index }};"
+                {% endif %}
+              >
+                {% render 'card-product',
+                  card_product: product,
+                  media_aspect_ratio: 'adapt',
+                  image_shape: 'default',
+                  show_secondary_image: false,
+                  show_vendor: true,
+                  show_rating: true,
+                  show_quick_add: true,
+                  section_id: section.id
+                %}
+              </li>
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </product-wishlist-template>
+</div>
+{% schema %}
+{
+  "name": "Wishlist page",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "t:sections.featured-collection.settings.columns_desktop.label"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "min": 2,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Column gap",
+      "default": 22
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "default": "2",
+      "label": "t:sections.featured-collection.settings.columns_mobile.label",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:sections.featured-collection.settings.columns_mobile.options__1.label"
+        },
+        {
+          "value": "2",
+          "label": "t:sections.featured-collection.settings.columns_mobile.options__2.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

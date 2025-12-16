@@ -1,0 +1,80 @@
+<div class="blog__sidebar--inner">
+  {%- for block in section.blocks -%}
+      <div
+        class="block__sidebar block--{{ block.type }}"
+        style="
+          padding-top: {{ block.settings.padding_top }}px;
+          padding-bottom: {{ block.settings.padding_bottom }}px;
+          --border_color: {{block.settings.border_color}};
+        "
+      >
+        {%- if block.settings.heading != blank -%}
+          <h2
+            class="heading"
+            style="font-size: {{ block.settings.fontsize_heading }}px; color: {{ block.settings.color_heading }};  --background_color: {{block.settings.background_color}};--border_color: {{block.settings.border_color}};"
+          >
+            {{ block.settings.heading }}
+          </h2>
+        {%- endif -%}
+        
+        {%- case block.type -%}
+          {%- when 'banner_sidebar' -%}
+            <div class="banner_sidebar">
+              <div
+                class="media media--transparent"
+                style="{% if block.settings.image != blank %}{%- assign height_ratio = block.settings.image.aspect_ratio -%}padding-bottom: {{ 1 | divided_by: height_ratio | times: 100 }}%;{% endif %}"
+              >
+              {%- if block.settings.link_baner != blank -%}
+                <a href="{{ block.settings.link_baner }}"></a>
+              {%- endif -%}
+                {%- if block.settings.image != blank -%}
+                  {{
+                    block.settings.image
+                    | image_url: width: 3200
+                    | image_tag:
+                      widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                      sizes: '(min-width: 1500px) calc((1500px - 84px) * 1 /  ),(min-width: 990px) calc((100vw - 84px) * 1 / ),(min-width: 750px) calc((100vw - 84px) * 1 / ),calc((100vw - 22px) * 1 / )',
+                      class: 'sidebar__image'
+                  }}
+                {%- else -%}
+                  {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+            </div>
+          {%- when 'sidebar_product' -%}
+            {%- if block.settings.collection.all_products_count > 0 -%}
+              <div
+                class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid--1-col-desktop grid--1-col-tablet-down"
+                style="
+                  --grid-desktop-horizontal-spacing: 15px;
+                  --grid-desktop-vertical-spacing: 12px;
+                "
+              >
+                {%- for product in block.settings.collection.products limit: block.settings.products_to_show -%}
+                  <div
+                    class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                    {% if settings.animations_reveal_on_scroll %}
+                      data-cascade
+                      style="--animation-order: {{ forloop.index }};"
+                    {% endif %}
+                  >
+                    {% render 'card-product',
+                      card_product: product,
+                      media_aspect_ratio: settings.image_ratio,
+                      image_shape: settings.image_shape,
+                      show_secondary_image: settings.show_secondary_image,
+                      show_vendor: false,
+                      show_rating: settings.show_rating,
+                      show_quick_add: settings.enable_quick_add,
+                      section_id: block.id,
+                      horizontal_class: horizontal_class,
+                      show_more: true
+                    %}
+                  </div>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+        {%- endcase -%}
+      </div>
+  {%- endfor -%}
+</div>

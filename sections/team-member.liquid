@@ -1,0 +1,532 @@
+{{ 'section-team.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+  .section-{{ section.id }}-padding .title-wrapper-with-link{
+    margin-bottom: {{section.settings.margin_mb}}px;
+  }
+  .section-{{ section.id }}-padding .title-wrapper-with-link h2 {
+    font-size: {{ section.settings.heading_size_mb }}px;
+    width: 100%;
+  }
+  .section-{{ section.id }}-padding .brand-card__info .heading,
+  .section-{{ section.id }}-padding .brand-card__text a {
+    font-size: {{ section.settings.heading_size_mb_block }}px;
+    color: {{ section.settings.color_icon }};
+  }
+  .section-{{ section.id }}-padding .brand-card__info .sub_heading {
+    font-size: {{ section.settings.subheading_size_mb_block }}px;
+    color: {{ section.settings.color_text }};
+  }
+
+  .section-{{ section.id }}-padding .about-statistical .brand-card__info .heading:before {
+    font-size: {{ section.settings.count_size_mb | times: 0.8 }};
+  }
+
+  .section-{{ section.id }}-padding .team--item.member:after {
+    background-color: rgb({{ section.settings.background_color.red }},{{ section.settings.background_color.green }},{{ section.settings.background_color.blue }},80%);
+    color: {{ section.settings.color_icon }};
+  }
+  @media screen and (max-width:1024px){
+    .section-{{ section.id }}-padding .team__wrapper .brand-card__info{
+      background-color: rgb({{ section.settings.background_color.red }},{{ section.settings.background_color.green }},{{ section.settings.background_color.blue }},80%);
+    }
+  }
+  
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .section-{{ section.id }}-padding .title-wrapper-with-link h2 {
+      font-size: {{ section.settings.heading_size }}px;
+    }
+    .section-{{ section.id }}-padding .brand-card__info .heading,
+    .section-{{ section.id }}-padding .brand-card__text a {
+      font-size: {{ section.settings.heading_size_block }}px;
+    }
+    .section-{{ section.id }}-padding .brand-card__info .sub_heading {
+      font-size: {{ section.settings.subheading_size_block }}px;
+    }
+    .section-{{ section.id }}-padding .brand-card__info .heading:before {
+      font-size: {{ section.settings.count_size_mb | times: 0.8 }};
+    }
+    .section-{{ section.id }}-padding .title-wrapper-with-link{
+      margin-bottom: {{section.settings.margin}}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="teams-member color-{{ section.settings.color_scheme }}{% if section.settings.title == blank %} no-heading{% endif %}">
+  <div
+    class="page-width section-{{section.settings.layout}} section-{{ section.id }}-padding isolate{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+    {% if settings.animations_reveal_on_scroll %}
+      data-cascade
+    {% endif %}
+  >
+    {%- unless section.settings.title == blank -%}
+      <div class="title-wrapper-with-link title-wrapper--no-top-margin {{ section.settings.text_align }}">
+        <h2 class="heading title inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          {{ section.settings.title }}
+        </h2>
+        {%- if section.settings.sub_heading != blank -%}
+          <div class="info subtitle{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+            {{ section.settings.sub_heading }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endunless -%}
+    {%- if section.blocks.size > 0 -%}
+        <div class="team__wrapper">
+            <div class="team__lists grid grid--{{ section.settings.columns_mobile }}-col-tablet-down grid--{{ section.settings.columns_desktop }}-col-desktop"
+              style="--grid-desktop-horizontal-spacing: {{ section.settings.column_gap }}px;
+              --grid-desktop-vertical-spacing: 36px"
+            >
+                {%- for block in section.blocks -%}
+                  {%- case block.type -%}
+                  {%- when 'member' -%}
+                  <div class="team--item {{block.type}} grid__item">
+                    <div
+                      class="image-team {% if block.settings.image != blank %} media{% else %} image--placeholder placeholder{% endif %}"
+                      {% if block.settings.image != blank %}
+                        style="padding-bottom: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;"
+                      {% endif %}
+                    >
+                      {%- if block.settings.image != blank -%}
+                        {%- capture sizes -%}
+                          (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px,
+                          (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)
+                        {%- endcapture -%}
+                        {{
+                          block.settings.image
+                          | image_url: width: 1500
+                          | image_tag: sizes: sizes, widths: '165, 360, 535, 750, 1070, 1500'
+                        }}
+                      {%- else -%}
+                        {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      {%- endif -%}
+                    </div>
+                    <div class="brand-card__info">
+                      {%- if block.settings.heading != blank -%}
+                      <div class="heading">
+                        {{ block.settings.heading }}
+                      </div>
+                      {%- endif -%}
+                      {%- if block.settings.sub_heading != blank -%}
+                      <div class="sub_heading">
+                        {{ block.settings.sub_heading }}
+                      </div>
+                      {%- endif -%}
+                      {%- if block.settings.instagram != blank or
+                        block.settings.x_twitter != blank or
+                        block.settings.facebook != blank or
+                        block.settings.twitter != blank
+                      -%}
+                        <div class="social-team">
+                            {%- if block.settings.instagram != blank -%}
+                                <a href="{{ block.settings.instagram }}" class="social-link">
+                                    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M16.8802 0.576172H1.53773C1.18533 0.576172 0.847355 0.716165 0.598166 0.965354C0.348977 1.21454 0.208984 1.55252 0.208984 1.90492V17.2474C0.208984 17.5998 0.348977 17.9378 0.598166 18.187C0.847355 18.4362 1.18533 18.5762 1.53773 18.5762H16.8802C17.2326 18.5762 17.5706 18.4362 17.8198 18.187C18.069 17.9378 18.209 17.5998 18.209 17.2474V1.90492C18.209 1.55252 18.069 1.21454 17.8198 0.965354C17.5706 0.716165 17.2326 0.576172 16.8802 0.576172ZM5.57398 15.9099H2.86773V7.31367H5.57398V15.9099ZM4.21898 6.12242C3.91201 6.12069 3.61242 6.02807 3.35804 5.85624C3.10365 5.68441 2.90586 5.44107 2.78964 5.15694C2.67342 4.87281 2.64397 4.56062 2.70501 4.25976C2.76605 3.95891 2.91484 3.68288 3.1326 3.46651C3.35037 3.25014 3.62735 3.10312 3.92858 3.04402C4.22982 2.98491 4.54182 3.01637 4.8252 3.13441C5.10858 3.25245 5.35064 3.4518 5.52083 3.70728C5.69103 3.96276 5.78173 4.26294 5.78148 4.56992C5.78438 4.77545 5.74587 4.97945 5.66824 5.16978C5.59062 5.3601 5.47547 5.53285 5.32966 5.67772C5.18385 5.8226 5.01037 5.93663 4.81955 6.01303C4.62873 6.08944 4.42449 6.12664 4.21898 6.12242ZM15.549 15.9174H12.844V11.2212C12.844 9.83617 12.2552 9.40867 11.4952 9.40867C10.6927 9.40867 9.90523 10.0137 9.90523 11.2562V15.9174H7.19898V7.31992H9.80149V8.51117H9.83648C10.0977 7.98242 11.0127 7.07867 12.409 7.07867C13.919 7.07867 15.5502 7.97492 15.5502 10.5999L15.549 15.9174Z" fill="currentColor"/>
+                                    </svg>                                    
+                                </a>
+                            {%- endif -%}
+                            {%- if block.settings.x_twitter != blank -%}
+                                <a href="{{ block.settings.x_twitter }}" class="social-link">
+                                    <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M13.9537 0.00390625H16.4838L10.9563 6.32153L17.459 14.9184H12.3674L8.37951 9.70443L3.81644 14.9184H1.28481L7.19706 8.16098L0.958984 0.00390625H6.17982L9.78453 4.76966L13.9537 0.00390625ZM13.0657 13.404H14.4677L5.41803 1.43876H3.91358L13.0657 13.404Z" fill="currentColor"/>
+                                    </svg>
+                                </a>
+                            {%- endif -%}
+                            {%- if block.settings.facebook != blank -%}
+                                <a href="{{ block.settings.facebook }}" class="social-link">
+                                    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_744_29206-{{ forloop.index }})">
+                                        <path d="M18.209 9.57617C18.209 4.60565 14.1795 0.576172 9.20898 0.576172C4.23846 0.576172 0.208984 4.60565 0.208984 9.57617C0.208984 13.7968 3.1149 17.3385 7.03494 18.3112V12.3266H5.17914V9.57617H7.03494V8.39105C7.03494 5.32781 8.4213 3.90797 11.4287 3.90797C11.999 3.90797 12.9829 4.01993 13.3853 4.13153V6.62453C13.1729 6.60221 12.8039 6.59105 12.3457 6.59105C10.87 6.59105 10.2998 7.15013 10.2998 8.60345V9.57617H13.2395L12.7345 12.3266H10.2998V18.5103C14.7562 17.9721 18.2093 14.1777 18.2093 9.57617H18.209Z" fill="currentColor"/>
+                                        </g>
+                                        <defs>
+                                        <clipPath id="clip0_744_29206-{{ forloop.index }}">
+                                        <rect width="18" height="18" fill="currentColor" transform="translate(0.208984 0.576172)"/>
+                                        </clipPath>
+                                        </defs>
+                                    </svg>
+                                </a>
+                            {%- endif -%}
+                            {%- if block.settings.twitter != blank -%}
+                                <a href="{{ block.settings.twitter }}" class="social-link">
+                                    <svg width="12" height="19" viewBox="0 0 12 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8.15899 18.5762C5.45899 18.5762 3.43398 17.1887 3.43398 13.8512V8.52617H0.958984V5.63867C3.65898 4.92617 4.78398 2.60117 4.93398 0.576172H7.74649V5.15117H11.009V8.52617H7.74649V13.1762C7.74649 14.5637 8.45898 15.0512 9.58399 15.0512H11.159V18.5762H8.15899Z" fill="currentColor"/>
+                                    </svg>
+                                </a>
+                            {%- endif -%}
+                        </div>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                  {%- when 'text' -%}
+                    <div class="team--item {{block.type}} grid__item">
+                      <div class="brand-card__text">
+                        <a href="{{block.settings.link}}">{{ block.settings.heading }}</a>
+                      </div>
+                  </div>
+                  {%- endcase -%}
+                {%- endfor -%}
+            </div>
+        </div>
+      {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Team",
+  "class": "section section-team-member",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.extension"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "t:sections.multicolumn.settings.title.label"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Font size heading",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mb",
+      "label": "Font size heading mobile",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "richtext",
+      "id": "sub_heading",
+      "label": "Info"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Font size info",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_mb",
+      "label": "Font size info mobile",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text align",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 4,
+      "label": "t:sections.multicolumn.settings.columns_desktop.label"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "min": 2,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Column gap",
+      "default": 22
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "range",
+      "id": "margin",
+      "label": "Heading margin",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_mb",
+      "label": "Heading margin mobile",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.multicolumn.settings.header_mobile.content"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:sections.multicolumn.settings.columns_mobile.options__1.label"
+        },
+        {
+          "value": "2",
+          "label": "t:sections.multicolumn.settings.columns_mobile.options__2.label"
+        }
+      ],
+      "default": "2",
+      "label": "t:sections.multicolumn.settings.columns_mobile.label"
+    },
+    {
+      "type": "header",
+      "content": "Settings block"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "layout_1",
+          "label": "Layout 1"
+        },
+        {
+          "value": "layout_2",
+          "label": "Layout 2"
+        }
+      ],
+      "default": "layout_2"
+    },
+    {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background color overlay",
+        "default": "#fcb800",
+        "info": "Only applicable to layout 1"
+    },
+    {
+        "type": "color",
+        "id": "color_icon",
+        "label": "Color",
+        "default": "#000000"
+    },
+    {
+        "type": "color",
+        "id": "color_text",
+        "label": "Color text",
+        "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_block",
+      "label": "Font size heading",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mb_block",
+      "label": "Font size heading mobile",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_block",
+      "label": "Font size subheading",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_mb_block",
+      "label": "Font size subheading mobile",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Member",
+      "type": "member",
+      "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default":"Robert Downey Jr"
+          },
+          {
+            "type": "text",
+            "id": "sub_heading",
+            "label": "Sub heading",
+            "default":"CEO Founder"
+          },
+          {
+            "type": "header",
+            "content": "Link social"
+          },
+          {
+            "type": "text",
+            "id": "instagram",
+            "label": "Link instagram"
+          },
+          {
+            "type": "text",
+            "id": "x_twitter",
+            "label": "Link X"
+          },
+          {
+            "type": "text",
+            "id": "facebook",
+            "label": "Link facebook"
+          },
+          {
+            "type": "text",
+            "id": "twitter",
+            "label": "Link twitter"
+          }
+      ]
+    },
+    {
+      "name": "Custom Text",
+      "type": "text",
+      "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default":"Robert Downey Jr"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Link"
+          }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Term Member",
+      "blocks": [
+        {
+          "type": "member"
+        },
+        {
+          "type": "member"
+        },
+        {
+          "type": "member"
+        },
+        {
+          "type": "member"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

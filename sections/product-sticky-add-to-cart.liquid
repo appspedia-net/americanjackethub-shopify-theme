@@ -1,0 +1,51 @@
+{%- assign product_form_id = 'product-form-' | append: section.id -%}
+{%- assign featured_media = product.featured_image.src -%}
+<product-sticky-add-to-cart class="produt-sticky-add-to-cart color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <div class="produt-sticky__wrapper d-flex j-c--space a-i--center">
+        <div class="sticky-item sticky-item-left d-flex a-i--center">
+          <div class="product__media">
+            <img srcset="{{ featured_media | img_url: '100x' }}" src="{{ featured_media | img_url: '100x' }}" alt="{{ featured_media.alt | default: shop.name | escape }}" sizes="100x" loading="lazy">
+          </div>
+          <div class="product__info">
+            <div class="product__title" {{ block.shopify_attributes }}>
+              <p>{{ product.title | escape }}</p>
+            </div>
+            {%- render 'price',
+              product: product,
+              use_variant: true,
+              show_badges: true,
+              price_class: 'price--large'
+            -%}
+          </div>
+        </div>
+        <div class="sticky-item sticky-item-right">
+          <div class="card__grouped">
+            {%- render 'buy-buttons',
+              block: block,
+              product: product,
+              product_form_id: product_form_id,
+              section_id: section.id,
+              show_pickup_availability: true
+            -%}
+          </div>
+        </div>
+    </div>
+  </div>
+</product-sticky-add-to-cart>
+{% schema %}
+    {
+      "name": "Sticky add to cart",
+      "tag": "section",
+      "class": "section",
+      "settings": [
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "t:sections.all.colors.label",
+          "info": "t:sections.all.colors.has_cards_info",
+          "default": "background-1"
+        }
+      ]
+    }
+{% endschema %}

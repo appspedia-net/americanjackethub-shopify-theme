@@ -1,0 +1,71 @@
+.text--column {
+	display: flex;
+	max-width: 800px;
+	margin: 0 auto;
+	gap: 40px 80px;
+    padding-left: var(--padding-container);
+    padding-right: var(--padding-container);
+}
+.text--column .heading {
+	margin-top: 40px;
+}
+.richtext--column__left {
+	width: 40%;
+}
+.richtext--column__right {
+	width: 60%;
+}
+.checklist__item {
+	display: flex;
+	gap: 20px;
+}
+.checklist__item + .checklist__item {
+	margin-top: 30px;
+}
+.checklist__icon {
+	display: inline-flex;
+	font-size: 18px;
+	font-size: 1.125rem;
+	flex: 0 0 32px;
+	width: 32px;
+	height: 32px;
+	background-color: #33ff93;
+	border-radius: 100%;
+	align-items: center;
+	justify-content: center;
+}
+.svg-icon {
+	display: inline-block;
+	line-height: 1;
+}
+.svg-icon svg {
+	width: 20px;
+	height: 20px;
+	fill: currentColor;
+	display: inline-block;
+}
+.checklist__item.none .checklist__icon {
+	background-color: #dadfe3;
+	color: #dadfe3;
+}
+.checklist__item.none .checklist__title,
+.checklist__item.none .checklist__description {
+	color: #7c818b;
+}
+
+@media screen and (max-width: 749px) {
+    .section--text-column .page-width {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .text--column {
+        flex-direction: column;
+    }
+    .richtext--column__left {
+        text-align: center;
+    }
+    .richtext--column__left,
+    .richtext--column__right {
+        width: 100%;
+    }
+}

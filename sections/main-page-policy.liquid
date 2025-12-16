@@ -1,0 +1,249 @@
+{{ 'section-main-page.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    {% if section.blocks.size > 0 and section.settings.enable_sidebar %}
+    --width-sidebar: 238px;
+    {% else %}
+    --width-sidebar: 0;
+    {% endif %}
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  .main-page-policy .heading_sidebar,
+  .policy-content .h3.heading {
+    font-size: {{ section.settings.title_size }}px;
+    color: {{ section.settings.color_title }};
+  }
+  .main-page-policy .sidebar__button {
+    font-size: {{ section.settings.heading_tab_size }}px;
+    color: {{ section.settings.color_heading }};
+  }
+  .main-page-policy .sidebar__button.active {
+    color: {{ section.settings.color_heading_active }};
+    text-decoration: underline;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="page-width section-{{ section.id }}-padding">
+  <h1 class="main-page-title page-title heading {{ section.settings.align }} {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+    {{ page.title | escape }}
+  </h1>
+  {%- if section.blocks.size > 0 -%}
+    <div class="policy-wrapper">
+        {%- if section.settings.enable_sidebar -%}
+            <div class="policy-sidebar">
+                {%- if section.settings.heading_sidebar != blank -%}
+                    <h2 class="heading_sidebar">
+                        {{ section.settings.heading_sidebar }}
+                    </h2>
+                {%- endif -%}
+                <ul class="policy-sidebar__list" role="list">
+                    {%- for block in section.blocks -%}
+                      <li class="policy-sidebar__item">
+                        <a class="sidebar__button{% if forloop.first %} active{% endif %}" href="#{{ block.id }}">{{ block.settings.sidebar_label }}</a>
+                        </li>
+                    {%- endfor -%}
+                </ul>
+            </div>
+        {%- endif -%}
+        <div class="policy-content">
+            {%- for block in section.blocks -%}
+              <div class="policy-content__item" id="{{ block.id }}">
+                {%- if block.settings.heading != blank -%}
+                    <h3 class="heading">{{ block.settings.heading }}</h3>
+                {%- endif -%}
+                {%- if block.settings.content != blank -%}
+                    <div class="rte">{{ block.settings.content }}</div>
+                {%- endif -%}
+            </div>
+            {%- endfor -%}
+        </div>
+    </div>
+  {%- endif -%}
+</div>
+<script>
+    // Add smooth scrolling behavior to anchor links
+    document.querySelectorAll('a.sidebar__button[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector("a.sidebar__button.active").classList.remove("active");
+            this.classList.add("active");
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+    
+            if (targetElement) {
+                let headerHeight = document.querySelector('.section-header').offsetHeight;
+                let heightTopHeight = 0;
+                let offsetTop = headerHeight.offsetTop;
+                if (document.querySelector('.header-top')) {
+                    heightTopHeight = document.querySelector('.header-top').offsetHeight;
+                    if (offsetTop > heightTopHeight) {
+                    heightTopHeight = 0;
+                    }
+                }
+                window.scrollTo({
+                    top: targetElement.offsetTop - (headerHeight + heightTopHeight),
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+</script>
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "class": "section main-page-policy",
+  "settings": [
+    {
+      "type": "select",
+      "id": "align",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.option_2.label"
+        }
+      ],
+      "default": "left",
+      "label": "t:sections.slideshow.blocks.slide.settings.text_alignment.label"
+    },
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sidebar",
+      "label": "Enable sidebar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading_sidebar",
+      "label": "Heading sidebar",
+      "default": "Help topic"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Font size title",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "color_title",
+      "label": "Color title",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "heading_tab_size",
+      "label": "Font size heading",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "color_heading",
+      "label": "Color heading",
+      "default": "#9C9C9C"
+    },
+    {
+      "type": "color",
+      "id": "color_heading_active",
+      "label": "Color heading active",
+      "default": "#436CFF"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "name": "item",
+      "type": "Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "sidebar_label",
+          "label": "Sidebar label",
+          "default": "Shipping"
+        },
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Shipping Policy "
+        },
+        {
+            "type": "richtext",
+            "id": "content",
+            "label": "Content"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,216 @@
+{%- style -%}
+    .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .icon-with-text__link {
+        flex-direction: column;
+        display: flex;
+    }
+    .nav-bar__bottom {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        min-height: 50px;
+        z-index: 4;
+        box-shadow: 0px -8px 24px 0px rgba(13, 20, 33, 0.12);
+    }
+    .nav-bar__bottom .icon-with-text {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        padding: 0;
+    }
+    .nav-bar__bottom span {
+        display: block;
+    }
+    .nav-bar__bottom .text {
+        padding-top:3px;
+    }
+    .nav-bar__bottom .icon{
+       height: {{ section.settings.width_icon }}px;
+       width: {{ section.settings.width_icon }}px;
+    }
+{%- endstyle -%}
+<div class="color-{{ section.settings.color_scheme }} nav-bar__bottom page-width hidden-pc">
+  <div
+    class="section-{{ section.id }}-padding isolate"
+  >
+    <div class="icon-with-text__wrapper">
+      <ul
+        class="icon-with-text__list list-unstyled d-flex j-c--space"
+        role="list"
+        style="
+          --grid-desktop-horizontal-spacing: 0px;
+          --icon-width: {{ section.settings.width_icon }}px
+        "
+      >
+        {%- for block in section.blocks -%}
+          <li
+            class="icon-with-text__bar"
+            {{ block.shopify_attributes }}
+          >
+            <a class="d-flex a-i--center j-c--center icon-with-text__link link" 
+              href="{{ block.settings.link }}"
+              {% if block.settings.is_cart %}
+                  role="button" aria-haspopup="dialog"
+                  cart__bar
+              {% endif %}
+              {% if block.settings.is_acount %}
+                data-drawer-login
+              {% endif %}
+            >
+              {%- if block.settings.image == null -%}
+                {%- render 'icon', icon: block.settings.icon -%}
+              {%- else -%}
+                <img
+                  src="{{ block.settings.image | image_url }}"
+                  {% if block.settings.image.alt != blank %}
+                    alt="{{ block.settings.image.alt | escape }}"
+                  {% else %}
+                    role="presentation"
+                  {% endif %}
+                  height="auto"
+                  width="auto"
+                  loading="lazy"
+                >
+              {%- endif -%}
+              {%- if block.settings.heading != blank -%}
+                <span class="text" style="font-size: {{ section.settings.heading_size }}px;">
+                  {{- block.settings.heading -}}
+                </span>
+              {%- endif -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Navigation bar",
+  "class": "shopify-section--bar",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This section only show on mobile"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "range",
+      "id": "width_icon",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Icon width",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Font size text link",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "is_cart",
+          "label": "Is cart",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "is_acount",
+          "label": "Is account",
+          "default": false
+        },
+        
+        {
+          "type": "select",
+          "id": "icon",
+          "options": [
+            {
+              "value": "home",
+              "label": "Home"
+            },
+            {
+              "value": "account",
+              "label": "Account"
+            },
+            {
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "value": "category",
+              "label": "category"
+            },
+            {
+              "value": "wishlist",
+              "label": "Wishlist"
+            }
+          ],
+          "default": "home",
+          "label": "Select icon"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Heading",
+          "label": "Heading",
+          "info": "t:sections.main-product.blocks.icon_with_text.settings.heading.info"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

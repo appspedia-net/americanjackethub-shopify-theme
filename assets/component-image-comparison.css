@@ -1,0 +1,171 @@
+.image-comparison .image-with-text__media{
+    padding: 0;
+}
+.image-comparison .image-with-text__media img{
+    height: 100%;
+    width: 100%;
+    max-width: 100%!important;
+    bottom: 0;
+}
+.image-comparison .image-with-text__grid{
+    justify-content: space-between;
+    gap: 30px;
+}
+.image-comparison .image-with-text__content{
+    max-width: 600px;
+    margin: 0 auto;
+}
+.image-comparison .group-links,
+.image-comparison .image-with-text__content .group-button{
+    margin-top: 0;
+    margin-bottom: var(--margin-bottom-mb);
+}
+.image-comparison .group-links,
+.image-comparison .group-links .link{
+    display: inline-flex;
+    justify-content: left;
+    flex-wrap: wrap;
+    gap: 24px;
+    row-gap: 10px;
+    width: 100%;
+    word-break: break-word;
+}
+.image-comparison .group-links .link{
+    gap: 8px;
+    font-weight: 500;
+    transition: all .4s;
+    font-size: var(--font-size-mb);
+    flex-wrap: nowrap;
+    width: auto;
+}
+.image-comparison .group-links .link:hover{
+    transform: translateY(-3px);
+}
+.image-comparison .image-with-text__text-item,
+.image-comparison .image-with-text__content{
+    padding: 0;
+}
+.image-comparison .image-with-text__media{
+    display: block;
+}
+.image-comparison .image-with-text__media-item{
+    max-width: 100%;
+}
+.image-comparison .images-wrapper {
+    --left-pos: 50%;
+    --top-pos: 50%;
+    position: relative;
+}
+
+.image-comparison .image-comparison__item img {
+    display: block;
+    vertical-align: middle;
+    cursor: initial;
+}
+
+.image-comparison .compare-image-overlay {
+    width: var(--left-pos);
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transition: width 1s ease;
+    will-change: width;
+}
+
+.image-comparison .compare-image-overlay img {
+    object-fit: cover;
+    object-position: left;
+    z-index: 2;
+}
+
+.image-comparison .image-comparison-slider {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    width: 40px;
+    height: 100%;
+    background-color: transparent;
+    top: 0;
+    left: var(--left-pos);
+    transform: translateX(-50%);
+    display: block;
+    transition: left 1s ease;
+    will-change: left;
+} 
+
+.image-comparison .loaded .compare-image-overlay,
+.image-comparison .loaded .image-comparison-slider {
+    transition: unset;
+    will-change: unset;
+}
+
+.image-comparison .image-with-text__media img{
+    position: absolute!important;
+}
+.image-comparison .image-comparison-slider .slider-divider {
+    height: 100%;
+    width: 8px;
+    background: #D8DCE3;
+    margin: 0 auto;
+    display: block;
+} 
+.image-comparison .image-comparison-slider .slider-thumb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    background: #ffffff;
+    transform: translate(-50%, -50%);
+    cursor: ew-resize;
+    pointer-events: auto;
+    border-radius: 50%;
+    box-shadow: 0px 8px 16px 0px rgba(18, 31, 46, 0.16);
+}
+
+.image-comparison .image-comparison-slider .slider-thumb-arrows {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transform: rotate(90deg);
+    transition: transform 1s ease;
+}
+
+.image-comparison .image-comparison-slider .slider-thumb-arrows svg {
+    width: 20px;
+    height: 20px;
+    color: rgb(var(--color-heading));
+    transform: rotate(-90deg);
+}
+
+
+@media screen and (min-width:750px){
+    .image-comparison .image-with-text__media-item{
+        max-width: calc(57% - var(--grid-desktop-horizontal-spacing) / 2);
+    }
+    .image-comparison .image-with-text__text-item{
+        max-width: calc(43% - var(--grid-desktop-horizontal-spacing) / 2);
+    }
+    .image-comparison .group-links,
+    .image-comparison .image-with-text__content .group-button{
+        margin-bottom: var(--margin-bottom);
+    }
+    .image-comparison .image-with-text__grid{
+        gap: 50px;
+    }
+    .image-comparison .group-links{
+        flex-wrap: nowrap;
+    }
+    .image-comparison .group-links .link{
+        font-size: var(--font-size);
+    }
+}
+@media screen and (min-width:1025px){
+    .image-comparison .image-with-text__grid{
+        gap: 80px;
+    }
+}

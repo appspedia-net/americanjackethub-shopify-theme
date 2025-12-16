@@ -1,0 +1,108 @@
+.team--item {
+	position: relative;
+}
+.teams-member .section-layout_1 .team--item:hover .social-team {
+	opacity: 1;
+	visibility: visible;
+}
+.social-team {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 15px;
+	flex-wrap: wrap;
+}
+.social-team .social-link {
+	color: currentcolor;
+	display: flex;
+}
+
+.teams-member .team__wrapper .brand-card__info{
+	padding: 15px 15px 25px;
+}
+.teams-member .section-layout_2 .team__wrapper .brand-card__info{
+	padding: 10px 0 25px;
+
+}
+.teams-member .brand-card__info .heading{
+	margin: 0 0 2px;
+    font-weight: 600;
+}
+.teams-member .section-layout_2  .brand-card__info .heading{
+	margin: 0 0 4px;
+}
+
+.teams-member .brand-card__info .social-team{
+	margin-top: 15px;
+}
+
+.teams-member .brand-card__text a{
+	font-weight: 600;
+	text-transform: uppercase;
+}
+.teams-member .section-layout_1 .brand-card__text {
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	width: 100%;
+	max-width: 200px; 
+    text-align: center;
+}
+@media screen and (max-width:1024px){
+	.teams-member .team__wrapper .team--item.text{
+		height: 120px;
+		border: 1px solid rgb(var(--color-input-border));
+	}
+}
+@media screen and (min-width:1025px){
+	.teams-member .section-layout_1 .team__wrapper .team--item.member:after {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		content: "";
+		opacity: 0;
+		transition: .5s;
+	  }
+	.teams-member .section-layout_1 .team__wrapper .brand-card__info{
+		position: absolute;
+		left: 25px;
+		bottom: 20px;
+		z-index: 10;
+	}
+	.teams-member .section-layout_1 .brand-card__info .heading{
+		transform: translateY(100%);
+		transition: .5s;
+		opacity: 0;
+		-webkit-transform: translateY(100%);
+		-moz-transform: translateY(100%);
+		-ms-transform: translateY(100%);
+		-o-transform: translateY(100%);
+}
+	.teams-member .section-layout_1 .brand-card__info .sub_heading{
+		transform: translateY(100%);
+		transition: .5s;
+		opacity: 0;
+	}
+	.teams-member .section-layout_1 .brand-card__info .social-team{
+		transform: translateY(100%);
+		transition: .5s;
+		opacity: 0;
+	}
+	
+	.teams-member .section-layout_1 .team__wrapper .team--item:hover:after {
+		opacity: .9;
+	}
+	
+	.teams-member .section-layout_1 .team__wrapper .team--item:hover .brand-card__info .heading,
+	.teams-member .section-layout_1 .team__wrapper .team--item:hover .brand-card__info .sub_heading,
+	.teams-member .section-layout_1 .team__wrapper .team--item:hover .brand-card__info .social-team {
+		transform: translateY(0);
+		opacity: 1;
+	}
+	.teams-member .section-layout_1 .team__wrapper .brand-card__info{
+		padding: 0;
+	}
+}

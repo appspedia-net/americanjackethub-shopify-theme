@@ -1,0 +1,8 @@
+<modal-opener class="product-popup-modal__opener product-popup-modal__sizeChart no-js-hidden quick-add-hidden" data-modal="#PopupModal-sizeChart">
+    <button id="ProductPopup-sizeChart" class="product-popup-modal__button link" type="button" aria-haspopup="dialog"> 
+        {% render 'icon' with 'size-chart' %}
+        {%- if settings.title_size_chart != blank -%}
+            <span>{{settings.title_size_chart}}</span>
+        {%- endif %}
+    </button>
+</modal-opener>

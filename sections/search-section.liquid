@@ -1,0 +1,362 @@
+{{ 'search-section.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .merge__button .field__button {
+    --buttons-size: {{ settings.buttons_size | minus: 4 }}px;
+  }
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="search-section{% if section.settings.full_width == false %} page-width{% endif %}">
+  <div
+    class="search__wrapper center color-{{ section.settings.color_scheme }} gradient content-container isolate{% if section.settings.full_width %} content-container--full-width{% endif %} section-{{ section.id }}-padding"
+    id="section-{{ section.id }}"
+  >
+    {%- for block in section.blocks -%}
+      <style>
+        .block-{{  block.id }} {
+          padding-bottom: {{ block.settings.padding_bottom_mb }}px;
+        }
+        @media screen and (min-width: 750px) {
+          .block-{{  block.id }} {
+            padding-bottom: {{ block.settings.padding_bottom }}px;
+          }
+        }
+      </style>
+      <div class="block-{{  block.id }}">
+        {%- case block.type -%}
+          {%- when '@app' -%}
+            {% render block %}
+          {%- when 'heading' -%}
+            <h2
+              class="inline-richtext heading{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+              {{ block.shopify_attributes }}
+              {% if settings.animations_reveal_on_scroll %}
+                data-cascade
+              {% endif %}
+              style="
+                {% if settings.animations_reveal_on_scroll %}
+                  --animation-order: {{ forloop.index }};
+                {% endif %}
+                font-size: {{ block.settings.heading_size }}px;
+              "
+            >
+              {{ block.settings.heading }}
+            </h2>
+          {%- when 'paragraph' -%}
+            <div
+              class="sub_heading rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+              {{ block.shopify_attributes }}
+              {% if settings.animations_reveal_on_scroll %}
+                data-cascade
+                style="--animation-order: {{ forloop.index }};"
+              {% endif %}
+            >
+              {{ block.settings.text }}
+            </div>
+          {%- when 'menu' -%}
+            <div
+              class="search__menu--block {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+              {{ block.shopify_attributes }}
+              {% if settings.animations_reveal_on_scroll %}
+                data-cascade
+                style="--animation-order: {{ forloop.index }};"
+              {% endif %}
+            >
+              <ul class="d-flex a-i--center list-unstyled">
+                {%- for link in block.settings.menu.links -%}
+                  <li>
+                    <a
+                      href="{{ link.url }}"
+                      class="link link__animation"
+                    >
+                      {{ link.title }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- when 'search' -%}
+            <div {{ block.shopify_attributes }} class="{% if block.settings.button_in_input %}merge__button{% endif %}">
+              <form action="{{ routes.search_url }}" method="get" role="search" class="search search__form--section">
+                <div class="field">
+                  <input
+                    class="search__input field__input"
+                    id="{{ input_id }}"
+                    type="search"
+                    name="q"
+                    value="{{ search.terms | escape }}"
+                    placeholder="{{ 'general.search.search' | t }}"
+                    {%- if settings.predictive_search_enabled -%}
+                      role="combobox"
+                      aria-expanded="false"
+                      aria-owns="predictive-search-results"
+                      aria-controls="predictive-search-results"
+                      aria-haspopup="listbox"
+                      aria-autocomplete="list"
+                      autocorrect="off"
+                      autocomplete="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                    {%- endif -%}
+                  >
+                  <label class="field__label" hidden for="{{ input_id }}">{{ 'general.search.search' | t }}</label>
+                  <input type="hidden" name="options[prefix]" value="last">
+                  <button
+                    type="submit"
+                    class="search__button field__button"
+                    aria-label="{{ 'general.search.search' | t }}"
+                  >
+                    {%- render 'icon' with 'search' -%}
+                  </button>
+                </div>
+              </form>
+            </div>
+        {%- endcase -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Search",
+  "tag": "section",
+  "class": "section--search",
+  "disabled_on": {
+    "groups": ["header", "custom.extension"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "default": true,
+      "label": "t:sections.newsletter.settings.full_width.label"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.newsletter.settings.paragraph.content"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "t:sections.newsletter.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "heading",
+          "default": "<p>Heading</p>",
+          "label": "t:sections.newsletter.blocks.heading.settings.heading.label"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Font size heading",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "default": 28,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "t:sections.all.padding.padding_bottom",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mb",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom on Mobile",
+          "default": 5
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "name": "t:sections.newsletter.blocks.paragraph.name",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Be the first to know about new collections and exclusive offers.</p>",
+          "label": "t:sections.newsletter.blocks.paragraph.settings.paragraph.label"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "t:sections.all.padding.padding_bottom",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mb",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom on Mobile",
+          "default": 5
+        }
+      ]
+    },
+    {
+      "type": "search",
+      "name": "Search form",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "button_in_input",
+          "label": "Show button in input",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "t:sections.all.padding.padding_bottom",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mb",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom on Mobile",
+          "default": 5
+        }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Menu",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "t:sections.all.padding.padding_bottom",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mb",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom on Mobile",
+          "default": 5
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "search"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

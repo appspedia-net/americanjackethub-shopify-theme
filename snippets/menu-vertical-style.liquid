@@ -1,0 +1,82 @@
+<ul
+    class="vertical-menu__list vertical-menu__{{ menu_type }} color-{{ color_scheme }}"
+    role="list"
+    style="
+        {% if background_image != blank and enable_banner %}
+            background-image: url({{ background_image | img_url: 'master' }});
+            background-repeat: no-repeat;
+            background-position: {{ bg_position | replace: "_", " " }};
+            background-size: {{ bg_size }};
+            background-attachment: local;
+        {% endif %}
+        {% if width_layout == 'custom' %}
+            width: {{ custom_width }}
+        {% endif %}
+    "
+  >
+    {%- for childlink in link.links -%}
+      <li>
+        <a
+          href="{{ childlink.url }}"
+          class="mega-menu__link mega-menu__link--level-2 link{% if childlink.current %} mega-menu__link--active{% endif %}"
+          {% if childlink.current %}
+            aria-current="page"
+          {% endif %}
+        >
+          {{ childlink.title | escape }}
+        </a>
+        {%- if childlink.links != blank -%}
+          <ul class="list-unstyled" role="list">
+            {%- for grandchildlink in childlink.links -%}
+              <li>
+                <a
+                  id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                  href="{{ grandchildlink.url }}"
+                  class="mega-menu__link link{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
+                  {% if grandchildlink.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{ grandchildlink.title | escape }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+    {%- if heading != blank or text != blank or link_label != blank -%}
+        <li class="mega-menu__text color-{{ color_scheme }}">
+            {% if heading != blank %}
+                <h4 class="heading mega-menu__text--heading"
+                    style="font-size: {{ heading_size }}px; margin-bottom: {{ heading_margin }}px"
+                >
+                    {{ heading }}
+                </h4>
+            {% endif %}
+            {%- if text != blank -%}
+                <div class="rte" style="font-size: {{ text_size }}px; margin-bottom: {{ content_margin }}px">
+                  {{ text }}
+                </div>
+            {%- endif -%}
+            {%- if link_label != blank and link != blank -%}
+                <a
+                  class="{{ button_style }}{% if button_style == 'link' %} link-decoration{% endif %}"
+                  {% if link == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ link }}"
+                  {% endif %}
+                  {% if button_style == 'button' %}
+                    style="--buttons-size: {{ button_height }}px; min-width: {{ button_width }}px"
+                  {% endif %}
+                >
+                  {{- link_label | escape -}}
+                  <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 12.7795L12 4.77954M12 4.77954H6M12 4.77954V10.7795" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>                    
+                </a>
+            {%- endif -%}
+        </li>
+    {%- endif -%}
+</ul>

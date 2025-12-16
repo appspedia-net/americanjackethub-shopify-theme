@@ -1,0 +1,62 @@
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+<style>
+  @media screen and (max-width: 749px) {
+    .related-blog .blog-articles {
+      display: flex;
+      column-gap: 12px;
+    }
+    .related-blog .blog__post.article {
+      max-width: 310px;
+      width: 80%;
+    }
+  }
+</style>
+<div class="related-blog">
+  <div
+    class="article-template__related{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+  >
+    {%- if section.settings.heading_related != blank -%}
+      <h2
+        class="heading"
+        style="font-size: {{ section.settings.font_heading }}px"
+      >
+        {{ section.settings.heading_related }}
+      </h2>
+    {%- endif -%}
+    <div
+      class="blog-articles grid slider slider--tablet blog-articles--{{ section.settings.columns_desktop }}"
+      style="--grid-desktop-horizontal-spacing: {{ section.settings.column_gap }}px"
+    >
+      {%- assign count = 0 -%}
+      {%- for a in blog.articles -%}
+        {%- if article.handle != a.handle -%}
+          {%- assign count = count | plus: 1 -%}
+          {%- if count > section.settings.blogs_to_show -%}
+            {%- break -%}
+          {%- endif -%}
+          <div
+            class="blog-articles__article blog__post article slider__slide slider__slide--full-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+            {% if settings.animations_reveal_on_scroll %}
+              data-cascade
+              style="--animation-order: {{ forloop.index }};"
+            {% endif %}
+          >
+            {%- render 'article-card',
+              article: a,
+              media_height: 'adapt',
+              media_aspect_ratio: a.image.aspect_ratio,
+              show_image: true,
+              show_date: section.settings.show_date,
+              show_author: section.settings.show_author,
+              show_excerpt: section.settings.show_excerpt,
+              horizontal_class: false,
+              show_category: section.settings.show_category,
+              show_comment: section.settings.show_comment,
+              show_more: section.settings.show_more
+            -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>

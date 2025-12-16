@@ -1,0 +1,981 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  .field {
+    position: relative;
+  }
+  #showPasswordCheckbox,
+  #showPasswordCheckboxRegister {
+    display: none;
+  }
+  .showPasswordCheckbox + label {
+    display: flex;
+    position: absolute;
+    bottom: 11px;
+    right: 16px;
+    color: rgb(var(--color-input));
+    cursor: pointer;
+  }
+  .showPasswordCheckbox:checked + label {
+    color: 	var(--body-color);
+  }
+
+  @media screen and (min-width: 1200px) {
+    {%- if section.settings.background != blank -%}
+      .section-{{ section.id }}-padding {
+        background-image: url({{ section.settings.background | img_url: 'master' }});
+        background-repeat: no-repeat;
+        background-position: center right;
+        background-size: cover;
+      }
+    {%- endif -%}
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  
+{%- endstyle -%}
+<div class="page-width page-width-custom section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}">
+  <div class="customer__wrapper">
+    <div class="customer-item customer-account">
+      <div class="customer login">
+        <h1 id="recover" tabindex="-1" class="heading">
+          {{ 'customer.recover_password.title' | t }}
+        </h1>
+        <div>
+          <p>
+            {{ 'customer.recover_password.subtext' | t }}
+          </p>
+      
+          {%- form 'recover_customer_password' -%}
+            {% assign recover_success = form.posted_successfully? %}
+            <div class="field">
+              <input
+                type="email"
+                value=""
+                name="email"
+                id="RecoverEmail"
+                autocorrect="off"
+                autocapitalize="off"
+                autocomplete="email"
+                {% if form.errors %}
+                  aria-invalid="true"
+                  aria-describedby="RecoverEmail-email-error"
+                  autofocus
+                {% endif %}
+                placeholder="{{ 'customer.login_page.email' | t }}"
+              >
+              <label for="RecoverEmail">
+                {{ 'customer.login_page.email' | t }}
+              </label>
+            </div>
+            {%- if form.errors -%}
+              <small id="RecoverEmail-email-error" class="form__message">
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 13 13">
+                  <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+                  <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+                  <path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/>
+                  <path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke="#EB001B" stroke-width="0.7">
+                </svg>
+                {{ form.errors.messages.form }}
+              </small>
+            {%- endif -%}
+      
+            <button>
+              {{ 'customer.login_page.submit' | t }}
+            </button>
+      
+            <a href="#login">
+              {{ 'customer.login_page.cancel' | t }}
+            </a>
+          {%- endform -%}
+        </div>
+      
+        <h1 id="login" tabindex="-1" class="heading">
+          {{ 'customer.login_page.title' | t }}
+        </h1>
+        <div class="customer-form">
+          <p class="subtext">
+            {{ 'customer.login_page.subtext' | t }}
+          </p>
+          {%- if recover_success == true -%}
+            <h3 class="form__message" tabindex="-1" autofocus>
+              <svg aria-hidden="true" focusable="false" viewBox="0 0 13 13">
+                <path d="M6.5 12.35C9.73087 12.35 12.35 9.73086 12.35 6.5C12.35 3.26913 9.73087 0.65 6.5 0.65C3.26913 0.65 0.65 3.26913 0.65 6.5C0.65 9.73086 3.26913 12.35 6.5 12.35Z" fill="#428445" stroke="white" stroke-width="0.7"/>
+                <path d="M5.53271 8.66357L9.25213 4.68197" stroke="white"/>
+                <path d="M4.10645 6.7688L6.13766 8.62553" stroke="white">
+              </svg>
+              {{ 'customer.recover_password.success' | t }}
+            </h3>
+          {%- endif -%}
+          {%- form 'customer_login', novalidate: 'novalidate' -%}
+            {%- if form.errors -%}
+              <h2 class="form__message" tabindex="-1" autofocus>
+                <span class="visually-hidden">{{ 'accessibility.error' | t }} </span>
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 13 13">
+                  <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+                  <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+                  <path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/>
+                  <path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke="#EB001B" stroke-width="0.7">
+                </svg>
+                {{ 'templates.contact.form.error_heading' | t }}
+              </h2>
+              {{ form.errors | default_errors }}
+            {%- endif -%}
+      
+            <div class="field">
+              <input
+                type="email"
+                name="customer[email]"
+                id="CustomerEmail"
+                autocomplete="email"
+                autocorrect="off"
+                autocapitalize="off"
+                {% if form.errors contains 'form' %}
+                  aria-invalid="true"
+                {% endif %}
+                placeholder="{{ 'customer.login_page.email' | t }}"
+              >
+              <label for="CustomerEmail">
+                {{ 'customer.login_page.email' | t }}
+              </label>
+            </div>
+      
+            {%- if form.password_needed -%}
+              <div class="field">
+                <input
+                  type="password"
+                  value=""
+                  name="customer[password]"
+                  id="CustomerPassword"
+                  autocomplete="current-password"
+                  {% if form.errors contains 'form' %}
+                    aria-invalid="true"
+                  {% endif %}
+                  placeholder="{{ 'customer.login_page.password' | t }}"
+                >
+                <label for="CustomerPassword">
+                  {{ 'customer.login_page.password' | t }}
+                </label>
+                <input type="checkbox" id="showPasswordCheckbox" class="showPasswordCheckbox">
+                <label for="showPasswordCheckbox">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 20 20">
+                    <path d="M19.872 10.166c-0.047-0.053-1.182-1.305-2.956-2.572-1.047-0.748-2.1-1.344-3.13-1.773-1.305-0.544-2.579-0.82-3.786-0.82s-2.481 0.276-3.786 0.82c-1.030 0.429-2.083 1.026-3.13 1.773-1.774 1.267-2.909 2.52-2.956 2.572-0.171 0.19-0.171 0.479 0 0.669 0.047 0.053 1.182 1.305 2.956 2.572 1.047 0.748 2.1 1.344 3.13 1.773 1.305 0.544 2.579 0.82 3.786 0.82s2.481-0.276 3.786-0.82c1.030-0.429 2.083-1.026 3.13-1.773 1.774-1.267 2.909-2.52 2.956-2.572 0.171-0.19 0.171-0.479 0-0.669zM12.574 6.438c0.907 0.763 1.426 1.873 1.426 3.062 0 2.206-1.794 4-4 4s-4-1.794-4-4c0-1.188 0.519-2.299 1.426-3.062 0.822-0.268 1.691-0.438 2.574-0.438s1.752 0.17 2.574 0.438zM16.317 12.606c-1.533 1.092-3.873 2.394-6.317 2.394s-4.784-1.302-6.317-2.394c-1.157-0.824-2.042-1.658-2.489-2.106 0.447-0.448 1.332-1.281 2.489-2.106 0.53-0.378 1.156-0.78 1.85-1.145-0.347 0.688-0.533 1.455-0.533 2.251 0 2.757 2.243 5 5 5s5-2.243 5-5c0-0.796-0.186-1.563-0.533-2.251 0.694 0.365 1.32 0.768 1.85 1.145 1.157 0.824 2.042 1.658 2.489 2.106-0.447 0.448-1.332 1.281-2.489 2.106z" fill="#666666"/>
+                  </svg>                
+                </label>
+              </div>
+            {%- endif -%}
+      
+            <button class="button button--full-width">
+              {{ 'customer.login_page.sign_in' | t }}
+            </button>
+      
+            <div class="has_account">
+              {{ 'customer.login_page.create_account_html' | t: link: routes.account_register_url }}
+            </div>
+          {%- endform -%}
+          {%- form 'create_customer', novalidate: 'novalidate' -%}
+            {%- if form.errors -%}
+              <h2 class="form__message" tabindex="-1" autofocus>
+                <svg aria-hidden="true" focusable="false">
+                  <use href="#icon-error" />
+                </svg>
+                {{ 'templates.contact.form.error_heading' | t }}
+              </h2>
+              <ul>
+                {%- for field in form.errors -%}
+                  <li>
+                    {%- if field == 'form' -%}
+                      {{ form.errors.messages[field] }}
+                    {%- else -%}
+                      <a href="#RegisterForm-{{ field }}">
+                        {{ form.errors.translated_fields[field] | capitalize }}
+                        {{ form.errors.messages[field] }}
+                      </a>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+            <div class="field">
+              <input
+                type="text"
+                name="customer[first_name]"
+                id="RegisterForm-FirstName"
+                {% if form.first_name %}
+                  value="{{ form.first_name }}"
+                {% endif %}
+                autocomplete="given-name"
+                placeholder="{{ 'customer.register.first_name' | t }}"
+              >
+              <label for="RegisterForm-FirstName">
+                {{ 'customer.register.first_name' | t }}
+              </label>
+            </div>
+            <div class="field">
+              <input
+                type="text"
+                name="customer[last_name]"
+                id="RegisterForm-LastName"
+                {% if form.last_name %}
+                  value="{{ form.last_name }}"
+                {% endif %}
+                autocomplete="family-name"
+                placeholder="{{ 'customer.register.last_name' | t }}"
+              >
+              <label for="RegisterForm-LastName">
+                {{ 'customer.register.last_name' | t }}
+              </label>
+            </div>
+            <div class="field">
+              <input
+                type="email"
+                name="customer[email]"
+                id="RegisterForm-email"
+                {% if form.email %}
+                  value="{{ form.email }}"
+                {% endif %}
+                spellcheck="false"
+                autocapitalize="off"
+                autocomplete="email"
+                aria-required="true"
+                {% if form.errors contains 'email' %}
+                  aria-invalid="true"
+                  aria-describedby="RegisterForm-email-error"
+                {% endif %}
+                placeholder="{{ 'customer.register.email' | t }}"
+              >
+              <label for="RegisterForm-email">
+                {{ 'customer.register.email' | t }}
+              </label>
+            </div>
+            {%- if form.errors contains 'email' -%}
+              <span id="RegisterForm-email-error" class="form__message">
+                <svg aria-hidden="true" focusable="false">
+                  <use href="#icon-error" />
+                </svg>
+                {{ form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email }}.
+              </span>
+            {%- endif -%}
+            <div class="field">
+              <input
+                type="password"
+                name="customer[password]"
+                id="RegisterForm-password"
+                aria-required="true"
+                {% if form.errors contains 'password' %}
+                  aria-invalid="true"
+                  aria-describedby="RegisterForm-password-error"
+                {% endif %}
+                placeholder="{{ 'customer.register.password' | t }}"
+              >
+              <label for="RegisterForm-password">
+                {{ 'customer.register.password' | t }}
+              </label>
+              <input type="checkbox" id="showPasswordCheckboxRegister" class="showPasswordCheckbox">
+              <label for="showPasswordCheckboxRegister">
+                <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11.484 10.5869C11.109 10.9621 10.8983 11.4708 10.8984 12.0013C10.8985 12.5317 11.1093 13.0404 11.4845 13.4154C11.8596 13.7904 12.3684 14.0011 12.8988 14.001C13.4293 14.0009 13.938 13.7901 14.313 13.4149M17.5794 16.673C16.1767 17.5507 14.5531 18.0109 12.8984 18C9.29844 18 6.29844 16 3.89844 12C5.17044 9.88003 6.61044 8.32203 8.21844 7.32603M11.0784 6.18003C11.6775 6.05876 12.2873 5.99845 12.8984 6.00003C16.4984 6.00003 19.4984 8.00003 21.8984 12C21.2324 13.11 20.5194 14.067 19.7604 14.87M3.89844 3L21.8984 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>                               
+              </label>
+            </div>
+            {%- if form.errors contains 'password' -%}
+              <span id="RegisterForm-password-error" class="form__message">
+                <svg aria-hidden="true" focusable="false">
+                  <use href="#icon-error" />
+                </svg>
+                {{ form.errors.translated_fields.password | capitalize }}
+                {{ form.errors.messages.password }}.
+              </span>
+            {%- endif -%}
+            <button class="button button--full-width">
+              {{ 'customer.register.submit' | t }}
+            </button>
+            <div class="has_account">
+              {{ 'customer.register.login_account_html' | t: link: routes.account_login_url }}
+            </div>
+          {%- endform -%}
+        </div>
+      
+        {%- if shop.checkout.guest_login -%}
+          <div>
+            <hr>
+            <h2>{{ 'customer.login_page.guest_title' | t }}</h2>
+      
+            {%- form 'guest_login' -%}
+              <button>
+                {{ 'customer.login_page.guest_continue' | t }}
+              </button>
+            {%- endform -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="customer-item customer-info ">
+        {% for block in section.blocks %}
+          {%- case.block.type -%}
+            {%- when 'app' -%}
+              {%  render block %}
+            {%- when 'line' -%}
+              <p class="line" style="--line_color:{{block.settings.line_color}};--padding_bottom:{{block.settings.padding_top_line}}px; --padding_top: {{block.settings.padding_bottom_line}}px; --padding_bottom_mb:{{block.settings.padding_bottom_line_mb}}px; --padding_top_mb: {{block.settings.padding_top_line_mb}}px;"></p>
+            {%- when 'content' -%}
+            <div class="custom-content {% if block.settings.enable_custom_color %}style-custom {% endif %}" class="heading" style="{% if block.settings.enable_custom_color %}--background:{{block.settings.background}};--border_color:{{block.settings.border_color}};{% endif %}--padding_bottom:{{block.settings.padding_bottom}}px; --padding_top: {{block.settings.padding_top}}px; --padding_bottom_mb:{{block.settings.padding_bottom_mb}}px; --padding_top_mb: {{block.settings.padding_top_mb}}px;">
+                {%- if block.settings.discount_code != blank-%}
+                  <div class="discount">
+                      <h2 class="heading" style="--font_size_mb_discount:{{block.settings.font_size_mb_discount}}px;--font_size_discount:{{block.settings.font_size_discount}}px; --color_discount: {{block.settings.color_discount}}">{{block.settings.discount_code}}</h2>
+                  </div>
+                {%- endif -%}
+                  <div class="wrapper-content">
+                    {%- if block.settings.heading != blank-%}
+                      <h2 class="heading" style="--padding_bottom_heading:{{block.settings.padding_bottom_heading}}px;--font_size_heading:{{block.settings.font_size_heading}}px; --color_heading: {{block.settings.color_heading}}">{{block.settings.heading}}</h2>
+                    {%- endif -%}
+                    {%- if block.settings.description != blank-%}
+                      <div class="rte desc" style="--font_size_desc:{{block.settings.font_size_desc}}px; --color_desc: {{block.settings.color_desc}}">{{ block.settings.description}}</div>
+                    {%- endif -%}
+                  </div>
+              </div>
+            {%- when 'icon-with-text' -%}
+              <div class="icon-with-text"
+                style="--padding_top:{{block.settings.padding_top}}px; --padding_bottom:{{block.settings.padding_bottom}}px"
+              >
+                <div class="icon-with-text__icon">
+                  {%- if block.settings.image == null -%}
+                    {% render 'icon-accordion', icon: block.settings.icon -%}
+                  {%- else -%}
+                    <img
+                      src="{{ block.settings.image | image_url }}"
+                      {% if block.settings.image.alt != blank %}
+                        alt="{{ block.settings.image.alt | escape }}"
+                      {% else %}
+                        role="presentation"
+                      {% endif %}
+                      height="auto"
+                      width="auto"
+                      loading="lazy"
+                    >
+                  {%- endif -%}
+                </div>
+                <div class="icon-with-text__text">
+                  <h2 class="heading"
+                    style="--color_heading: {{block.settings.color_heading}}; --font_size_heading: {{block.settings.font_size_heading}}px"
+                  >
+                  {{block.settings.heading}}
+                  </h2>
+                </div>
+              </div>
+          {%- endcase -%}
+        {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  // Get references to all password input elements and show password checkboxes
+  const passwordInputs = document.querySelectorAll('input[type="password"]');
+  const showPasswordCheckboxes = document.querySelectorAll('.showPasswordCheckbox');
+
+  // Loop through each checkbox and add event listener
+  showPasswordCheckboxes.forEach((checkbox, index) => {
+    checkbox.addEventListener('change', function() {
+      // Get the corresponding password input for this checkbox
+      const passwordInput = passwordInputs[index];
+
+      if (this.checked) {
+        // If checked, change password input type to 'text' to show password
+        passwordInput.type = 'text';
+      } else {
+        // If unchecked, change password input type back to 'password' to hide password
+        passwordInput.type = 'password';
+      }
+    });
+  });
+  
+  // Get references to the sign in and sign up elements
+  const signInPage = document.getElementById('sign_in');
+  const signUpPage = document.getElementById('sign_up');
+
+  // Function to toggle the class 'open' on the parent element
+  function toggleOpenClass(event) {
+    event.preventDefault(); // Prevent the default link action
+    const parentElement = document.querySelector('.customer-form');
+    if (parentElement.classList.contains('sign-up__show')) {
+      parentElement.classList.remove('sign-up__show');
+    } else {
+      parentElement.classList.add('sign-up__show');
+    }
+  }
+
+  // Add click event listeners to both elements to call the toggleOpenClass function
+  signInPage.addEventListener('click', toggleOpenClass);
+  signUpPage.addEventListener('click', toggleOpenClass);
+</script>
+{% schema %}
+{
+  "name": "t:sections.main-login.name",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },  
+    {
+      "type": "image_picker",
+      "id": "background",
+      "label": "Background image"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ],
+  "blocks":[
+    {
+      "type": "@app"
+    },
+    {
+      "type": "icon-with-text",
+      "name": "Icon with text",
+      "settings": [
+        {
+          "type": "color",
+          "id": "text_color",
+          "label":"Color",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__1.label"
+            },
+            {
+              "value": "apple",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__2.label"
+            },
+            {
+              "value": "banana",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__3.label"
+            },
+            {
+              "value": "bottle",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__4.label"
+            },
+            {
+              "value": "box",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__5.label"
+            },
+            {
+              "value": "carrot",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__6.label"
+            },
+            {
+              "value": "chat_bubble",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__7.label"
+            },
+            {
+              "value": "check_mark",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__8.label"
+            },
+            {
+              "value": "clipboard",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__9.label"
+            },
+            {
+              "value": "dairy",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__10.label"
+            },
+            {
+              "value": "dairy_free",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__11.label"
+            },
+            {
+              "value": "dryer",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__12.label"
+            },
+            {
+              "value": "eye",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__13.label"
+            },
+            {
+              "value": "fire",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__14.label"
+            },
+            {
+              "value": "gluten_free",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__15.label"
+            },
+            {
+              "value": "heart",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__16.label"
+            },
+            {
+              "value": "iron",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__17.label"
+            },
+            {
+              "value": "leaf",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__18.label"
+            },
+            {
+              "value": "leather",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__19.label"
+            },
+            {
+              "value": "lightning_bolt",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__20.label"
+            },
+            {
+              "value": "lipstick",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__21.label"
+            },
+            {
+              "value": "lock",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__22.label"
+            },
+            {
+              "value": "map_pin",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__23.label"
+            },
+            {
+              "value": "nut_free",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__24.label"
+            },
+            {
+              "value": "pants",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__25.label"
+            },
+            {
+              "value": "paw_print",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__26.label"
+            },
+            {
+              "value": "pepper",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__27.label"
+            },
+            {
+              "value": "perfume",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__28.label"
+            },
+            {
+              "value": "plane",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__29.label"
+            },
+            {
+              "value": "plant",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__30.label"
+            },
+            {
+              "value": "price_tag",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__31.label"
+            },
+            {
+              "value": "question_mark",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__32.label"
+            },
+            {
+              "value": "recycle",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__33.label"
+            },
+            {
+              "value": "return",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__34.label"
+            },
+            {
+              "value": "ruler",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__35.label"
+            },
+            {
+              "value": "serving_dish",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__36.label"
+            },
+            {
+              "value": "shirt",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__37.label"
+            },
+            {
+              "value": "shoe",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__38.label"
+            },
+            {
+              "value": "silhouette",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__39.label"
+            },
+            {
+              "value": "snowflake",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__40.label"
+            },
+            {
+              "value": "star",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__41.label"
+            },
+            {
+              "value": "stopwatch",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__42.label"
+            },
+            {
+              "value": "truck",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__43.label"
+            },
+            {
+              "value": "washing",
+              "label": "t:sections.main-product.blocks.collapsible_tab.settings.icon.options__44.label"
+            },
+            {
+              "value": "rocket",
+              "label":"t:sections.main-product.blocks.collapsible_tab.settings.icon.options__45.label"
+            },
+            {
+              "value":"sync",
+              "label":"t:sections.main-product.blocks.collapsible_tab.settings.icon.options__46.label"
+            },
+            {
+              "value":"credit_card",
+              "label":"t:sections.main-product.blocks.collapsible_tab.settings.icon.options__47.label"
+            },
+            {
+              "value":"gift",
+              "label":"t:sections.main-product.blocks.collapsible_tab.settings.icon.options__48.label"
+            },
+            {
+              "value":"cart",
+              "label":"t:sections.main-product.blocks.collapsible_tab.settings.icon.options__49.label"
+            }
+          ],
+          "default": "heart",
+          "label": "t:sections.main-product.blocks.icon_with_text.settings.icon_1.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.main-product.blocks.icon_with_text.settings.image_1.label"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Heading",
+          "label": "t:sections.main-product.blocks.icon_with_text.settings.heading_1.label",
+          "info": "t:sections.main-product.blocks.icon_with_text.settings.heading.info"
+        },
+        {
+          "type": "range",
+          "id": "font_size_heading",
+          "min": 10,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size Heading",
+          "default": 18
+        },
+        {
+          "type": "color",
+          "id": "color_heading",
+          "label": "Color",
+          "default": "#000000"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:sections.main-product.blocks.rating.settings.paragraph.content"
+        },
+        {
+          "type": "header",
+          "content": "Padding settings"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding top",
+          "default": 11
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom",
+          "default":11
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "name": "Content",
+      "settings": [
+        {
+          "type":"checkbox",
+          "id":"enable_custom_color",
+          "label":"Enable custom color",
+          "default":false
+        },
+        {
+          "type": "color",
+          "id": "background",
+          "label": "Background Color",
+          "default": "#F6F6F6"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "#B6B6B6"
+        },
+        {
+          "type": "header",
+          "content": "Heading settings"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Sign up today and you will be able to:",
+          "label": "Heading"
+        },
+        {
+          "type": "range",
+          "id": "font_size_heading",
+          "min": 10,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size Heading",
+          "default": 24
+        },
+        {
+          "type": "color",
+          "id": "color_heading",
+          "label": "Color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_heading",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom heading",
+          "default": 15
+        },
+        {
+          "type": "header",
+          "content": "Description settings"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "default": "<p>MartFury Buyer Protection has you covered from click to delivery. Sign up or sign in and you will be able to:</p>",
+          "label": "Description"
+        },
+        {
+          "type": "range",
+          "id": "font_size_desc",
+          "min": 10,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size description",
+          "default": 14
+        },
+        {
+          "type": "color",
+          "id": "color_desc",
+          "label": "Color description",
+          "default": "#666666"
+        },
+        {
+          "type": "header",
+          "content": "Discount code settings"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "discount_code",
+          "label": "Discount Code"
+        },
+        {
+          "type": "range",
+          "id": "font_size_discount",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size",
+          "default": 72
+        },
+        {
+          "type": "range",
+          "id": "font_size_mb_discount",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size mobile",
+          "default": 40
+        },
+        {
+          "type": "color",
+          "id": "color_discount",
+          "label": "Color",
+          "default": "#669900"
+        },
+        {
+          "type": "header",
+          "content": "Padding settings"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding top",
+          "default": 5
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom",
+          "default": 5
+        },
+        {
+          "type": "range",
+          "id": "padding_top_mb",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding top mobile",
+          "default": 5
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_mb",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom mobile",
+          "default": 5
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "name": "Line",
+      "settings": [
+        {
+          "type": "color",
+          "id": "line_color",
+          "label": "Line color",
+          "default": "#d9d9d9"
+        },
+        {
+          "type": "header",
+          "content": "Padding settings"
+        },
+        {
+          "type": "range",
+          "id": "padding_top_line",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding top",
+          "default": 40
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_line",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "padding_top_line_mb",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding top mobile",
+          "default": 30
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom_line_mb",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding bottom mobile",
+          "default": 40
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,248 @@
+{% comment %} {{ 'section-contact-form.css' | asset_url | stylesheet_tag }}  {% endcomment %}
+
+{%- style -%}
+
+  .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top_mb }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+      margin-bottom: -7px;
+  }
+  .section-{{ section.id }}-padding iframe{
+    width:100%;
+  }
+  .section-{{ section.id }}-padding .heading {
+    font-size: {{ section.settings.heading_size_mb }}px;
+  }
+
+  .section-{{ section.id }}-padding .sub_heading {
+    font-size: {{ section.settings.subheading_size_mb }}px;
+  }
+  .section-{{ section.id }}-padding iframe{
+        min-height: {{section.settings.map_iframe_height_mb}}px;
+   }
+   .section-{{ section.id }}-padding img{
+        width:100%;
+        height:100%;
+        object-fit: cover;
+   }
+  
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .section-{{ section.id }}-padding .heading {
+      font-size: {{ section.settings.heading_size }}px;
+    }
+    .section-{{ section.id }}-padding .sub_heading {
+      font-size: {{ section.settings.subheading_size }}px;
+    }
+    .section-{{ section.id }}-padding iframe{
+        min-height: {{section.settings.map_iframe_height}}px;
+    }
+  }
+{%- endstyle -%}
+<div class="map-iframe t-a--{{ section.settings.alignment }} section-{{ section.id }}-padding">
+  <div class="color-{{ section.settings.color_scheme }} gradient">
+    <div class="map-iframe__heading">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="heading title-wrapper--no-top-margin inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          >
+            {{ section.settings.heading }}
+          </h2>
+        {%- endif -%}
+        {%- if section.settings.sub_heading != blank -%}
+          <div class="info subtitle{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+            {{ section.settings.sub_heading }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- if section.settings.map_image != blank or section.settings.map_iframe != blank -%}
+      <div class="{% if section.settings.map_full%}page-full{% else %} page-width {% endif %}">
+        {%- if section.settings.map_image != blank -%}
+          {%- liquid
+            assign image_height = section.settings.map_image.width | divided_by: section.settings.map_image.aspect_ratio
+            assign sizes = '100vw'
+            assign widths = '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
+          -%}
+          {{
+            section.settings.map_image
+            | image_url: width: 3840
+            | image_tag:
+              width: section.settings.map_image.width,
+              height: image_height,
+              sizes: sizes,
+              widths: widths,
+              fetchpriority: 'auto'
+          }}
+        {%- else -%}
+          {{ section.settings.map_iframe }}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Google Maps Iframe",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.extension"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Content alignment",
+      "default": "center"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Font size heading",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mb",
+      "label": "Font size heading mobile",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "richtext",
+      "id": "sub_heading",
+      "label": "Info"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Font size info",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_mb",
+      "label": "Font size info mobile",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },  
+    {
+      "type": "header",
+      "content": "Settings for google maps iframe"
+    },
+    {
+        "type": "checkbox",
+        "id": "map_full",
+        "label": "Show Full",
+        "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "map_image",
+      "label": "Map use image"
+    },
+    {
+      "type": "textarea",
+      "id": "map_iframe",
+      "label": "Iframe map"
+    },
+    {
+      "type": "range",
+      "id": "map_iframe_height",
+      "label": " map iframe height",
+      "min": 80,
+      "max": 560,
+      "step": 80,
+      "default": 480,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "map_iframe_height_mb",
+      "label": " map iframe height mobile",
+      "min": 80,
+      "max": 560,
+      "step": 80,
+      "default": 320,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Google Maps Iframe"
+    }
+  ]
+}
+{% endschema %}

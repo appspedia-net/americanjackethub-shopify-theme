@@ -1,0 +1,226 @@
+<style>
+  #section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+  #section-{{ section.id }} .welcome__link,
+  #section-{{ section.id }} .link,
+  #section-{{ section.id }} .localization-form__select h2,
+  #section-{{ section.id }} .header-top__social--text,
+  #section-{{ section.id }} .header-top__grid .link a{
+    font-size: {{ section.settings.fontsize }}px;
+    line-height: 24px;
+    font-weight:500;
+  }
+  .header-top__list--social .icon--social {
+    height: {{ section.settings.fontsize }}px;
+  }
+  @media screen and (min-width: 990px) {
+    #section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+</style>
+{%- liquid
+    assign has_social_icons = true
+    if settings.social_facebook_link == blank and settings.social_instagram_link == blank and settings.social_youtube_link == blank and settings.social_tiktok_link == blank and settings.social_twitter_link == blank and settings.social_pinterest_link == blank and settings.social_snapchat_link == blank and settings.social_tumblr_link == blank and settings.social_vimeo_link == blank
+      assign has_social_icons = false
+    endif
+-%}
+<section id="section-{{ section.id }}" class="header-top color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <div class="header-top__grid">
+      {%- if section.settings.enable_social and has_social_icons -%}
+        <div class="header-top__social hidden-mb">
+          {%- render 'social-icons', class: 'header__list-social' -%}
+        </div>
+      {%- endif -%}
+      <div class="header-language__currency d-flex hidden-mb">
+        {%- if section.settings.enable_language or section.settings.enable_currency -%}
+          <div class="desktop-localization-wrapper hidden-mb">
+            {%- if localization.available_languages.size > 1 and section.settings.enable_language -%}
+              <noscript class="small-hide medium-hide">
+                {%- form 'localization', id: 'HeaderLanguageMobileFormNoScript', class: 'localization-form' -%}
+                  <div class="localization-form__select">
+                    <h2 class="visually-hidden" id="HeaderLanguageMobileLabelNoScript">
+                      {{ 'localization.language_label' | t }}
+                    </h2>
+                    <select
+                      class="localization-selector link"
+                      name="locale_code"
+                      aria-labelledby="HeaderLanguageMobileLabelNoScript"
+                    >
+                      {%- for language in localization.available_languages -%}
+                        <option
+                          value="{{ language.iso_code }}"
+                          lang="{{ language.iso_code }}"
+                          {%- if language.iso_code == localization.language.iso_code %}
+                            selected
+                          {% endif %}
+                        >
+                          {{ language.endonym_name | capitalize }}
+                        </option>
+                      {%- endfor -%}
+                    </select>
+                    {% render 'icon-caret' %}
+                  </div>
+                  <button class="button button--tertiary">{{ 'localization.update_language' | t }}</button>
+                {%- endform -%}
+              </noscript>
+
+              <localization-form class="small-hide medium-hide no-js-hidden">
+                {%- form 'localization', id: 'HeaderLanguageForm', class: 'localization-form' -%}
+                  <div>
+                    <h2 class="visually-hidden" id="HeaderLanguageLabel">{{ 'localization.language_label' | t }}</h2>
+                    {%- render 'language-localization', localPosition: 'HeaderLanguage' -%}
+                  </div>
+                {%- endform -%}
+              </localization-form>
+            {%- endif -%}
+
+            {%- if localization.available_countries.size > 1 and section.settings.enable_currency -%}
+              <noscript class="small-hide medium-hide">
+                {%- form 'localization', id: 'HeaderCountryMobileFormNoScript', class: 'localization-form' -%}
+                  <div class="localization-form__select">
+                    <h2 class="visually-hidden" id="HeaderCountryMobileLabelNoScript">
+                      {{ 'localization.country_label' | t }}
+                    </h2>
+                    <select
+                      class="localization-selector link"
+                      name="country_code"
+                      aria-labelledby="HeaderCountryMobileLabelNoScript"
+                    >
+                      {%- for country in localization.available_countries -%}
+                        <option
+                          value="{{ country.iso_code }}"
+                          {%- if country.iso_code == localization.country.iso_code %}
+                            selected
+                          {% endif %}
+                        >
+                          {{ country.name }} ({{ country.currency.iso_code }}
+                          {{ country.currency.symbol }})
+                        </option>
+                      {%- endfor -%}
+                    </select>
+                    {% render 'icon-caret' %}
+                  </div>
+                  <button class="button button--tertiary">{{ 'localization.update_country' | t }}</button>
+                {%- endform -%}
+              </noscript>
+
+              <localization-form class="small-hide medium-hide no-js-hidden">
+                {%- form 'localization', id: 'HeaderCountryForm', class: 'localization-form' -%}
+                  <div>
+                    <h2 class="visually-hidden" id="HeaderCountryLabel">{{ 'localization.country_label' | t }}</h2>
+                    {%- render 'country-localization', localPosition: 'HeaderCountry' -%}
+                  </div>
+                {%- endform -%}
+              </localization-form>
+            {% endif %}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Header Top",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "range",
+      "id": "fontsize",
+      "label": "Text font size",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Language/currency"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language",
+      "label": "Enable language",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_currency",
+      "label": "Enable currency",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Social"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_social",
+      "label": "Enable social",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top on Mobile",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding bottom on Mobile",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header Top"
+    }
+  ]
+}
+{% endschema %}
