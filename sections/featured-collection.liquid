@@ -85,8 +85,8 @@
   }
 {%- endstyle -%}
 {%- liquid
-  assign block_collection = section.blocks | where: "type", "collection"
-  assign block_column = section.blocks | where: "type", "column"
+  assign block_collection = section.blocks | where: 'type', 'collection'
+  assign block_column = section.blocks | where: 'type', 'column'
 -%}
 {% if block_column.size > 0 %}
   {{ 'section-multicolumn.css' | asset_url | stylesheet_tag }}
@@ -131,7 +131,7 @@
       }
     }
 
-    
+
     @media screen and (max-width: 749px) {
       .section-{{ section.id }}-padding .collection__banner {
         width:100%;
@@ -145,7 +145,7 @@
   {% assign view_all = true %}
 {%- endif -%}
 <div class="color-{{ section.settings.color_scheme }} isolate gradient">
-  <featured-product class="collection section-{{ section.id }}-padding {% if section.settings.enable_vertical_product %}collection--list__layout{% endif %} {% unless section.settings.enable_dost_deks %}not_dots_desks{% endunless %}" >
+  <featured-product class="collection section-{{ section.id }}-padding {% if section.settings.enable_vertical_product %}collection--list__layout{% endif %} {% unless section.settings.enable_dost_deks %}not_dots_desks{% endunless %}">
     {% unless block_column.size > 0 %}
       <div class="page-width">
         <div class="collection__title {{ section.settings.text_align }} mb-alignment__{{section.settings.text_alignment_mb}} title-wrapper title-wrapper--no-top-margin{% if show_desktop_slider %} collection__title--desktop-slider{% endif %}">
@@ -170,7 +170,10 @@
             <tabs-nav-product class="tabs-nav {{ section.settings.text_align }} mb-alignment__{{section.settings.text_alignment_mb}}">
               <div class="tabs-nav__item-list">
                 {%- for block in block_collection -%}
-                  <a class="tabs-nav__item" href="{{ block.settings.button_url | default: block.settings.collection.url }}">
+                  <a
+                    class="tabs-nav__item"
+                    href="{{ block.settings.button_url | default: block.settings.collection.url }}"
+                  >
                     <span>{{- block.settings.label | default: block.settings.collection.title -}}</span>
                   </a>
                   {%- if forloop.last == false -%}
@@ -185,7 +188,10 @@
             </tabs-nav-product>
           {%- endif -%}
           {%- if view_all -%}
-            <a href="{{ section.settings.button_url | default: section.settings.collection.url }}" class="hidden-mb link underlined-link">
+            <a
+              href="{{ section.settings.button_url | default: section.settings.collection.url }}"
+              class="hidden-mb link underlined-link"
+            >
               {{ section.settings.button_label }}
             </a>
           {%- endif -%}
@@ -199,7 +205,7 @@
           class="collection-tabs__content color-background-1"
           style="--grid-desktop-horizontal-spacing: {{ section.settings.column_gap }}px"
         >
-          {%- for block in block_collection  limit: 1 -%}
+          {%- for block in block_collection limit: 1 -%}
             {%- liquid
               assign collection = block.settings.collection
               assign products_to_display = collection.all_products_count
@@ -211,7 +217,7 @@
               assign columns_mobile_int = section.settings.columns_mobile | plus: 0
               assign show_mobile_slider = false
               if products_to_display > columns_mobile_int
-              assign show_mobile_slider = false
+                assign show_mobile_slider = false
               endif
 
               assign show_desktop_slider = false
@@ -225,12 +231,20 @@
               {% endunless %}
               id="block-{{ section.id }}-{{ block.id }}"
               class="collection-tabs__tab-item-wrapper"
-            {% if collection != blank %}data-product-section {% endif %}data-collection="{{ collection }}" data-layout="{% if show_desktop_slider %}slider{% else %}grid{% endif %}" data-limit="{{ products_to_display }}" sectionId="{{ section.id }}"
+              {% if collection != blank %}
+                data-product-section
+              {% endif -%}
+              data-collection="{{ collection }}"
+              data-layout="{% if show_desktop_slider %}slider{% else %}grid{% endif %}"
+              data-limit="{{ products_to_display }}"
+              sectionId="{{ section.id }}"
               data-horizontal="{{section.settings.enable_vertical_product}}"
+              data-columns-desktop="{{ section.settings.columns_desktop }}"
+              data-columns-mobile="{{ section.settings.columns_mobile }}"
               {% if show_mobile_slider or show_desktop_slider %}
-                dots={{ section.settings.enable_dots }}
-                arrows={{ section.settings.enable_arrow }}
-                autoPlay={{ section.settings.enable_autoPlay }}
+                dots="{{ section.settings.enable_dots }}"
+                arrows="{{ section.settings.enable_arrow }}"
+                autoPlay="{{ section.settings.enable_autoPlay }}"
               {% endif %}
             >
               {% if block_column.size > 0 %}
@@ -256,7 +270,10 @@
                     <tabs-nav-product class="tabs-nav {{ section.settings.text_align }} mb-alignment__{{section.settings.text_alignment_mb}}">
                       <div class="tabs-nav__item-list">
                         {%- for block in block_collection -%}
-                          <a class="tabs-nav__item" href="{{ block.settings.button_url | default: block.settings.collection.url }}">
+                          <a
+                            class="tabs-nav__item"
+                            href="{{ block.settings.button_url | default: block.settings.collection.url }}"
+                          >
                             <span>{{- block.settings.label | default: block.settings.collection.title -}}</span>
                           </a>
                           {%- if forloop.last == false -%}
@@ -271,7 +288,10 @@
                     </tabs-nav-product>
                   {%- endif -%}
                   {%- if view_all -%}
-                    <a href="{{ section.settings.button_url | default: section.settings.collection.url }}" class="hidden-mb link underlined-link">
+                    <a
+                      href="{{ section.settings.button_url | default: section.settings.collection.url }}"
+                      class="hidden-mb link underlined-link"
+                    >
                       {{ section.settings.button_label }}
                     </a>
                   {%- endif -%}
@@ -294,35 +314,38 @@
                   {%- endif -%}
                   {%- for product in sort limit: section.settings.columns_desktop -%}
                     <li
-                        class="grid__item before__loading {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-                        {% if settings.animations_reveal_on_scroll %}
-                          data-cascade
-                          style="--animation-order: {{ forloop.index }};"
-                        {% endif %}
-                      >
+                      class="grid__item before__loading {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                      {% if settings.animations_reveal_on_scroll %}
+                        data-cascade
+                        style="--animation-order: {{ forloop.index }};"
+                      {% endif %}
+                    >
                       <div class="card-wrapper product-card-wrapper underline-links-hover">
-                        <div class="
+                        <div
+                          class="
                             card--media
                             {%if section.settings.enable_vertical_product %} card--horizontal{% endif %}
-                            " style="--ratio-percent: 100.0%;">
-                            <div class="card__inner  ratio" style="--ratio-percent: 100.0%;">
-                              <div class="card__media">
-                                <div class="progress"></div>
-                              </div>
+                          "
+                          style="--ratio-percent: 100.0%;"
+                        >
+                          <div class="card__inner  ratio" style="--ratio-percent: 100.0%;">
+                            <div class="card__media">
+                              <div class="progress"></div>
                             </div>
-                            <div class="card__content">
-                            </div>
+                          </div>
+                          <div class="card__content"></div>
                         </div>
                       </div>
                     </li>
                   {%- endfor -%}
                 </ul>
               </div>
-              {%- if section.settings.show_view_all
-                and block.settings.button_label != blank
-              -%}
+              {%- if section.settings.show_view_all and block.settings.button_label != blank -%}
                 <div class="section__footer d-flex j-c--center">
-                  <a class="button{% if block.settings.outline %} button--secondary{% endif %}" href="{{ block.settings.button_url | default: collection.url }}">
+                  <a
+                    class="button{% if block.settings.outline %} button--secondary{% endif %}"
+                    href="{{ block.settings.button_url | default: collection.url }}"
+                  >
                     {{ block.settings.button_label }}
                   </a>
                 </div>
@@ -372,7 +395,7 @@
                 display: inline-block;
               }
               .multicolumn--{{ block.id }} .rte {
-                font-size: {{ block.settings.text_size }}px; 
+                font-size: {{ block.settings.text_size }}px;
                 margin-bottom: {{ block.settings.content_margin }}px;
               }
               @media screen and (max-width: 749px) {
@@ -385,7 +408,7 @@
                   margin-bottom: {{ block.settings.heading_margin_mb }}px
                 }
                 .multicolumn--{{ block.id }} .rte {
-                  font-size: {{ block.settings.text_size_mb }}px; 
+                  font-size: {{ block.settings.text_size_mb }}px;
                   margin-bottom: {{ block.settings.content_margin_mb }}px;
                 }
               }
@@ -397,10 +420,11 @@
                 data-cascade
                 style="--animation-order: {{ forloop.index }};"
               {% endif %}
-            > 
+            >
               <div class="multicolumn-card multicolumn-card__banner content-container">
                 {%- if block.settings.text_label != blank -%}
-                  <div class="multicolumn__label multicolumn__label--position center" 
+                  <div
+                    class="multicolumn__label multicolumn__label--position center"
                     style="
                       --font-size: {{ block.settings.label_size }}px;
                       --width: {{ block.settings.label_width }}px;
@@ -410,7 +434,8 @@
                       --position-ver: {{ block.settings.label_position_ver }}%;
                       --position-hoz-mb: {{ block.settings.label_position_hoz_mb }}%;
                       --position-ver-mb: {{ block.settings.label_position_ver_mb }}%;
-                    ">
+                    "
+                  >
                     <span>{{ block.settings.text_label }}</span>
                   </div>
                 {%- endif -%}
@@ -484,8 +509,9 @@
                     {%- endif -%}
                   </div>
                 </div>
-  
-                <div class="multicolumn-card__info banner__content banner__position"
+
+                <div
+                  class="multicolumn-card__info banner__content banner__position"
                   style="
                     --position-hoz: {{ block.settings.content_position_hoz }}%;
                     --position-ver: {{ block.settings.content_position_ver }}%;
@@ -511,7 +537,10 @@
                       </h3>
                     {%- endif -%}
                     {%- if block.settings.text != blank -%}
-                      <div class="rte" style="font-size: {{ block.settings.text_size }}px; margin-bottom: {{ block.settings.content_margin }}px">
+                      <div
+                        class="rte"
+                        style="font-size: {{ block.settings.text_size }}px; margin-bottom: {{ block.settings.content_margin }}px"
+                      >
                         {{ block.settings.text }}
                       </div>
                     {%- endif -%}
@@ -529,7 +558,6 @@
                           {% endif %}
                         >
                           {{- block.settings.link_label | escape -}}
-                          
                         </a>
                       {%- endif -%}
                       {%- if block.settings.link_label2 != blank and block.settings.link2 != blank -%}
@@ -545,11 +573,9 @@
                           {% endif %}
                         >
                           {{- block.settings.link_label2 | escape -}}
-                          
                         </a>
                       {%- endif -%}
                     </div>
-                    
                   </div>
                 </div>
               </div>
@@ -578,8 +604,8 @@
       "type": "checkbox",
       "id": "hide_heading",
       "label": "Hide heading",
-      "default":false
-    },  
+      "default": false
+    },
     {
       "type": "inline_richtext",
       "id": "title",
@@ -591,34 +617,34 @@
       "id": "heading_weight",
       "label": "Font weight heading",
       "options": [
-          {
+        {
           "value": "300",
           "label": "300"
-          },
-          {
+        },
+        {
           "value": "400",
           "label": "400"
-          },
-          {
+        },
+        {
           "value": "500",
           "label": "500"
-          },
-          {
+        },
+        {
           "value": "600",
           "label": "600"
-          },
-          {
+        },
+        {
           "value": "700",
           "label": "700"
-          },
-          {
+        },
+        {
           "value": "800",
           "label": "800"
-          },
-          {
+        },
+        {
           "value": "900",
           "label": "900"
-          }
+        }
       ],
       "default": "500"
     },
@@ -666,7 +692,7 @@
       "type": "checkbox",
       "id": "enable_back",
       "label": "Enable background",
-      "default":false
+      "default": false
     },
     {
       "type": "color",
@@ -696,34 +722,34 @@
       "id": "sub_heading_weight",
       "label": "Font weight sub heading",
       "options": [
-          {
+        {
           "value": "300",
           "label": "300"
-          },
-          {
+        },
+        {
           "value": "400",
           "label": "400"
-          },
-          {
+        },
+        {
           "value": "500",
           "label": "500"
-          },
-          {
+        },
+        {
           "value": "600",
           "label": "600"
-          },
-          {
+        },
+        {
           "value": "700",
           "label": "700"
-          },
-          {
+        },
+        {
           "value": "800",
           "label": "800"
-          },
-          {
+        },
+        {
           "value": "900",
           "label": "900"
-          }
+        }
       ],
       "default": "400"
     },
@@ -993,7 +1019,7 @@
           "id": "border_color",
           "label": "Border color",
           "default": "#e1e1e1"
-        }, 
+        },
         {
           "type": "text",
           "id": "label",
@@ -1080,7 +1106,7 @@
           "type": "select",
           "id": "option_type",
           "label": "Type options",
-          "default":"image",
+          "default": "image",
           "options": [
             {
               "label": "Video mp4",
@@ -1436,7 +1462,7 @@
           "step": 1,
           "default": 10
         },
-        
+
         {
           "type": "text",
           "id": "link_label",

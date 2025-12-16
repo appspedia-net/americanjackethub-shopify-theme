@@ -58,6 +58,9 @@
               show_rating: settings.show_rating,
               show_quick_add: settings.enable_quick_add,
               section_id: section.id,
+              columns_desktop: section.settings.columns_desktop,
+              columns_tablet: section.settings.columns_mobile,
+              columns_mobile: section.settings.columns_mobile
             %}
           </li>
         {% endfor %}
@@ -109,7 +112,7 @@
       "type": "checkbox",
       "id": "enable_back",
       "label": "Enable background",
-      "default":false
+      "default": false
     },
     {
       "type": "color",

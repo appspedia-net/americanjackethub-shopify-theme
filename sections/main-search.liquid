@@ -62,7 +62,12 @@
 {% paginate search.results by 24 %}
   <div class="template-search{% unless search.performed and search.results_count > 0 %} template-search--empty{% endunless %} section-{{ section.id }}-padding">
     <div class="template-search__header page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
-      <h1 class="h2"{% if section.settings.hidden_title %} hidden{% endif %}>
+      <h1
+        class="h2"
+        {% if section.settings.hidden_title %}
+          hidden
+        {% endif %}
+      >
         {%- if search.performed -%}
           {{- 'templates.search.title' | t -}}
         {%- else -%}
@@ -126,7 +131,7 @@
         </facet-filters-form>
       {%- endif -%}
       <div
-          class="facets--type{% if section.settings.filter_type == 'vertical' %} facets-vertical page-width{% endif %}"
+        class="facets--type{% if section.settings.filter_type == 'vertical' %} facets-vertical page-width{% endif %}"
       >
         {%- if search.filters != empty -%}
           {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
@@ -199,7 +204,10 @@
                           show_vendor: settings.show_vendor,
                           show_rating: settings.show_rating,
                           show_quick_add: settings.enable_quick_add,
-                          lazy_load: lazy_load
+                          lazy_load: lazy_load,
+                          columns_desktop: section.settings.columns_desktop,
+                          columns_tablet: section.settings.columns_mobile,
+                          columns_mobile: section.settings.columns_mobile
                         %}
                       {%- when 'article' -%}
                         {% render 'article-card',

@@ -16,79 +16,76 @@
   elsif section.settings.media_size == 'small'
     assign media_width = 0.45
   endif
-  assign sidebar_product = section.blocks | where: "type", "sidebar_product"
+  assign sidebar_product = section.blocks | where: 'type', 'sidebar_product'
 -%}
 
 {%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
-  {%- if section.settings.show_border -%}
-    .featured-product{
-      border: 2px solid {{section.settings.border_color}};
-      padding: 13px 15px 30px;
-    }
-  {%- endif -%}
-
-  .section-{{ section.id }}-padding .featured-product__heading .heading {
-      font-size: {{ section.settings.heading_size_mb }}px;
-      padding-bottom: 13px;
-      margin-bottom: {{ section.settings.margin_heading_section_mb }}px;
-      font-weight: {{section.settings.heading_weight}};
-      border-bottom: 1px solid {{section.settings.border_heading_color}};
-      width:100%;
-  }
-  .section-{{ section.id }}-padding .featured-product{
-    width:100%;
-  }
-  {%- if sidebar_product.size > 0 -%}
-    {% assign width__sidebar = sidebar_product[0].settings.width %}
-    .section-{{ section.id }}-padding .block-product__sidebar{
-      display:none;
-    }
-    @media screen and (min-width: 1200px) {
-      .section-{{ section.id }}-padding .wrapper-content {
-        display: flex;
-        gap:20px;
-        align-items: flex-start;
-        {%  if sidebar_product[0].settings.position == 'right' %}
-          flex-direction: row-reverse;
-        {% endif %}
-      }
-      .section-{{ section.id }}-padding .featured-product {
-        width: calc(100% - {{ width__sidebar | times: 1 }}px);
-      }
-      .section-{{ section.id }}-padding .block-product__sidebar {
-        width: {{ width__sidebar | times: 1 }}px;
-        display: block;
-      }
-    }
-  {%- endif -%}
-
-  @media screen and (min-width: 750px) {
     .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
+      padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
     }
     {%- if section.settings.show_border -%}
-    .featured-product{
-      padding: 13px 30px 30px;
+      .featured-product{
+        border: 2px solid {{section.settings.border_color}};
+        padding: 13px 15px 30px;
+      }
+    {%- endif -%}
+
+    .section-{{ section.id }}-padding .featured-product__heading .heading {
+        font-size: {{ section.settings.heading_size_mb }}px;
+        padding-bottom: 13px;
+        margin-bottom: {{ section.settings.margin_heading_section_mb }}px;
+        font-weight: {{section.settings.heading_weight}};
+        border-bottom: 1px solid {{section.settings.border_heading_color}};
+        width:100%;
     }
-  {%- endif -%}
-  .section-{{ section.id }}-padding .featured-product__heading .heading{
-      font-size: {{ section.settings.heading_size }}px;
-      margin-bottom: {{ section.settings.margin_heading_section }}px
+    .section-{{ section.id }}-padding .featured-product{
+      width:100%;
+    }
+    {%- if sidebar_product.size > 0 -%}
+      {% assign width__sidebar = sidebar_product[0].settings.width %}
+      .section-{{ section.id }}-padding .block-product__sidebar{
+        display:none;
+      }
+      @media screen and (min-width: 1200px) {
+        .section-{{ section.id }}-padding .wrapper-content {
+          display: flex;
+          gap:20px;
+          align-items: flex-start;
+          {%  if sidebar_product[0].settings.position == 'right' %}
+            flex-direction: row-reverse;
+          {% endif %}
+        }
+        .section-{{ section.id }}-padding .featured-product {
+          width: calc(100% - {{ width__sidebar | times: 1 }}px);
+        }
+        .section-{{ section.id }}-padding .block-product__sidebar {
+          width: {{ width__sidebar | times: 1 }}px;
+          display: block;
+        }
+      }
+    {%- endif -%}
+
+    @media screen and (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      }
+      {%- if section.settings.show_border -%}
+      .featured-product{
+        padding: 13px 30px 30px;
+      }
+    {%- endif -%}
+    .section-{{ section.id }}-padding .featured-product__heading .heading{
+        font-size: {{ section.settings.heading_size }}px;
+        margin-bottom: {{ section.settings.margin_heading_section }}px
+    }
   }
-}
-  
 {%- endstyle -%}
 
 <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
-
-
 
 {% comment %} TODO: assign `product.selected_or_first_available_variant` to variable and replace usage to reduce verbosity {% endcomment %}
 
@@ -116,64 +113,71 @@
     <div class="wrapper-content">
       {%- for block in sidebar_product -%}
         {%- if block.settings.collection.all_products_count > 0 -%}
-            <div class="block-product__sidebar" style="--sider_border_color: {{block.settings.border_color}}">
-                {%- if block.settings.heading != blank -%}
-                    <h2
-                        class="heading"
-                        style="font-size: {{ block.settings.fontsize_heading }}px; color: {{ block.settings.color_heading }}; font-weight:{{block.settings.heading_side_weight}}"
-                    >
-                        {{ block.settings.heading }}
-                    </h2>
-                {%- endif -%}
+          <div class="block-product__sidebar" style="--sider_border_color: {{block.settings.border_color}}">
+            {%- if block.settings.heading != blank -%}
+              <h2
+                class="heading"
+                style="font-size: {{ block.settings.fontsize_heading }}px; color: {{ block.settings.color_heading }}; font-weight:{{block.settings.heading_side_weight}}"
+              >
+                {{ block.settings.heading }}
+              </h2>
+            {%- endif -%}
+            <div
+              class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid--1-col-desktop grid--1-col-tablet-down"
+              style="
+                --grid-desktop-horizontal-spacing: 15px;
+                --grid-desktop-vertical-spacing: 12px;
+              "
+            >
+              {%- for product in block.settings.collection.products limit: block.settings.products_to_show -%}
                 <div
-                class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid--1-col-desktop grid--1-col-tablet-down"
-                style="
-                    --grid-desktop-horizontal-spacing: 15px;
-                    --grid-desktop-vertical-spacing: 12px;
-                "
+                  class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                  {% if settings.animations_reveal_on_scroll %}
+                    data-cascade
+                    style="--animation-order: {{ forloop.index }};"
+                  {% endif %}
                 >
-                {%- for product in block.settings.collection.products limit: block.settings.products_to_show -%}
-                    <div
-                    class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-                    {% if settings.animations_reveal_on_scroll %}
-                        data-cascade
-                        style="--animation-order: {{ forloop.index }};"
-                    {% endif %}
-                    >
-                    {% render 'card-product',
-                        card_product: product,
-                        media_aspect_ratio: settings.image_ratio,
-                        image_shape: settings.image_shape,
-                        show_secondary_image: false,
-                        show_vendor: false,
-                        show_rating: false,
-                        show_quick_add: false,
-                        section_id: block.id,
-                        horizontal_class: true,
-                        show_more: true
-                    %}
-                    </div>
-                {%- endfor -%}
+                  {% render 'card-product',
+                    card_product: product,
+                    media_aspect_ratio: settings.image_ratio,
+                    image_shape: settings.image_shape,
+                    show_secondary_image: false,
+                    show_vendor: false,
+                    show_rating: false,
+                    show_quick_add: false,
+                    section_id: block.id,
+                    horizontal_class: true,
+                    show_more: true,
+                    columns_desktop: 1,
+                    columns_tablet: 1,
+                    columns_mobile: 1
+                  %}
                 </div>
-                {%- if block.settings.button_side_label != blank -%}
-                  <a class="link" href="{{block.settings.button_side_url | default: block.settings.collection.url}}"  style=" color: {{ block.settings.color_heading }};">
-                    <span class="link-hover">{{block.settings.button_side_label}}</span>
-                    {%- render 'icon' with 'dropdown-icon' -%} 
-                  </a>
-                {%- endif -%}
+              {%- endfor -%}
             </div>
-          {%- endif -%}
+            {%- if block.settings.button_side_label != blank -%}
+              <a
+                class="link"
+                href="{{block.settings.button_side_url | default: block.settings.collection.url}}"
+                style=" color: {{ block.settings.color_heading }};"
+              >
+                <span class="link-hover">{{ block.settings.button_side_label }}</span>
+                {%- render 'icon' with 'dropdown-icon' -%}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       {%- endfor -%}
       <div class="featured-product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
         <div class="featured-product__heading">
           {%- if section.settings.title != blank -%}
-              <h2 class="heading {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-                {{ section.settings.title }}
-              </h2>
+            <h2 class="heading {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+              {{ section.settings.title }}
+            </h2>
           {%- endif -%}
-      </div>
-      <div class="grid__item product__media-wrapper{% if section.settings.media_position == 'right' %} medium-hide large-up-hide{% endif %}">
-          {% render 'product-media-gallery',  product: product, variant_images: variant_images %}
+        </div>
+        <div class="grid__item product__media-wrapper{% if section.settings.media_position == 'right' %} medium-hide large-up-hide{% endif %}">
+          {% render 'product-media-gallery', product: product, variant_images: variant_images %}
         </div>
         <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
           <product-info
@@ -210,23 +214,26 @@
                           {{ block.shopify_attributes }}
                         >
                           {%- if block.settings.label != blank -%}
-                            <span class="label"
-                            style="font-size: {{ block.settings.font_size_label }}px; color: {{ block.settings.color_label }}"      
+                            <span
+                              class="label"
+                              style="font-size: {{ block.settings.font_size_label }}px; color: {{ block.settings.color_label }}"
                             >
                               {{ block.settings.label }}
                             </span>
                           {%- endif -%}
-                          <a href="/collections/vendors?q={{ product.vendor}}"
+                          <a
+                            href="/collections/vendors?q={{ product.vendor}}"
                             style="font-size: {{ block.settings.font_size }}px; color: {{ block.settings.color }}"
                           >
-                            {{ product.vendor}}
+                            {{ product.vendor }}
                           </a>
                         </div>
                       </div>
                     {%- endif -%}
                   {%- when 'text' -%}
                     {%- if block.settings.text != blank -%}
-                      <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                      <div
+                        class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                         style="
                           --padding-top: {{ block.settings.padding_top }}px;
                           --padding-bottom: {{ block.settings.padding_bottom }}px
@@ -242,7 +249,8 @@
                       </div>
                     {%- endif -%}
                   {%- when 'title' -%}
-                    <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                    <div
+                      class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                       style="
                         --padding-top: {{ block.settings.padding_top }}px;
                         --padding-bottom: {{ block.settings.padding_bottom }}px
@@ -258,13 +266,19 @@
                       </div>
                     </div>
                   {%- when 'price' -%}
-                    <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                    <div
+                      class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                       style="
                         --padding-top: {{ block.settings.padding_top }}px;
                         --padding-bottom: {{ block.settings.padding_bottom }}px
                       "
                     >
-                      <div class="no-js-hidden" id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
+                      <div
+                        class="no-js-hidden"
+                        id="price-{{ section.id }}"
+                        role="status"
+                        {{ block.shopify_attributes }}
+                      >
                         {%- render 'price',
                           product: product,
                           use_variant: true,
@@ -287,14 +301,19 @@
                       </div>
                       <div {{ block.shopify_attributes }}>
                         {%- assign product_form_installment_id = 'product-form-installment-' | append: section.id -%}
-                        {%- form 'product', product, id: product_form_installment_id, class: 'installment caption-large' -%}
+                        {%- form 'product',
+                          product,
+                          id: product_form_installment_id,
+                          class: 'installment caption-large'
+                        -%}
                           <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
                           {{ form | payment_terms }}
                         {%- endform -%}
                       </div>
                     </div>
                   {%- when 'inventory' -%}
-                    <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                    <div
+                      class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                       style="
                         --padding-top: {{ block.settings.padding_top }}px;
                         --padding-bottom: {{ block.settings.padding_bottom }}px
@@ -307,10 +326,11 @@
                         role="status"
                       >
                         {%- if block.settings.label_inven != blank -%}
-                          <span class="label"
-                          style="font-size: {{ block.settings.font_size_label_inven }}px; color: {{ block.settings.color_label_inven }}"      
+                          <span
+                            class="label"
+                            style="font-size: {{ block.settings.font_size_label_inven }}px; color: {{ block.settings.color_label_inven }}"
                           >
-                            {{ block.settings.label_inven }}: 
+                            {{ block.settings.label_inven }}:
                           </span>
                         {%- endif -%}
                         {%- if product.selected_or_first_available_variant.inventory_management == 'shopify' -%}
@@ -348,7 +368,8 @@
                     </div>
                   {%- when 'description' -%}
                     {%- if product.description != blank -%}
-                      <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                      <div
+                        class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                         style="
                           --padding-top: {{ block.settings.padding_top }}px;
                           --padding-bottom: {{ block.settings.padding_bottom }}px
@@ -361,7 +382,8 @@
                     {%- endif -%}
                   {%- when 'sku' -%}
                     {%- if product.selected_or_first_available_variant.sku != blank -%}
-                      <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                      <div
+                        class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                         style="
                           --padding-top: {{ block.settings.padding_top }}px;
                           --padding-bottom: {{ block.settings.padding_bottom }}px
@@ -382,13 +404,16 @@
                     {%- endif -%}
                   {%- when 'property' -%}
                     {%- if product.selected_or_first_available_variant.sku != blank or product.collections.size > 1 -%}
-                      <div class="block__info--product d-flex wrap a-i--center j-c--space{% if block.settings.has_border %} has_boder{% endif %}"
+                      <div
+                        class="block__info--product d-flex wrap a-i--center j-c--space{% if block.settings.has_border %} has_boder{% endif %}"
                         style="
                           --padding-top: {{ block.settings.padding_top }}px;
                           --padding-bottom: {{ block.settings.padding_bottom }}px
                         "
                       >
-                        {%- if product.selected_or_first_available_variant.sku != blank and block.settings.enable_sku -%}
+                        {%- if product.selected_or_first_available_variant.sku != blank
+                          and block.settings.enable_sku
+                        -%}
                           <p
                             class="product__sku no-js-hidden{% if product.selected_or_first_available_variant.sku.size == 0 %} visibility-hidden{% endif %}"
                             id="Sku-{{ section.id }}"
@@ -402,14 +427,18 @@
                           </p>
                         {%- endif -%}
                         {%- if block.settings.enable_share -%}
-                          {% assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin %}
+                          {% assign share_url = product.selected_variant.url
+                            | default: product.url
+                            | prepend: request.origin
+                          %}
                           {% render 'share-button', block: block, share_link: share_url, is_prduct: true %}
                         {%- endif -%}
                       </div>
                     {%- endif -%}
                   {%- when 'categories' -%}
-                    {% if product.collections.size > 1  %}
-                      <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                    {% if product.collections.size > 1 %}
+                      <div
+                        class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                         style="
                           --padding-top: {{ block.settings.padding_top }}px;
                           --padding-bottom: {{ block.settings.padding_bottom }}px
@@ -427,7 +456,10 @@
                             {% for collection in product.collections %}
                               {%- unless collection.title == 'all' or collection.title == 'All' -%}
                                 <li>
-                                  <a href="{{ collection.url }}">{{ collection.title }}{% unless forloop.last %},{% endunless %}</a>
+                                  <a href="{{ collection.url }}">
+                                    {{- collection.title -}}
+                                    {%- unless forloop.last %},{% endunless -%}
+                                  </a>
                                 </li>
                               {%- endunless -%}
                             {% endfor %}
@@ -436,8 +468,9 @@
                       </div>
                     {%- endif -%}
                   {%- when 'tags' -%}
-                    {% if product.tags.size > 1  %}
-                      <div class="block__info--product {% if block.settings.has_border %} has_boder{% endif %}"
+                    {% if product.tags.size > 1 %}
+                      <div
+                        class="block__info--product {% if block.settings.has_border %} has_boder{% endif %}"
                         style="
                           --padding-top: {{ block.settings.padding_top }}px;
                           --padding-bottom: {{ block.settings.padding_bottom }}px
@@ -454,7 +487,10 @@
                           <ul>
                             {% for tag in product.tags %}
                               <li>
-                                <span>{{ tag }}{% unless forloop.last %},{% endunless %}</span>
+                                <span>
+                                  {{- tag -}}
+                                  {%- unless forloop.last %},{% endunless -%}
+                                </span>
                               </li>
                             {% endfor %}
                           </ul>
@@ -463,7 +499,8 @@
                     {%- endif -%}
                   {%- when 'countdown' -%}
                     {%- if block.settings.date != blank -%}
-                      <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                      <div
+                        class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                         style="
                           --padding-top: {{ block.settings.padding_top }}px;
                           --padding-bottom: {{ block.settings.padding_bottom }}px;
@@ -487,8 +524,12 @@
                             <span class="product-info__label">{{ block.settings.label }}</span>
                           {%- endif -%}
                           {%- if block.settings.date != blank -%}
-                            {%- if block.settings.layout_count == "style_1" -%}
-                              <countdown-time-grid class="countdown__time countdown__style_1" timer="{{ block.settings.date }}" hasHTML="true">
+                            {%- if block.settings.layout_count == 'style_1' -%}
+                              <countdown-time-grid
+                                class="countdown__time countdown__style_1"
+                                timer="{{ block.settings.date }}"
+                                hasHTML="true"
+                              >
                                 <div class="show_countdown"></div>
                               </countdown-time-grid>
                             {%- else -%}
@@ -500,19 +541,24 @@
                         </div>
                       </div>
                     {%- endif -%}
-                  
+
                   {%- when 'share' -%}
-                    <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                    <div
+                      class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                       style="
                         --padding-top: {{ block.settings.padding_top }}px;
                         --padding-bottom: {{ block.settings.padding_bottom }}px
                       "
                     >
-                      {% assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin %}
+                      {% assign share_url = product.selected_variant.url
+                        | default: product.url
+                        | prepend: request.origin
+                      %}
                       {% render 'share-button', block: block, share_link: share_url, is_prduct: true %}
                     </div>
                   {%- when 'pickup' -%}
-                    <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                    <div
+                      class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                       style="
                         --padding-top: {{ block.settings.padding_top }}px;
                         --padding-bottom: {{ block.settings.padding_bottom }}px
@@ -520,14 +566,16 @@
                     >
                       <div class="local__pickup--block">
                         {{ 'component-pickup-availability.css' | asset_url | stylesheet_tag }}
-  
+
                         {%- assign pick_up_availabilities = product.selected_or_first_available_variant.store_availabilities
                           | where: 'pick_up_enabled', true
                         -%}
-  
+
                         <pickup-availability
                           class="product__pickup-availabilities no-js-hidden quick-add-hidden"
-                          {% if product.selected_or_first_available_variant.available and pick_up_availabilities.size > 0 %}
+                          {% if product.selected_or_first_available_variant.available
+                            and pick_up_availabilities.size > 0
+                          %}
                             available
                           {% endif %}
                           data-root-url="{{ routes.root_url }}"
@@ -539,7 +587,9 @@
                             <pickup-availability-preview class="pickup-availability-preview">
                               {% render 'icon-unavailable' %}
                               <div class="pickup-availability-info">
-                                <p class="caption-large">{{ 'products.product.pickup_availability.unavailable' | t }}</p>
+                                <p class="caption-large">
+                                  {{ 'products.product.pickup_availability.unavailable' | t }}
+                                </p>
                                 <button class="pickup-availability-button link link--text underlined-link">
                                   {{ 'products.product.pickup_availability.refresh' | t }}
                                 </button>
@@ -547,13 +597,14 @@
                             </pickup-availability-preview>
                           </template>
                         </pickup-availability>
-  
+
                         <script src="{{ 'pickup-availability.js' | asset_url }}" defer="defer"></script>
                       </div>
                     </div>
                   {%- when 'variant_picker' -%}
                     {%- unless product.has_only_default_variant -%}
-                      <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                      <div
+                        class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                         style="
                           --padding-top: {{ block.settings.padding_top }}px;
                           --padding-bottom: {{ block.settings.padding_bottom }}px;
@@ -567,7 +618,8 @@
                       </div>
                     {%- endunless -%}
                   {%- when 'buy_buttons' -%}
-                    <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                    <div
+                      class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                       style="
                         --padding-top: {{ block.settings.padding_top }}px;
                         --padding-bottom: {{ block.settings.padding_bottom }}px
@@ -582,13 +634,14 @@
                       -%}
                     </div>
                   {%- when 'rating' -%}
-                    <div class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
+                    <div
+                      class="block__info--product{% if block.settings.has_border %} has_boder{% endif %}"
                       style="
                         --padding-top: {{ block.settings.padding_top }}px;
                         --padding-bottom: {{ block.settings.padding_bottom }}px
                       "
                     >
-                    {%- if card_product.metafields.judgeme.badge != blank -%}
+                      {%- if card_product.metafields.judgeme.badge != blank -%}
                         {% liquid
                           assign rating_decimal = 0
                           assign decimal = product.metafields.reviews.rating.value.rating | modulo: 1
@@ -604,10 +657,10 @@
                           role="img"
                           aria-label="{{ 'accessibility.star_reviews_info' | t: rating_value: product.metafields.reviews.rating.value, rating_max: product.metafields.reviews.rating.value.scale_max }}"
                         >
-                         {{ card_product.metafields.judgeme.badge }}
+                          {{ card_product.metafields.judgeme.badge }}
                           <p class="rating-text caption">
                             <span>
-                              {{- product.metafields.reviews.rating.value }} 
+                              {{- product.metafields.reviews.rating.value }}
                               {% comment %} /{{ product.metafields.reviews.rating.value.scale_max -}} {% endcomment %}
                             </span>
                           </p>
@@ -622,14 +675,12 @@
                             <span class="jdgm-star jdgm--off"></span>
                           {%- endfor -%}
                           <p class="rating-text caption">
-                            <span>
-                              0.0
-                            </span>
+                            <span> 0.0 </span>
                           </p>
                         </div>
                       {%- endif -%}
                     </div>
-                  
+
                   {%- when 'short_description' -%}
                     {%- if block.settings.short_option_content == 'all' -%}
                       {% assign short_description = block.settings.short_content %}
@@ -637,14 +688,16 @@
                       {% assign short_description = product.metafields.custom.short_description %}
                     {%- endif -%}
                     {%- if short_description != blank -%}
-                      <div class="short_description" 
-                      style="
-                        --padding-top: {{ block.settings.padding_top }}px;
-                        --padding-bottom: {{ block.settings.padding_bottom }}px;
-                        --font-size: {{ block.settings.font_size }}px; 
-                        --color: {{ block.settings.color }}
-                      ">
-                        {{short_description}}
+                      <div
+                        class="short_description"
+                        style="
+                          --padding-top: {{ block.settings.padding_top }}px;
+                          --padding-bottom: {{ block.settings.padding_bottom }}px;
+                          --font-size: {{ block.settings.font_size }}px;
+                          --color: {{ block.settings.color }}
+                        "
+                      >
+                        {{ short_description }}
                       </div>
                     {%- endif -%}
                 {%- endcase -%}
@@ -1050,9 +1103,9 @@
         },
         {
           "type": "color",
-          "id":"text_color",
-          "label":"Color",
-          "default":"#0099cc"
+          "id": "text_color",
+          "label": "Color",
+          "default": "#0099cc"
         },
         {
           "type": "header",
@@ -1119,9 +1172,9 @@
         },
         {
           "type": "color",
-          "id":"text_color",
-          "label":"Color",
-          "default":"#000000"
+          "id": "text_color",
+          "label": "Color",
+          "default": "#000000"
         },
         {
           "type": "header",
@@ -1982,9 +2035,9 @@
           "default": "metafield"
         },
         {
-          "type":"textarea",
-          "id":"short_content",
-          "label":"Content",
+          "type": "textarea",
+          "id": "short_content",
+          "label": "Content",
           "info": "Use For all products."
         },
         {
@@ -2101,34 +2154,34 @@
           "id": "heading_side_weight",
           "label": "Font weight heading",
           "options": [
-              {
+            {
               "value": "300",
               "label": "300"
-              },
-              {
+            },
+            {
               "value": "400",
               "label": "400"
-              },
-              {
+            },
+            {
               "value": "500",
               "label": "500"
-              },
-              {
+            },
+            {
               "value": "600",
               "label": "600"
-              },
-              {
+            },
+            {
               "value": "700",
               "label": "700"
-              },
-              {
+            },
+            {
               "value": "800",
               "label": "800"
-              },
-              {
+            },
+            {
               "value": "900",
               "label": "900"
-              }
+            }
           ],
           "default": "500"
         },
@@ -2158,14 +2211,14 @@
           "min": 1,
           "max": 6,
           "step": 1,
-          "default":3,
+          "default": 3,
           "label": "Number product to show"
         },
         {
           "type": "text",
           "id": "button_side_label",
           "label": "View all label",
-          "default":"View all"
+          "default": "View all"
         },
         {
           "type": "url",
@@ -2233,7 +2286,7 @@
       "label": "Border color",
       "default": "#fcb800"
     },
-   {
+    {
       "type": "product",
       "id": "product",
       "label": "t:sections.featured-product.settings.product.label"
@@ -2254,34 +2307,34 @@
       "id": "heading_weight",
       "label": "Font weight heading",
       "options": [
-          {
+        {
           "value": "300",
           "label": "300"
-          },
-          {
+        },
+        {
           "value": "400",
           "label": "400"
-          },
-          {
+        },
+        {
           "value": "500",
           "label": "500"
-          },
-          {
+        },
+        {
           "value": "600",
           "label": "600"
-          },
-          {
+        },
+        {
           "value": "700",
           "label": "700"
-          },
-          {
+        },
+        {
           "value": "800",
           "label": "800"
-          },
-          {
+        },
+        {
           "value": "900",
           "label": "900"
-          }
+        }
       ],
       "default": "500"
     },
@@ -2502,7 +2555,6 @@
     {
       "name": "t:sections.featured-product.presets.name",
       "blocks": [
-       
         {
           "type": "title"
         },

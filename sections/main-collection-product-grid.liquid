@@ -27,7 +27,7 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
-  
+
   @media screen and (max-width: 749px) {
     .mobile-facets__wrapper,
     .product-count facet-filters-form {
@@ -41,9 +41,9 @@
 {%- endstyle -%}
 {%- liquid
   if cart.attributes.pagination != blank and cart.attributes.pagination
-      assign limit = cart.attributes.pagination
+    assign limit = cart.attributes.pagination
   else
-      assign limit =  section.settings.products_per_page
+    assign limit = section.settings.products_per_page
   endif
 -%}
 <div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
@@ -60,11 +60,11 @@
               {%- if section.settings.enable_view -%}
                 <facet-view class="facet-filters__view-list border__separation">
                   <a class="view_type view_type--active" grid>
-                    {%  render 'icon' with 'grid' %}
+                    {% render 'icon' with 'grid' %}
                   </a>
                   <span class="separation"></span>
                   <a class="view_type" list>
-                    {%  render 'icon' with 'list' %}
+                    {% render 'icon' with 'list' %}
                   </a>
                   <span class="separation"></span>
                 </facet-view>
@@ -122,9 +122,9 @@
             enable_sorting: section.settings.enable_sorting,
             enable_paginate: section.settings.enable_paginate,
             limit: limit,
-            number_filter_show: section.settings.number_filter_show
+            number_filter_show: section.settings.number_filter_show,
             filter_type: section.settings.filter_type,
-            enable_view: section.settings.enable_view
+            enable_view: section.settings.enable_view,
             paginate: paginate
           %}
         </aside>
@@ -187,7 +187,10 @@
                     enable_short_desc: section.settings.enable_short_desc,
                     short_content: section.settings.short_content,
                     short_option_content: section.settings.short_option_content,
-                    element_view_list: true
+                    element_view_list: true,
+                    columns_desktop: section.settings.columns_desktop,
+                    columns_tablet: section.settings.columns_mobile,
+                    columns_mobile: section.settings.columns_mobile
                   %}
                 </li>
               {%- endfor -%}
@@ -330,9 +333,9 @@
       "default": "metafield"
     },
     {
-      "type":"textarea",
-      "id":"short_content",
-      "label":"Content",
+      "type": "textarea",
+      "id": "short_content",
+      "label": "Content",
       "info": "Use For all products."
     },
     {
@@ -793,7 +796,6 @@
         }
       ]
     }
-    
   ]
 }
 {% endschema %}

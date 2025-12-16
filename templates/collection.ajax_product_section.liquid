@@ -1,9 +1,9 @@
 {% layout none %}
 {%- for product in collections[collection.handle].products -%}
-    <li
+  <li
     id="Slide-{{ section.id }}-{{ forloop.index }}"
     class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-    >
+  >
     {% render 'card-product',
       card_product: product,
       media_aspect_ratio: settings.image_ratio,

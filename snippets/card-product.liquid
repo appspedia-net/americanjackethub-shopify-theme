@@ -43,26 +43,29 @@
       assign ratio = 1
     endif
   -%}
-  
-    {%- render 'card-product-style', 
-      card_product: card_product,
-      ratio: ratio,
-      image_shape: image_shape,
-      media_aspect_ratio: media_aspect_ratio,
-      option_swatch: option_swatch,
-      color_swatch_white: color_swatch_white,
-      show_slider_image: show_slider_image,
-      horizontal_class: horizontal_class,
-      show_quick_add: show_quick_add,
-      show_secondary_image: show_secondary_image,
-      show_vendor: show_vendor,
-      show_rating: show_rating,
-      section_id: section.id,
-      enable_short_desc: enable_short_desc,
-      short_content: short_content,
-      short_option_content:short_option_content,
-      element_view_list: element_view_list
-    -%}
+
+  {%- render 'card-product-style',
+    card_product: card_product,
+    ratio: ratio,
+    image_shape: image_shape,
+    media_aspect_ratio: media_aspect_ratio,
+    option_swatch: option_swatch,
+    color_swatch_white: color_swatch_white,
+    show_slider_image: show_slider_image,
+    horizontal_class: horizontal_class,
+    show_quick_add: show_quick_add,
+    show_secondary_image: show_secondary_image,
+    show_vendor: show_vendor,
+    show_rating: show_rating,
+    section_id: section.id,
+    enable_short_desc: enable_short_desc,
+    short_content: short_content,
+    short_option_content: short_option_content,
+    element_view_list: element_view_list,
+    columns_desktop: columns_desktop,
+    columns_tablet: columns_tablet,
+    columns_mobile: columns_mobile
+  -%}
 {%- else -%}
   <div class="card-wrapper product-card-wrapper underline-links-hover">
     <div

@@ -9,7 +9,10 @@
         "
       >
         {%- if block.settings.heading != blank -%}
-          <h2 class="heading" style="font-size: {{ block.settings.fontsize_heading }}px; color: {{ block.settings.color_heading }}">
+          <h2
+            class="heading"
+            style="font-size: {{ block.settings.fontsize_heading }}px; color: {{ block.settings.color_heading }}"
+          >
             {{ block.settings.heading }}
           </h2>
         {%- endif -%}
@@ -38,23 +41,23 @@
                 {%- endfor -%}
               </ul>
             {%- endif -%}
-            {%- when 'blog_tags' -%}
-              <ul class="article__tags">
-                {%- for tag in blog.all_tags -%}
-                  <li class="article__tag--item">
-                    <a
-                      href="{{ blog.url }}/tagged/{{ tag | handle }}"
-                      class="link"
-                      style="
-                        font-size: {{ block.settings.font_size }}px;
-                        color: {{ block.settings.color }};
-                      "
-                    >
-                      <span>#{{ tag }}</span>
-                    </a>
-                  </li>
-                {%- endfor -%}
-              </ul>
+          {%- when 'blog_tags' -%}
+            <ul class="article__tags">
+              {%- for tag in blog.all_tags -%}
+                <li class="article__tag--item">
+                  <a
+                    href="{{ blog.url }}/tagged/{{ tag | handle }}"
+                    class="link"
+                    style="
+                      font-size: {{ block.settings.font_size }}px;
+                      color: {{ block.settings.color }};
+                    "
+                  >
+                    <span>#{{ tag }}</span>
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
           {%- when 'sidebar_blog' -%}
             {%- if block.settings.blog.articles_count > 0 -%}
               <div
@@ -151,7 +154,8 @@
             >
               <div class="multicolumn-card content-container">
                 {%- if block.settings.text_label != blank -%}
-                  <div class="multicolumn__label multicolumn__label--{{ block.settings.position_label }} center" 
+                  <div
+                    class="multicolumn__label multicolumn__label--{{ block.settings.position_label }} center"
                     style="
                       --font-size: {{ block.settings.label_size }}px;
                       --width: {{ block.settings.label_width }}px;
@@ -161,7 +165,8 @@
                       --position-ver: {{ block.settings.label_position_ver }}%;
                       --position-hoz-mb: {{ block.settings.label_position_hoz_mb }}%;
                       --position-ver-mb: {{ block.settings.label_position_ver_mb }}%;
-                    ">
+                    "
+                  >
                     <span>{{ block.settings.text_label }}</span>
                   </div>
                 {%- endif -%}
@@ -223,8 +228,9 @@
                     {%- endif -%}
                   </div>
                 </div>
-  
-                <div class="multicolumn-card__info banner__content banner__position"
+
+                <div
+                  class="multicolumn-card__info banner__content banner__position"
                   style="
                     --position-hoz: {{ block.settings.content_position_hoz }}%;
                     --position-ver: {{ block.settings.content_position_ver }}%;
@@ -248,7 +254,10 @@
                       </h3>
                     {%- endif -%}
                     {%- if block.settings.text != blank -%}
-                      <div class="rte" style="font-size: {{ block.settings.text_size }}px; margin-bottom: {{ block.settings.content_margin }}px">
+                      <div
+                        class="rte"
+                        style="font-size: {{ block.settings.text_size }}px; margin-bottom: {{ block.settings.content_margin }}px"
+                      >
                         {{ block.settings.text }}
                       </div>
                     {%- endif -%}
@@ -284,42 +293,44 @@
                         </a>
                       {%- endif -%}
                     </div>
-                    
                   </div>
                 </div>
               </div>
             </div>
           {%- when 'sidebar_product' -%}
             {%- if block.settings.collection.all_products_count > 0 -%}
-                <div
-                  class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid--1-col-desktop grid--1-col-tablet-down"
-                  style="
-                    --grid-desktop-horizontal-spacing: 15px;
-                    --grid-desktop-vertical-spacing: 24px;
-                  "
-                >
-                  {%- for product in block.settings.collection.products limit: block.settings.products_to_show -%}
-                    <div
-                      class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-                      {% if settings.animations_reveal_on_scroll %}
-                        data-cascade
-                        style="--animation-order: {{ forloop.index }};"
-                      {% endif %}
-                    >
-                        {% render 'card-product',
-                            card_product: product,
-                            media_aspect_ratio: settings.image_ratio,
-                            image_shape: settings.image_shape,
-                            show_secondary_image: settings.show_secondary_image,
-                            show_vendor: settings.show_vendor,
-                            show_rating: settings.show_rating,
-                            show_quick_add: settings.enable_quick_add,
-                            section_id: block.id,
-                            horizontal_class: false
-                          %}
-                    </div>
-                  {%- endfor -%}
-                </div>
+              <div
+                class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid--1-col-desktop grid--1-col-tablet-down"
+                style="
+                  --grid-desktop-horizontal-spacing: 15px;
+                  --grid-desktop-vertical-spacing: 24px;
+                "
+              >
+                {%- for product in block.settings.collection.products limit: block.settings.products_to_show -%}
+                  <div
+                    class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                    {% if settings.animations_reveal_on_scroll %}
+                      data-cascade
+                      style="--animation-order: {{ forloop.index }};"
+                    {% endif %}
+                  >
+                    {% render 'card-product',
+                      card_product: product,
+                      media_aspect_ratio: settings.image_ratio,
+                      image_shape: settings.image_shape,
+                      show_secondary_image: settings.show_secondary_image,
+                      show_vendor: settings.show_vendor,
+                      show_rating: settings.show_rating,
+                      show_quick_add: settings.enable_quick_add,
+                      section_id: block.id,
+                      horizontal_class: false,
+                      columns_desktop: 1,
+                      columns_tablet: 1,
+                      columns_mobile: 1
+                    %}
+                  </div>
+                {%- endfor -%}
+              </div>
             {%- endif -%}
         {%- endcase -%}
       </div>
