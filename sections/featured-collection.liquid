@@ -224,6 +224,8 @@
               if section.settings.enable_desktop_slider and products_to_display > section.settings.columns_desktop
                 assign show_desktop_slider = true
               endif
+
+              assign product_selection_type = section.settings.product_selection_type | default: 'collection'
             -%}
             <div
               {% unless forloop.first %}
@@ -307,12 +309,22 @@
                     style="--border_color:{{block.settings.border_color}}"
                   {% endif %}
                 >
-                  {%- if section.settings.enable_new_product -%}
-                    {%- assign sort = collection.products | sort: 'created_at' | reverse -%}
-                  {%- else -%}
-                    {%- assign sort = collection.products -%}
-                  {%- endif -%}
-                  {%- for product in sort limit: section.settings.columns_desktop -%}
+                  {%- liquid
+                    if product_selection_type == 'manual'
+                      assign products_array = section.settings.manual_products
+                    elsif product_selection_type == 'latest'
+                      assign products_array = collection.products | sort: 'created_at' | reverse
+                    elsif product_selection_type == 'random'
+                      assign products_array = collection.products | sort: 'title'
+                    else
+                      if section.settings.enable_new_product
+                        assign products_array = collection.products | sort: 'created_at' | reverse
+                      else
+                        assign products_array = collection.products
+                      endif
+                    endif
+                  -%}
+                  {%- for product in products_array limit: section.settings.columns_desktop -%}
                     <li
                       class="grid__item before__loading {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
                       {% if settings.animations_reveal_on_scroll %}
@@ -810,10 +822,40 @@
       "label": "Enable vertical product"
     },
     {
+      "type": "select",
+      "id": "product_selection_type",
+      "label": "Product selection type",
+      "default": "collection",
+      "options": [
+        {
+          "value": "collection",
+          "label": "By collection/category"
+        },
+        {
+          "value": "latest",
+          "label": "Latest products"
+        },
+        {
+          "value": "random",
+          "label": "Random products"
+        },
+        {
+          "value": "manual",
+          "label": "Select products manually"
+        }
+      ]
+    },
+    {
+      "type": "product_list",
+      "id": "manual_products",
+      "label": "Select products",
+      "info": "Only used when 'Select products manually' is selected"
+    },
+    {
       "type": "checkbox",
       "id": "enable_new_product",
       "default": false,
-      "label": "Enable new product"
+      "label": "Enable new product (for collection mode)"
     },
     {
       "type": "checkbox",
